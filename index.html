@@ -582,6 +582,63 @@
   window.scrollTo(0, 0);
   window.addEventListener('pageshow', function(){ window.scrollTo(0, 0); }); // iOS bfcache restore
 
+  /* Aligns the intro watercolour's villa to land at the exact same on-screen
+     spot the main page's villa sketch does, so the crossfade between them
+     doesn't visibly jump. The two source images are completely different
+     compositions (the watercolour is a small building in a huge aerial
+     landscape; the sketch is the building filling almost the whole frame),
+     so there's no static CSS background-position that works for every
+     viewport size — .reveal-photo is a full-viewport background-size:cover
+     while .villa-hero is a fixed-aspect-ratio box inside the 480px-wide
+     .page column, and how much of the watercolour's width gets cropped by
+     `cover` depends on the live viewport's aspect ratio.
+
+     Instead: measure where .villa-hero's own villa lands on screen (its
+     position is fully determined by its own box, which always shows the
+     whole sketch uncropped — see .villa-hero above), then solve for the
+     background-position that puts the watercolour's villa at that same
+     screen point, given `cover`'s known scale/crop math. This is exact for
+     any viewport size, unlike hand-picked percentages.
+
+     CX_S/CY_S and CX_W/CY_W are each image's villa-center as a fraction of
+     its own canvas — roof-ridge-to-ground-line, wall-to-wall — measured
+     directly off the source files (grid overlay + pixel coordinates, see
+     git history for this change). Re-measure and update these if either
+     source image is ever replaced or re-cropped. */
+  (function(){
+    var CX_S = 0.499, CY_S = 0.4919;  // vila-sketch.jpg (1300x866) villa center
+    var CX_W = 0.4585, CY_W = 0.5076; // vila-watercolour.png villa center
+    var IMG_W = 1254, IMG_H = 1254;   // vila-watercolour.png's own canvas size
+
+    var hero = document.querySelector('.villa-hero');
+    var photo = document.querySelector('.reveal-photo');
+    if (!hero || !photo) return;
+
+    function alignVilla(){
+      var heroRect = hero.getBoundingClientRect();
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var targetX = heroRect.left + heroRect.width * CX_S;
+      var targetY = heroRect.top + heroRect.height * CY_S;
+
+      var scale = Math.max(vw / IMG_W, vh / IMG_H); // background-size:cover
+      var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
+
+      var posX = Math.abs(scaledW - vw) < 0.5 ? 50 : 100 * (targetX - CX_W * scaledW) / (vw - scaledW);
+      var posY = Math.abs(scaledH - vh) < 0.5 ? 50 : 100 * (targetY - CY_W * scaledH) / (vh - scaledH);
+      posX = Math.max(0, Math.min(100, posX));
+      posY = Math.max(0, Math.min(100, posY));
+
+      photo.style.backgroundPosition = posX.toFixed(2) + '% ' + posY.toFixed(2) + '%';
+    }
+
+    alignVilla(); // best-effort immediately, using fallback-font metrics
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(alignVilla); // re-run once web fonts (which shift .villa-hero's height above it) are in
+    }
+    window.addEventListener('resize', alignVilla);
+    window.addEventListener('orientationchange', alignVilla);
+  })();
+
   (function(){
     var target = new Date('2027-09-18T15:00:00+02:00').getTime(); // 3pm, CEST (+02:00) same as today's offset
     var elD = document.getElementById('cd-days');

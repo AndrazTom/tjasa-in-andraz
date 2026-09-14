@@ -181,5 +181,24 @@ Tag before any major redesign so it's easy to roll back:
   tried and failed before a recording actually showed what was happening.
 
 ## Changes requested (mark a change as completed when completed)
-- Villa is too much on the left on phone display. I need perfect alignment.
-- In all dimensions (placement and size) watercolour villa needs to match sketched villa. SO the animation transition is smooth.
+- [x] Villa is too much on the left on phone display. I need perfect alignment.
+- [x] In all dimensions (placement and size) watercolour villa needs to match sketched villa.
+  So the animation transition is smooth.
+  → Static `background-position` percentages can't do this exactly: the
+  watercolour is a full-viewport `background-size:cover` while the sketch
+  sits in a fixed-aspect-ratio box inside the 480px `.page` column, and how
+  much of the watercolour gets cropped by `cover` depends on the live
+  viewport's aspect ratio — no single hand-picked percentage holds for
+  every phone. Fixed with a small script (in `index.html`'s `<script>`,
+  search "Aligns the intro watercolour's villa") that measures where
+  `.villa-hero`'s villa actually lands on screen via `getBoundingClientRect`
+  (deterministic — that band always shows the full sketch uncropped), then
+  solves `.reveal-photo`'s `background-position` so the watercolour's villa
+  lands at that exact same point, given `cover`'s own scale/crop math. Runs
+  on load, again once web fonts finish (they shift the text height above
+  `.villa-hero`), and on resize/orientation change — exact for any viewport
+  size rather than approximate for an assumed range. The villa-center
+  fractions it solves against (`CX_S/CY_S`, `CX_W/CY_W` in that script) were
+  measured directly off the two source images (grid-overlay + pixel
+  coordinates); re-measure and update them if either image is ever replaced
+  or re-cropped.
