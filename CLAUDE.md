@@ -173,18 +173,21 @@ Tag before any major redesign so it's easy to roll back:
   descriptions alone, get a recording, every fix attempt before the first
   recording failed.
 
-  Ruled out (tried, then disproved by a further recording after the fix
-  was confirmed live) — pixel-identical flash before and after each of
-  these, which is itself the tell that all of them were the wrong category
-  of cause:
+  Ruled out:
   - forcing `.envelope-photo`/`.reveal-photo`/`.envelope-cover`/
     `.envelope-seal` onto their own GPU compositing layer via
-    `transform:translateZ(0)`
+    `transform:translateZ(0)` — a second recording, taken after this fix
+    was confirmed live, showed a pixel-identical flash, proving it wasn't
+    the cause.
   - force-decoding `images/envelope-open-shadowed.png` ahead of time via
     `new Image().decode()`, in case deferred background-image decode was
-    the delay
+    the delay — reported as still happening after this fix was live too,
+    but *not* re-confirmed with a recording, only a verbal report. Don't
+    fully cross this one off without video proof.
   - removing `will-change`, fusing the shadow into the photo (fewer
     animating alpha layers), a single-fade-in instead of a true crossfade
+    — tried earlier, before recordings were part of the workflow, also
+    didn't help.
 
   Current hypothesis, fix applied but not yet confirmed on-device: none of
   the above touched anything animation-timing related, which stopped
