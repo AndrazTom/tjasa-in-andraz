@@ -9,12 +9,12 @@
 
   :root{
     --paper:#f8f3e7;
-    --card:rgba(44,58,35,0.05);
-    --card-border:rgba(44,58,35,0.35);
-    --ink:#2c3a23;
-    --ink-soft:rgba(44,58,35,0.9);
-    --ink-faint:rgba(44,58,35,0.78);
-    --line-strong:rgba(44,58,35,0.55);
+    --card:rgba(95,115,80,0.07);
+    --card-border:rgba(95,115,80,0.3);
+    --ink:#5f7350;
+    --ink-soft:rgba(95,115,80,0.85);
+    --ink-faint:rgba(95,115,80,0.7);
+    --line-strong:rgba(95,115,80,0.45);
   }
 
   *{box-sizing:border-box;}
@@ -48,14 +48,14 @@
     width:74px;
     height:74px;
     border-radius:50%;
-    background:radial-gradient(circle at 32% 28%, #4c5f3d, #33422a 45%, #1c2417 100%);
-    box-shadow:0 6px 14px rgba(20,28,15,0.35), inset 0 0 0 2px rgba(255,255,255,0.18);
+    background:radial-gradient(circle at 32% 28%, #dbe4c9, #b7c79c 45%, #8fa276 100%);
+    box-shadow:0 6px 14px rgba(95,115,80,0.28), inset 0 0 0 2px rgba(255,255,255,0.4);
     display:flex;
     align-items:center;
     justify-content:center;
     font-family:'Cormorant SC', serif;
     font-size:22px;
-    color:var(--paper);
+    color:#3b4a2e;
     letter-spacing:1px;
     margin-top:44px;
     animation:fadeDown 1s ease both;
@@ -215,7 +215,7 @@
     text-align:left;
     transition:background 0.2s ease;
   }
-  .loc-card:active{ background:rgba(44,58,35,0.1); }
+  .loc-card:active{ background:rgba(95,115,80,0.14); }
   .loc-icon{
     flex:none;
     width:20px;
@@ -386,14 +386,14 @@
     transform:translate(-50%,-50%);
     width:56px; height:56px;
     border-radius:50%;
-    background:radial-gradient(circle at 32% 28%, #4c5f3d, #33422a 45%, #1c2417 100%);
-    box-shadow:0 6px 14px rgba(20,28,15,0.45), inset 0 0 0 2px rgba(255,255,255,0.18);
+    background:radial-gradient(circle at 32% 28%, #dbe4c9, #b7c79c 45%, #8fa276 100%);
+    box-shadow:0 6px 14px rgba(95,115,80,0.32), inset 0 0 0 2px rgba(255,255,255,0.4);
     display:flex;
     align-items:center;
     justify-content:center;
     font-family:'Cormorant SC', serif;
     font-size:17px;
-    color:var(--paper);
+    color:#3b4a2e;
     letter-spacing:1px;
     z-index:3;
     transition:opacity 0.35s ease, transform 0.35s ease;
@@ -435,8 +435,8 @@
             <stop offset="100%" stop-color="#eee0c2"/>
           </linearGradient>
         </defs>
-        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#2c3a23" stroke-width="1.5"/>
-        <path d="M10,193 L150,116 L290,193" fill="none" stroke="#2c3a23" stroke-width="1" opacity="0.35"/>
+        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#5f7350" stroke-width="1.5"/>
+        <path d="M10,193 L150,116 L290,193" fill="none" stroke="#5f7350" stroke-width="1" opacity="0.35"/>
       </svg>
     </span>
     <span class="envelope-flap-wrap">
@@ -448,7 +448,7 @@
           </linearGradient>
         </defs>
         <polygon points="3,4 297,4 150,121" fill="url(#flapGrad)"/>
-        <path d="M3,4 L150,121 L297,4" fill="none" stroke="#2c3a23" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M3,4 L150,121 L297,4" fill="none" stroke="#5f7350" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
     </span>
     <span class="envelope-seal">T&amp;A</span>
