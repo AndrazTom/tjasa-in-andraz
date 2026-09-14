@@ -419,18 +419,23 @@
   }
 
   /* Same box-padding trick as .envelope-photo above: seal.png's wax circle
-     touches its own canvas edge with ~0 margin, so the box here is 20%
-     larger (60px) than the seal's tuned 50px display size, with
-     background-size shrinking it back down to that 50px, leaving room
-     for the drop-shadow to bleed into. */
+     touches its own canvas edge with ~0 margin, so the box here (100px) is
+     bigger than the seal's tuned 50px display size, with background-size
+     shrinking it back down to that 50px — leaving a 25px margin on every
+     side for the drop-shadow (blur 10 + offset 6 = 16px reach) to bleed
+     into. This margin is sized in real CSS px against the *displayed*
+     50px size and the filter's own blur/offset, not against seal.png's
+     own (400px) canvas — those are unrelated scales once background-size
+     is shrinking the image down by 8x, unlike .envelope-photo above where
+     the box and the source photo happen to share the same scale. */
   .envelope-seal{
     position:absolute;
     top:75%; left:50%; /* flap's actual fold tip, measured off envelope-closed.png, nudged up slightly */
     transform:translate(-50%,-50%);
-    width:60px; height:60px;
+    width:100px; height:100px;
     z-index:3;
     background-image:url('images/seal.png');
-    background-size:83.333%; /* shrinks back down to the tuned 50px (400/480) */
+    background-size:50%; /* shrinks back down to the tuned 50px (50/100) */
     background-repeat:no-repeat;
     background-position:center;
     transition:opacity 0.6s ease, transform 0.6s ease; /* seal fades */
