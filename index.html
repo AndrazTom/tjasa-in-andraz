@@ -13,54 +13,31 @@
     --gold-soft:#e3cd97;
     --forest-1:#1c2417;
     --forest-2:#3a4530;
-    --page-bg:#e9e4d4;
   }
 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background:var(--page-bg);
+    background:var(--forest-1);
     color:var(--ink);
     font-family:'Cormorant Garamond', serif;
   }
 
-  .stage{
+  .page{
     width:100%;
     max-width:480px;
-    min-height:100dvh;
     margin:0 auto;
-    position:relative;
-    overflow:hidden;
-    isolation:isolate;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
   }
 
-  .stage::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background-image:url('images/vila-vipolze.jpg');
-    background-size:cover;
-    background-position:47.2% 55%;
-    z-index:-2;
-  }
-
-  .stage::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:
-      linear-gradient(180deg, rgba(18,22,14,0.72) 0%, rgba(20,24,16,0.40) 22%, rgba(22,26,17,0.55) 55%, rgba(14,17,11,0.88) 88%, rgba(10,13,8,0.95) 100%);
-    z-index:-1;
-  }
-
-  .content{
-    position:relative;
+  .section{
     display:flex;
     flex-direction:column;
     align-items:center;
     text-align:center;
-    padding:44px 28px 36px;
-    min-height:calc(100dvh - 64px);
+    padding:0 28px;
   }
 
   /* Monogram */
@@ -77,7 +54,7 @@
     font-size:22px;
     color:#2b2109;
     letter-spacing:1px;
-    margin-top:4px;
+    margin-top:44px;
     animation:fadeDown 1s ease both;
   }
 
@@ -98,7 +75,6 @@
     font-size:70px;
     line-height:0.9;
     color:var(--ink);
-    text-shadow:0 2px 18px rgba(0,0,0,0.35);
   }
   .the{
     font-family:'Cormorant SC', serif;
@@ -112,7 +88,6 @@
     font-size:76px;
     line-height:0.9;
     color:var(--ink);
-    text-shadow:0 2px 18px rgba(0,0,0,0.35);
   }
 
   .rule{
@@ -120,6 +95,20 @@
     height:1px;
     background:linear-gradient(90deg, transparent, var(--gold), transparent);
     margin:22px 0 16px;
+  }
+
+  .wedding-date{
+    font-family:'Cormorant SC', serif;
+    font-size:24px;
+    letter-spacing:6px;
+    color:var(--gold-soft);
+  }
+
+  .venue-line{
+    margin-top:6px;
+    font-style:italic;
+    font-size:17px;
+    color:rgba(250,247,239,0.85);
   }
 
   .names{
@@ -137,31 +126,40 @@
     letter-spacing:1px;
   }
 
-  .villa-space{
-    height:0;
+  .top{
+    padding-bottom:34px;
   }
 
-  .wedding-date{
-    margin-top:24px;
-    font-family:'Cormorant SC', serif;
-    font-size:24px;
-    letter-spacing:6px;
-    color:var(--gold-soft);
+  /* Villa photo band - sized to the photo's own aspect ratio so it
+     shows in full, uncropped, instead of being zoomed into a tall strip */
+  .villa-hero{
+    width:100%;
+    aspect-ratio:1200/674;
+    background-image:url('images/vila-vipolze.jpg');
+    background-size:cover;
+    background-position:47.2% 55%;
+    position:relative;
   }
+  .villa-hero::before, .villa-hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    height:56px;
+    pointer-events:none;
+  }
+  .villa-hero::before{ top:0; background:linear-gradient(180deg, var(--forest-1), transparent); }
+  .villa-hero::after{ bottom:0; background:linear-gradient(0deg, var(--forest-1), transparent); }
 
-  .venue-line{
-    margin-top:6px;
-    font-style:italic;
-    font-size:17px;
-    color:rgba(250,247,239,0.85);
+  .bottom{
+    padding-top:34px;
+    padding-bottom:36px;
   }
 
   /* Countdown */
   .countdown{
     display:flex;
     gap:14px;
-    margin-top:26px;
-    animation:fadeIn 1.4s ease both 0.5s;
+    animation:fadeIn 1.4s ease both 0.3s;
   }
   .cd-unit{
     display:flex;
@@ -199,14 +197,14 @@
     display:flex;
     flex-direction:column;
     gap:10px;
-    animation:fadeIn 1.4s ease both 0.6s;
+    animation:fadeIn 1.4s ease both 0.4s;
   }
   .loc-card{
     display:flex;
     align-items:center;
     gap:12px;
     padding:12px 16px;
-    background:rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.06);
     border:1px solid rgba(199,164,92,0.35);
     border-radius:12px;
     text-decoration:none;
@@ -214,7 +212,7 @@
     text-align:left;
     transition:background 0.2s ease;
   }
-  .loc-card:active{ background:rgba(255,255,255,0.16); }
+  .loc-card:active{ background:rgba(255,255,255,0.14); }
   .loc-icon{
     flex:none;
     width:20px;
@@ -246,7 +244,7 @@
 
   .contact{
     margin-top:26px;
-    animation:fadeIn 1.4s ease both 0.7s;
+    animation:fadeIn 1.4s ease both 0.5s;
   }
   .contact-kicker{
     font-family:'Cormorant SC', serif;
@@ -273,8 +271,6 @@
 
   .footer{
     margin-top:36px;
-    padding-top:0;
-    padding-bottom:8px;
   }
   .footer-note{
     font-size:12px;
@@ -296,8 +292,8 @@
 </head>
 <body>
 
-<div class="stage">
-  <div class="content">
+<div class="page">
+  <div class="section top">
     <div class="seal">T&amp;A</div>
 
     <svg class="sprig" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -314,16 +310,18 @@
     </div>
 
     <div class="rule"></div>
+    <div class="wedding-date">18 · 9 · 2027</div>
+    <div class="venue-line">Goriška Brda &amp; Vipavska dolina</div>
+    <div class="rule"></div>
+
     <div class="names">TJAŠA</div>
     <div class="amp">in</div>
     <div class="names">ANDRAŽ</div>
-    <div class="rule"></div>
+  </div>
 
-    <div class="villa-space"></div>
+  <div class="villa-hero"></div>
 
-    <div class="wedding-date">18 · 9 · 2027</div>
-    <div class="venue-line">Goriška Brda &amp; Vipavska dolina</div>
-
+  <div class="section bottom">
     <div class="countdown" id="countdown">
       <div class="cd-unit"><div class="cd-num" id="cd-days">–</div><div class="cd-label">dni</div></div>
       <div class="cd-unit"><div class="cd-num" id="cd-hours">–</div><div class="cd-label">ur</div></div>
