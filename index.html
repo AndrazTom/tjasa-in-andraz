@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tjaša & Andraž</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap');
 
   :root{
     --paper:#f8f3e7;
@@ -360,8 +360,8 @@
     animation:fadeIn 0.8s ease both 0.9s; /* intro: 2 names, after the note settles */
   }
   .envelope-sender .sender-amp{
-    font-family:'Cormorant SC', serif; /* Pinyon Script's own & glyph read oddly here; try the small-caps serif used for "PRISPELO JE PISMO" above instead */
-    font-size:0.75em;
+    font-family:'Alex Brush', cursive; /* Pinyon Script's own & glyph read oddly here; a second, complementary script pairs better than reusing the same face or dropping to a plain serif */
+    font-size:1.15em;
   }
   .envelope-sender .sender-note{
     display:block;
@@ -669,10 +669,11 @@
       var targetY = heroRect.top + heroRect.height * CY_S;
       var targetWidth = heroRect.width * WIDTH_S;
 
+      var baseCover = Math.max(vw / IMG_W, vh / IMG_H); // bare minimum to fully cover the viewport, no position/size guarantee
       // Smallest scale that both covers the viewport AND leaves enough
       // room on every edge to place (CX_W,CY_W) exactly at (targetX,targetY).
       var minScale = Math.max(
-        vw / IMG_W, vh / IMG_H,                     // base "cover" minimum
+        baseCover,
         targetX / (CX_W * IMG_W),                    // left edge covered
         (vw - targetX) / (IMG_W * (1 - CX_W)),        // right edge covered
         targetY / (CY_W * IMG_H),                     // top edge covered
@@ -682,11 +683,29 @@
       // width as the sketch villa — used whenever it doesn't violate the
       // coverage floor above (see comment above this function).
       var sizeMatchScale = targetWidth / (WIDTH_W * IMG_W);
-      var scale = Math.max(minScale, sizeMatchScale);
+      var idealScale = Math.max(minScale, sizeMatchScale);
+
+      // idealScale nails the villa's position/size exactly, but getting
+      // there needs more zoom than plain center-cropping (baseCover) would
+      // use — on most ordinary tall phones that extra zoom pushes the villa
+      // close enough to the screen edges to look cramped, no margin at all.
+      // MARGIN_RELAX trades a little position/size precision back for
+      // breathing room by blending idealScale toward baseCover; 0 is exact
+      // (no margin), 1 is plain centered cover (max margin, no alignment).
+      // baseCover is still always the floor, so the image never fails to
+      // cover the viewport regardless of this value.
+      var MARGIN_RELAX = 0.3;
+      var scale = baseCover + (idealScale - baseCover) * (1 - MARGIN_RELAX);
 
       var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
       var offsetX = targetX - CX_W * scaledW;
       var offsetY = targetY - CY_W * scaledH;
+      // Once MARGIN_RELAX pulls `scale` below minScale, hitting the exact
+      // target on every edge is no longer geometrically possible without a
+      // gap — clamp to the nearest position that still fully covers the
+      // viewport (a no-op whenever scale >= minScale, i.e. MARGIN_RELAX 0).
+      offsetX = Math.min(0, Math.max(vw - scaledW, offsetX));
+      offsetY = Math.min(0, Math.max(vh - scaledH, offsetY));
 
       photo.style.backgroundSize = scaledW.toFixed(2) + 'px ' + scaledH.toFixed(2) + 'px';
       photo.style.backgroundPosition = offsetX.toFixed(2) + 'px ' + offsetY.toFixed(2) + 'px';
