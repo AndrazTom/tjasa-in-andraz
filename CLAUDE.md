@@ -157,6 +157,17 @@ Tagged checkpoints on `main`, each with a GitHub Release:
   replace the SVG-drawn versions, watercolour painting replaces the real
   aerial photo behind the envelope, Pinyon Script headline/sender text,
   slower open animation, darker text-legibility veil on the intro
+- `v5` — intro page finalized: new fancier wax seal photo, envelope/seal
+  drop-shadows moved from baked-in images to live CSS filters (a
+  box-padding trick sidesteps the clipping bug that made baking seem
+  necessary); fixed a mobile-only tap-highlight flash on envelope open
+  (root cause found via screen-recording frame analysis, not guessing);
+  sender line restructured to "Prispelo je pismo" / "Tjaše & Andraža"
+  (Alex Brush ampersand) with a staggered pop-in entrance for the
+  envelope+seal; villa alignment rebuilt from scratch in JS to exactly
+  match the intro watercolour's villa to the main page sketch's villa
+  (position and size) on any viewport, replacing guessed static
+  `background-position` percentages; pinch-zoom locked via viewport meta
 
 Tag before any major redesign so it's easy to roll back:
 `git tag -a vN -m "..." && git push origin vN && gh release create vN ...`
