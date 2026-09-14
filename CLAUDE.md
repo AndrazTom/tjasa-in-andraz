@@ -164,20 +164,35 @@ Tag before any major redesign so it's easy to roll back:
 
 - Mobile-only flash during the envelope-open animation: on tap, a sharp-edged
   gray rectangle briefly flashes, sized exactly to `.envelope-photo`'s own
-  (padded) box. Diagnosed by extracting frames from a screen recording
-  (`ffmpeg -i recording.mp4 frame_%03d.png`, then diffing consecutive frames
-  with PIL/numpy to isolate the exact flash frame and its bounding box) —
-  don't try to debug this class of issue by guessing from descriptions
-  alone, get a recording. Root cause: forcing the element onto its own GPU
-  compositing layer via `transform:translateZ(0)` (tried as a "pre-promote
-  the layer before the animation starts" fix) backfired — the mobile
-  browser shows that layer's blank backing store for a frame when the
-  opacity transition invalidates it, which is worse than not forcing a
-  dedicated layer at all. Removed; not yet replaced with a working fix,
-  so the flash itself is still unresolved. Do not reintroduce
-  `translateZ(0)`/`will-change` on `.envelope-photo`, `.reveal-photo`,
-  `.envelope-cover`, or `.envelope-seal` without re-testing against a
-  fresh recording first.
+  (padded) box, seal silhouette faintly visible inside it. Diagnosed by
+  extracting frames from a screen recording (`ffmpeg -i recording.mp4
+  frame_%03d.png`, **note ffmpeg's output is 1-indexed from frame_001.png —
+  don't off-by-one it against a separately-enumerated list**, then diffing
+  consecutive frames with PIL/numpy to isolate the exact flash frame and its
+  bounding box) — don't try to debug this class of issue by guessing from
+  descriptions alone, get a recording, every fix attempt before the first
+  recording failed.
+
+  Ruled out (tried, then disproved by a second recording after the fix was
+  live): forcing `.envelope-photo`/`.reveal-photo`/`.envelope-cover`/
+  `.envelope-seal` onto their own GPU compositing layer via
+  `transform:translateZ(0)` — removing it did not change the flash at all,
+  so it was never the actual cause, just a coincidentally-still-broken
+  version. Also already tried and didn't help: removing `will-change`,
+  fusing the shadow into the photo (fewer animating alpha layers), a
+  single-fade-in instead of a true crossfade.
+
+  Current hypothesis, fix applied but not yet confirmed on-device:
+  `.envelope-photo-open`'s background-image starts at `opacity:0` (never
+  painted) from page load, and mobile browsers can defer decoding a
+  background-image that's never been visible until the moment it actually
+  needs to paint — i.e. exactly when the crossfade starts. A force-decode
+  of `images/envelope-open-shadowed.png` via `new Image().decode()` runs
+  near the top of the page's `<script>`, using the several idle seconds
+  before anyone can tap the envelope to get the texture fully decoded and
+  resident ahead of time. If a fresh recording still shows the flash after
+  this, the decode-timing theory is wrong too — go back to the recording,
+  don't guess again.
 
 ## Changes requested (mark a change as completed when completed)
 - Villa is too much on the left on phone display. I need perfect alignment.

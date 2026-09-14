@@ -545,6 +545,19 @@
 </div>
 
 <script>
+  // .envelope-photo-open starts at opacity:0 — never visible — so mobile
+  // browsers can defer decoding its background-image until the exact
+  // moment the crossfade makes it visible. That decode (~600KB) can take
+  // a frame or two, which showed up as a mobile-only gray flash the size
+  // of .envelope-photo right at tap. Force-decoding it now, during the
+  // several idle seconds before anyone can click, means the texture is
+  // already resident by the time the transition runs.
+  (function(){
+    var img = new Image();
+    img.src = 'images/envelope-open-shadowed.png';
+    if (img.decode) { img.decode().catch(function(){}); }
+  })();
+
   // iOS Safari (and others) restore the old scroll offset on reload even
   // though the envelope covers the page; force it back to the top so the
   // page never opens mid-scroll.
