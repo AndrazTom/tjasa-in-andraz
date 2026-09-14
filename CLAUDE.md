@@ -17,37 +17,26 @@ offset as when this was written — don't "fix" the offset without checking.
 ## Structure
 
 ```
-index.html                      the whole site (styles + markup + script inline)
+index.html              the whole site (styles + markup + script inline)
 images/
-  vila-watercolour.png          aerial watercolour painting of Vila Vipolže,
-                                used full-bleed behind the closed envelope
-  vila-sketch.jpg               architectural elevation drawing, recolored
-                                as a duotone (paper/ink) to match the
-                                palette; used for the villa band on the
-                                main page
-  envelope-closed.png           real cream envelope photos (AI-generated,
-  envelope-open.png             background already removed), cropped/
-                                scaled/aligned onto a shared canvas so the
-                                envelope's body sits at the same spot in
-                                both — source material, not referenced by
-                                index.html directly, see
-                                tools/prep_envelope_photos.py
-  envelope-closed-shadowed.png  the two above, with a drop-shadow baked in
-  envelope-open-shadowed.png    (padded canvas) — these are what
-                                index.html actually renders, see
-                                tools/bake_shadows.py
-  seal.png                      real photographed wax seal (sage wax, gold
-                                "T&A" monogram) — source material only
-  seal-shadowed.png             seal.png with its drop-shadow baked in —
-                                what index.html actually renders
-tools/                          gitignored — kept locally, not tracked/pushed
-  prep_envelope_photos.py       cuts out + aligns the raw envelope photos
-                                into envelope-closed/open.png, see below
-  bake_shadows.py               generates every *-shadowed.png above from
-                                its plain source, see below
-  build_artifact.py             generates the Claude Artifact build from
-                                index.html
-inspiration/                    reference material (not deployed, gitignored)
+  vila-watercolour.png   aerial watercolour painting of Vila Vipolže, used
+                          full-bleed behind the closed envelope
+  vila-sketch.jpg        architectural elevation drawing, recolored as a
+                          duotone (paper/ink) to match the palette; used
+                          for the villa band on the main page
+  envelope-closed.png    real cream envelope photos (AI-generated,
+  envelope-open.png      background already removed), cropped/scaled/
+                          aligned onto a shared canvas so the envelope's
+                          body sits at the same spot in both — see
+                          tools/prep_envelope_photos.py
+  seal.png               real photographed wax seal (sage wax, gold "T&A"
+                          monogram), resized down from the source photo
+tools/                   gitignored — kept locally, not tracked/pushed
+  prep_envelope_photos.py cuts out + aligns the raw envelope photos into
+                          envelope-closed/open.png, see below
+  build_artifact.py       generates the Claude Artifact build from
+                          index.html
+inspiration/             reference material (not deployed, gitignored)
 ```
 
 `tools/prep_envelope_photos.py` cuts out + aligns a pair of envelope photos
@@ -56,14 +45,21 @@ same body width, and places them on a shared canvas anchored to the same
 bottom-center point, so a closed/open crossfade doesn't jump. Re-run it
 locally whenever the *source* envelope photos change.
 
-`tools/bake_shadows.py` regenerates `envelope-closed/open-shadowed.png` and
-`seal-shadowed.png` from their plain sources — see the script itself for
-why the shadow is baked into a padded image rather than a live CSS
-`filter:drop-shadow`. Re-run it whenever the plain source photos change,
-or when the shadow recipe (offset/blur/color/opacity, at the top of the
-script) changes. If you change its `PAD` values, the CSS in `index.html`
-that depends on them (`.envelope-photo`'s `inset` percentages,
-`.envelope-seal`'s width/height) needs updating too.
+The envelope's and seal's drop-shadows are a **live** CSS
+`filter:drop-shadow`, not baked into the images (an earlier version baked
+them in, and there was a script for it — both are gone now, see the
+`.envelope-photo`/`.envelope-seal` comments in `index.html` for why the
+live version doesn't hit the clipping bug that made baking seem necessary
+in the first place: it wasn't about live-vs-baked, it was that the
+envelope/seal PNGs fit their own canvas edge-to-edge with ~0 margin, and
+the box the filter renders into needs room around the visible content for
+the blur+offset to spread into. Fixed by making the CSS box itself larger
+than the photo (negative `inset`) and shrinking the photo back down within
+it (`background-size` < 100%), leaving transparent margin in the box for
+the filter — no separate baking step needed. If you resize/replace
+`envelope-closed/open.png` or `seal.png` with a source that has a
+meaningfully different content-to-canvas margin, re-check the `inset`/
+`background-size` percentages in `index.html` still leave enough room.
 
 `index.html` is the source of truth. It's a normal standalone document
 (`<!DOCTYPE html>`, `<head>` with viewport meta, `<body>`) because it's
@@ -102,8 +98,8 @@ served as-is by GitHub Pages — it does **not** assume any wrapping skeleton.
 
 - Palette: cream/paper background (`--paper: #f8f3e7`), sage green ink
   (`--ink: #647353`) for all text/borders/outlines, gold reserved for the
-  wax seal (a real photographed seal, `images/seal-shadowed.png` — sage
-  wax with a gold-embossed monogram — not a UI accent).
+  wax seal (a real photographed seal, `images/seal.png` — sage wax with a
+  gold-embossed monogram — not a UI accent).
 - Fonts: Google Fonts — Cormorant Garamond (body), Cormorant SC (small
   caps labels/dates), Pinyon Script (the ornate cursive used for the
   "Save"/"Date" headline and the envelope's sender line — chosen to match
@@ -125,10 +121,10 @@ Sequence, roughly (every transition/animation in `index.html` has a short
 inline comment like `/* flap opens */` or `/* 4: date */` — read those
 before guessing at timings):
 
-1. Page loads on a closed envelope (`envelope-closed-shadowed.png`, see
-   above — plus the wax seal, `seal-shadowed.png`, overlaid on top) sitting
-   over the villa watercolour, full-bleed, with a dark top/bottom veil
-   behind the sender text/hint for legibility. `body.locked` blocks
+1. Page loads on a closed envelope (`envelope-closed.png`, see above —
+   plus the wax seal, `seal.png`, overlaid on top) sitting over the villa
+   watercolour, full-bleed, with a dark top/bottom veil behind the sender
+   text/hint for legibility. `body.locked` blocks
    scrolling.
 2. Click → the closed photo crossfades to the open one in place (~1.4s,
    there's no separate flap layer to rotate — the two photos are pre-aligned
