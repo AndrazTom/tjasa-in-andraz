@@ -22,19 +22,15 @@
     background:var(--page-bg);
     color:var(--ink);
     font-family:'Cormorant Garamond', serif;
-    display:flex;
-    justify-content:center;
-    padding-block:32px;
   }
 
   .stage{
     width:100%;
     max-width:480px;
-    min-height:calc(100dvh - 64px);
+    min-height:100dvh;
+    margin:0 auto;
     position:relative;
-    border-radius:18px;
     overflow:hidden;
-    box-shadow:0 30px 70px -25px rgba(20,20,10,0.45);
     isolation:isolate;
   }
 
@@ -142,11 +138,11 @@
   }
 
   .villa-space{
-    height:210px;
+    height:0;
   }
 
   .wedding-date{
-    margin-top:0;
+    margin-top:24px;
     font-family:'Cormorant SC', serif;
     font-size:24px;
     letter-spacing:6px;
