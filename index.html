@@ -9,12 +9,12 @@
 
   :root{
     --paper:#f8f3e7;
-    --card:rgba(95,115,80,0.07);
-    --card-border:rgba(95,115,80,0.3);
-    --ink:#5f7350;
-    --ink-soft:rgba(95,115,80,0.85);
-    --ink-faint:rgba(95,115,80,0.7);
-    --line-strong:rgba(95,115,80,0.45);
+    --card:rgba(124,143,107,0.08);
+    --card-border:rgba(124,143,107,0.32);
+    --ink:#7c8f6b;
+    --ink-soft:rgba(124,143,107,0.85);
+    --ink-faint:rgba(124,143,107,0.7);
+    --line-strong:rgba(124,143,107,0.45);
   }
 
   *{box-sizing:border-box;}
@@ -48,14 +48,14 @@
     width:74px;
     height:74px;
     border-radius:50%;
-    background:radial-gradient(circle at 32% 28%, #dbe4c9, #b7c79c 45%, #8fa276 100%);
+    background:radial-gradient(circle at 30% 24%, #f4f7ee 0%, #d3ddc2 22%, #aebd97 50%, #8fa17c 78%, #7c8f6b 100%);
     box-shadow:0 6px 14px rgba(95,115,80,0.28), inset 0 0 0 2px rgba(255,255,255,0.4);
     display:flex;
     align-items:center;
     justify-content:center;
     font-family:'Cormorant SC', serif;
     font-size:22px;
-    color:#3b4a2e;
+    color:#48583c;
     letter-spacing:1px;
     margin-top:44px;
     animation:fadeDown 1s ease both;
@@ -215,7 +215,7 @@
     text-align:left;
     transition:background 0.2s ease;
   }
-  .loc-card:active{ background:rgba(95,115,80,0.14); }
+  .loc-card:active{ background:rgba(124,143,107,0.16); }
   .loc-icon{
     flex:none;
     width:20px;
@@ -386,14 +386,14 @@
     transform:translate(-50%,-50%);
     width:56px; height:56px;
     border-radius:50%;
-    background:radial-gradient(circle at 32% 28%, #dbe4c9, #b7c79c 45%, #8fa276 100%);
+    background:radial-gradient(circle at 30% 24%, #f4f7ee 0%, #d3ddc2 22%, #aebd97 50%, #8fa17c 78%, #7c8f6b 100%);
     box-shadow:0 6px 14px rgba(95,115,80,0.32), inset 0 0 0 2px rgba(255,255,255,0.4);
     display:flex;
     align-items:center;
     justify-content:center;
     font-family:'Cormorant SC', serif;
     font-size:17px;
-    color:#3b4a2e;
+    color:#48583c;
     letter-spacing:1px;
     z-index:3;
     transition:opacity 0.35s ease, transform 0.35s ease;
@@ -435,8 +435,8 @@
             <stop offset="100%" stop-color="#eee0c2"/>
           </linearGradient>
         </defs>
-        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#5f7350" stroke-width="1.5"/>
-        <path d="M10,193 L150,116 L290,193" fill="none" stroke="#5f7350" stroke-width="1" opacity="0.35"/>
+        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#7c8f6b" stroke-width="1.5"/>
+        <path d="M10,193 L150,116 L290,193" fill="none" stroke="#7c8f6b" stroke-width="1" opacity="0.35"/>
       </svg>
     </span>
     <span class="envelope-flap-wrap">
@@ -448,7 +448,7 @@
           </linearGradient>
         </defs>
         <polygon points="3,4 297,4 150,121" fill="url(#flapGrad)"/>
-        <path d="M3,4 L150,121 L297,4" fill="none" stroke="#5f7350" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M3,4 L150,121 L297,4" fill="none" stroke="#7c8f6b" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
     </span>
     <span class="envelope-seal">T&amp;A</span>
