@@ -288,9 +288,164 @@
     .date-word{ font-size:64px; }
     .names{ font-size:23px; letter-spacing:4px; }
   }
+
+  /* Envelope intro */
+  body.locked{ overflow:hidden; height:100dvh; }
+
+  .envelope-cover{
+    position:fixed;
+    inset:0;
+    z-index:999;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:26px;
+    background:var(--forest-1);
+    transition:opacity 0.7s ease 1.6s;
+  }
+  .envelope-cover.opened{
+    opacity:0;
+    pointer-events:none;
+  }
+
+  .reveal-photo, .reveal-sketch-bg, .reveal-sketch, .reveal-overlay{
+    position:absolute;
+    inset:0;
+    z-index:0;
+  }
+  .reveal-photo{
+    background-image:url('images/vila-vipolze.jpg');
+    background-size:cover;
+    background-position:47.2% 55%;
+  }
+  /* Solid backdrop behind the sketch image, kept separate from .reveal-sketch
+     so the invert() filter below doesn't also invert a background-color */
+  .reveal-sketch-bg{
+    z-index:1;
+    background:var(--forest-1);
+    transition:opacity 1.1s ease;
+  }
+  .reveal-sketch{
+    z-index:1;
+    background-image:url('images/vila-sketch.jpg');
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+    filter:invert(1) brightness(1.1) sepia(0.2) hue-rotate(50deg) saturate(1.4);
+    transition:opacity 1.1s ease, transform 1.3s ease;
+  }
+  .reveal-overlay{
+    z-index:2;
+    background:radial-gradient(circle at 50% 40%, rgba(28,36,23,0.35), rgba(18,23,15,0.78) 72%);
+  }
+  .envelope-cover.opened .reveal-sketch-bg{
+    opacity:0;
+    transition-delay:0.25s;
+  }
+  .envelope-cover.opened .reveal-sketch{
+    opacity:0;
+    transform:scale(1.06);
+    transition-delay:0.25s;
+  }
+
+  .envelope-btn{
+    all:unset;
+    display:block;
+    cursor:pointer;
+    position:relative;
+    z-index:3;
+    width:min(320px, 76vw);
+    aspect-ratio:3/2;
+    perspective:1200px;
+  }
+
+  .envelope-body{
+    position:absolute;
+    inset:0;
+    border-radius:4px;
+    background:linear-gradient(155deg, #a7b183, #8b9770 55%, #737d59);
+    box-shadow:0 25px 50px -18px rgba(0,0,0,0.65);
+    overflow:hidden;
+  }
+  .envelope-body::before{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:64%;
+    background:
+      linear-gradient(to bottom right, transparent 49.5%, rgba(0,0,0,0.10) 50.5%) top left / 51% 100% no-repeat,
+      linear-gradient(to bottom left, transparent 49.5%, rgba(0,0,0,0.10) 50.5%) top right / 51% 100% no-repeat;
+  }
+
+  .envelope-flap{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:60%;
+    clip-path:polygon(0 0, 100% 0, 50% 100%);
+    background:linear-gradient(155deg, #bcc599, #9aa679);
+    transform-origin:top center;
+    transition:transform 0.9s cubic-bezier(.6,0,.3,1);
+    box-shadow:0 8px 16px rgba(0,0,0,0.18);
+    z-index:2;
+  }
+  .envelope-cover.opened .envelope-flap{
+    transform:rotateX(-170deg);
+  }
+
+  .envelope-seal{
+    position:absolute;
+    top:56%; left:50%;
+    transform:translate(-50%,-50%);
+    width:60px; height:60px;
+    border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, #f3dfa2, #c9a457 45%, #8a6c2e 100%);
+    box-shadow:0 6px 14px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(255,255,255,0.25);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Cormorant SC', serif;
+    font-size:18px;
+    color:#2b2109;
+    letter-spacing:1px;
+    z-index:3;
+    transition:opacity 0.35s ease, transform 0.35s ease;
+  }
+  .envelope-cover.opened .envelope-seal{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(0.5);
+  }
+
+  .envelope-hint{
+    position:relative;
+    z-index:3;
+    font-family:'Cormorant SC', serif;
+    font-size:12px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:rgba(250,247,239,0.7);
+    transition:opacity 0.4s ease;
+  }
+  .envelope-cover.opened .envelope-hint{
+    opacity:0;
+  }
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div class="envelope-cover" id="envelopeCover">
+  <div class="reveal-photo"></div>
+  <div class="reveal-sketch-bg"></div>
+  <div class="reveal-sketch"></div>
+  <div class="reveal-overlay"></div>
+  <button class="envelope-btn" id="envelopeBtn" aria-label="Odpri vabilo">
+    <span class="envelope-body"></span>
+    <span class="envelope-flap"></span>
+    <span class="envelope-seal">T&amp;A</span>
+  </button>
+  <div class="envelope-hint">Tapni, da odpreš</div>
+</div>
 
 <div class="page">
   <div class="section top">
@@ -387,6 +542,20 @@
     }
     tick();
     setInterval(tick, 1000);
+  })();
+
+  (function(){
+    var cover = document.getElementById('envelopeCover');
+    var btn = document.getElementById('envelopeBtn');
+    function openEnvelope(){
+      if (cover.classList.contains('opened')) return;
+      cover.classList.add('opened');
+      setTimeout(function(){
+        document.body.classList.remove('locked');
+        cover.style.display = 'none';
+      }, 2350);
+    }
+    btn.addEventListener('click', openEnvelope);
   })();
 </script>
 </body>
