@@ -379,41 +379,43 @@
     opacity:0;
   }
 
-  /* Real envelope photos: closed/open crossfade in place of a flap animation.
-     Both PNGs are pre-aligned (see tools/) so the envelope body sits at the
-     same spot in both — only the flap area visibly changes during the fade.
+  /* Real envelope photos. Both PNGs are pre-aligned (see tools/) so the
+     envelope body sits at the same spot in both, and the closed silhouette
+     is (within 2 stray antialiasing pixels, checked directly against the
+     source PNGs) entirely contained within the open one — opening the flap
+     only ever adds area above, never removes opaque area below. So this
+     is no longer a true crossfade: envelope-photo-closed sits underneath,
+     fully opaque, and never animates; envelope-photo-open simply fades in
+     on top of it and fully covers it once visible. A real bidirectional
+     crossfade (both layers animating opacity at once) was the actual
+     source of the jank/dark-flash on mobile — two semi-transparent
+     GPU-composited layers overlapping mid-transition, made worse by both
+     images having soft blurred-shadow edges that visibly darken further
+     wherever they overlap. One animating layer over one static layer
+     sidesteps that entirely.
 
      The drop-shadow is baked directly into these images (envelope-closed/
-     open-shadowed.png, see tools/) rather than a live CSS filter:drop-shadow
-     or a separate crossfading shadow layer. Two reasons: (1) the envelope
-     PNG fits its box edge-to-edge with ~0 margin, so a live drop-shadow's
-     blur+offset had nowhere to spread and got clipped into a flat
-     rectangular "border" (same fix as the villa-sketch duotone, see
-     CLAUDE.md); (2) an earlier version kept the shadow as its own crossfading
-     layer (4 animating alpha layers total: 2 shadows + 2 photos), which was
-     too much simultaneous alpha compositing for mobile GPUs — jank, plus a
-     flash of the (dark) shadow's own silhouette during the transition.
-     Fusing shadow+photo into one texture per state halves that back down
-     to 2 layers. */
+     open-shadowed.png, see tools/) rather than a live CSS filter:drop-shadow.
+     The envelope PNG fits its box edge-to-edge with ~0 margin, so a live
+     drop-shadow's blur+offset had nowhere to spread and got clipped into a
+     flat rectangular "border" (same fix as the villa-sketch duotone, see
+     CLAUDE.md). */
   .envelope-photo{
     position:absolute;
     inset:-14.1509% -17.1429%; /* padding baked into the shadowed PNGs (120px on a 700x848 source), expressed as %/box */
     background-size:contain;
     background-position:center;
     background-repeat:no-repeat;
-    transition:opacity 1.4s ease; /* flap opens (crossfade), slowed */
   }
   .envelope-photo-closed{
     background-image:url('images/envelope-closed-shadowed.png');
-    z-index:2;
+    z-index:1;
   }
   .envelope-photo-open{
     background-image:url('images/envelope-open-shadowed.png');
-    z-index:1;
+    z-index:2;
     opacity:0;
-  }
-  .envelope-cover.opened .envelope-photo-closed{
-    opacity:0;
+    transition:opacity 1.4s ease; /* flap opens (fade-in over the static closed layer), slowed */
   }
   .envelope-cover.opened .envelope-photo-open{
     opacity:1;
