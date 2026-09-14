@@ -310,7 +310,7 @@
     justify-content:center;
     gap:20px;
     background:var(--paper);
-    transition:opacity 3.4s ease 2.0s; /* cover to page, after envelope gone */
+    transition:opacity 3.4s ease 2.5s; /* cover to page, after envelope gone — extra pause added so it doesn't start the instant the envelope finishes fading */
   }
   .envelope-cover.opened{
     opacity:0;
@@ -626,26 +626,22 @@
      and huge on another — not a calibration error, a missing degree of
      freedom.
 
-     Instead: measure where .villa-hero's own villa lands on screen (fully
-     deterministic — that band always shows the whole sketch uncropped),
-     then solve for a background-size/-position pair — chosen ourselves,
-     not the `cover` keyword — that (a) places the watercolour's villa
-     exactly on that point on BOTH axes, (b) sizes it to match the sketch
-     villa's on-screen width, and (c) still fully covers the viewport with
-     no gaps.
+     Instead: measure where .villa-hero's own villa lands on screen (its
+     position is fully deterministic — that band always shows the whole
+     sketch uncropped), then solve for a background-size/-position pair —
+     chosen ourselves, not the `cover` keyword — that (a) places the
+     watercolour's villa exactly on that point on both axes and (b) still
+     fully covers the viewport with no gaps, with a bit of deliberate
+     slack (MARGIN_RELAX below) so hitting (a) doesn't force so much zoom
+     that the villa ends up edge-to-edge with no breathing room.
 
-     (b) and (c) can conflict, and when they do, (c) wins — a gap at the
-     edge of the screen would look broken, a size mismatch just looks
-     slightly less perfect. In practice they conflict on most ordinary
-     tall phone screens: covering a tall narrow viewport with this square
-     image already demands more zoom than matching the villa's size alone
-     would need (the crop has to reach further into a small watercolour
-     painted on a big square canvas), so on most phones the watercolour
-     villa ends up a bit larger than the sketch's, floored by whatever
-     zoom `cover` itself would demand. Wider/shorter viewports have more
-     slack and hit the size match exactly. There's no way to satisfy both
-     everywhere at once without changing the source image itself (e.g. a
-     version cropped tighter around the villa to begin with).
+     Then: .villa-hero itself is resized (its width, in px, overriding the
+     CSS 80%) so the *sketch's* villa ends up the same on-screen width as
+     the watercolour's villa just came out to. Sizing runs this direction
+     — sketch adapting to watercolour, not the other way — because the
+     watercolour's size is the one under real constraints (must cover the
+     viewport, needs room for position + margin); .villa-hero has none of
+     that, it's free to be whatever width makes the two match.
 
      CX_S/CY_S/WIDTH_S and CX_W/CY_W/WIDTH_W are each image's villa center
      and on-screen width as a fraction of its own canvas — roof-ridge-to-
@@ -663,13 +659,16 @@
     if (!hero || !photo) return;
 
     function alignVilla(){
+      // Read the hero's rect BEFORE this function resizes it further down
+      // — its target position (center) doesn't move when its width does
+      // (margin:0 auto keeps it centered either way), so this stays valid
+      // even after the resize at the end of this function.
       var heroRect = hero.getBoundingClientRect();
       var vw = window.innerWidth, vh = window.innerHeight;
       var targetX = heroRect.left + heroRect.width * CX_S;
       var targetY = heroRect.top + heroRect.height * CY_S;
-      var targetWidth = heroRect.width * WIDTH_S;
 
-      var baseCover = Math.max(vw / IMG_W, vh / IMG_H); // bare minimum to fully cover the viewport, no position/size guarantee
+      var baseCover = Math.max(vw / IMG_W, vh / IMG_H); // bare minimum to fully cover the viewport, no position guarantee
       // Smallest scale that both covers the viewport AND leaves enough
       // room on every edge to place (CX_W,CY_W) exactly at (targetX,targetY).
       var minScale = Math.max(
@@ -679,23 +678,18 @@
         targetY / (CY_W * IMG_H),                     // top edge covered
         (vh - targetY) / (IMG_H * (1 - CY_W))         // bottom edge covered
       );
-      // The scale that would make the watercolour villa the same on-screen
-      // width as the sketch villa — used whenever it doesn't violate the
-      // coverage floor above (see comment above this function).
-      var sizeMatchScale = targetWidth / (WIDTH_W * IMG_W);
-      var idealScale = Math.max(minScale, sizeMatchScale);
 
-      // idealScale nails the villa's position/size exactly, but getting
-      // there needs more zoom than plain center-cropping (baseCover) would
-      // use — on most ordinary tall phones that extra zoom pushes the villa
-      // close enough to the screen edges to look cramped, no margin at all.
-      // MARGIN_RELAX trades a little position/size precision back for
-      // breathing room by blending idealScale toward baseCover; 0 is exact
+      // minScale nails the villa's position exactly, but getting there
+      // needs more zoom than plain center-cropping (baseCover) would use —
+      // on most ordinary tall phones that extra zoom pushes the villa
+      // close enough to the screen edges to look cramped, no margin at
+      // all. MARGIN_RELAX trades a little position precision back for
+      // breathing room by blending minScale toward baseCover; 0 is exact
       // (no margin), 1 is plain centered cover (max margin, no alignment).
       // baseCover is still always the floor, so the image never fails to
       // cover the viewport regardless of this value.
       var MARGIN_RELAX = 0.3;
-      var scale = baseCover + (idealScale - baseCover) * (1 - MARGIN_RELAX);
+      var scale = baseCover + (minScale - baseCover) * (1 - MARGIN_RELAX);
 
       var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
       var offsetX = targetX - CX_W * scaledW;
@@ -709,6 +703,17 @@
 
       photo.style.backgroundSize = scaledW.toFixed(2) + 'px ' + scaledH.toFixed(2) + 'px';
       photo.style.backgroundPosition = offsetX.toFixed(2) + 'px ' + offsetY.toFixed(2) + 'px';
+
+      // Resize .villa-hero so the sketch's villa comes out the same
+      // on-screen width as the watercolour villa above. Never shrink it
+      // below its CSS default (80% of .page) — only grow it — and cap it
+      // short of the full page width so it still reads as a "band" with
+      // its own side margin rather than edge-to-edge.
+      var watercolourVillaWidth = WIDTH_W * scaledW;
+      var pageWidth = hero.parentElement.getBoundingClientRect().width;
+      var wantedHeroWidth = watercolourVillaWidth / WIDTH_S;
+      var heroWidth = Math.max(pageWidth * 0.8, Math.min(pageWidth * 0.94, wantedHeroWidth));
+      hero.style.width = heroWidth.toFixed(2) + 'px';
     }
 
     alignVilla(); // best-effort immediately, using fallback-font metrics
@@ -754,7 +759,7 @@
         document.body.classList.remove('locked');
         window.scrollTo(0, 0);
         cover.style.display = 'none';
-      }, 5400); // matches cover fade: 2.0s delay + 3.4s fade
+      }, 5900); // matches cover fade: 2.5s delay + 3.4s fade
     }
     btn.addEventListener('click', openEnvelope);
   })();
