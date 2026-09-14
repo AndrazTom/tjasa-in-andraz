@@ -48,7 +48,7 @@
     height:auto;
     opacity:0.85;
     margin-top:44px;
-    animation:fadeIn 1.3s ease both 4.8s; /* 1: sprig */
+    animation:fadeIn 1.3s ease both 5.5s; /* 1: sprig */
   }
 
   .headline{
@@ -57,7 +57,7 @@
     align-items:baseline;
     justify-content:center;
     gap:10px;
-    animation:fadeIn 1.3s ease both 5.15s; /* 2: headline */
+    animation:fadeIn 1.3s ease both 5.85s; /* 2: headline */
   }
   .save{
     font-family:'Pinyon Script', cursive;
@@ -85,15 +85,15 @@
     margin:22px 0 16px;
     opacity:0;
   }
-  .rule-1{ animation:fadeIn 1.2s ease both 5.5s; } /* 3: rule above date */
-  .rule-2{ animation:fadeIn 1.2s ease both 6.25s; } /* 6: rule above names */
+  .rule-1{ animation:fadeIn 1.2s ease both 6.2s; } /* 3: rule above date */
+  .rule-2{ animation:fadeIn 1.2s ease both 6.95s; } /* 6: rule above names */
 
   .wedding-date{
     font-family:'Cormorant SC', serif;
     font-size:28px;
     letter-spacing:6px;
     color:var(--ink);
-    animation:fadeIn 1.2s ease both 5.85s; /* 4: date */
+    animation:fadeIn 1.2s ease both 6.55s; /* 4: date */
   }
 
   .venue-line{
@@ -101,7 +101,7 @@
     font-style:italic;
     font-size:19px;
     color:var(--ink-soft);
-    animation:fadeIn 1.2s ease both 6.0s; /* 5: venue */
+    animation:fadeIn 1.2s ease both 6.7s; /* 5: venue */
   }
 
   .names{
@@ -109,7 +109,7 @@
     font-size:27px;
     letter-spacing:5px;
     color:var(--ink);
-    animation:fadeIn 1.2s ease both 6.6s; /* 7: names */
+    animation:fadeIn 1.2s ease both 7.3s; /* 7: names */
   }
   .amp{
     font-family:'Cormorant Garamond', serif;
@@ -118,7 +118,7 @@
     color:var(--ink);
     margin:6px 0;
     letter-spacing:1px;
-    animation:fadeIn 1.2s ease both 6.6s; /* 7: "in" */
+    animation:fadeIn 1.2s ease both 7.3s; /* 7: "in" */
   }
 
   .top{
@@ -162,7 +162,7 @@
   .countdown{
     display:flex;
     gap:14px;
-    animation:fadeIn 1.2s ease both 6.95s; /* 8: countdown */
+    animation:fadeIn 1.2s ease both 7.65s; /* 8: countdown */
   }
   .cd-unit{
     display:flex;
@@ -200,7 +200,7 @@
     display:flex;
     flex-direction:column;
     gap:10px;
-    animation:fadeIn 1.2s ease both 7.3s; /* 9: locations */
+    animation:fadeIn 1.2s ease both 8.0s; /* 9: locations */
   }
   .loc-card{
     display:flex;
@@ -247,7 +247,7 @@
 
   .contact{
     margin-top:26px;
-    animation:fadeIn 1.2s ease both 7.65s; /* 10: contact */
+    animation:fadeIn 1.2s ease both 8.35s; /* 10: contact */
   }
   .contact-kicker{
     font-family:'Cormorant SC', serif;
@@ -274,7 +274,7 @@
 
   .footer{
     margin-top:36px;
-    animation:fadeIn 1.2s ease both 8.0s; /* 11: footer */
+    animation:fadeIn 1.2s ease both 8.7s; /* 11: footer */
   }
   .footer-note{
     font-size:12px;
@@ -309,7 +309,7 @@
     justify-content:center;
     gap:20px;
     background:var(--paper);
-    transition:opacity 3.4s ease 1.3s; /* cover to page, after envelope gone */
+    transition:opacity 3.4s ease 2.0s; /* cover to page, after envelope gone */
   }
   .envelope-cover.opened{
     opacity:0;
@@ -324,7 +324,7 @@
   .reveal-photo{
     background-image:url('images/vila-watercolour.png');
     background-size:cover;
-    background-position:43.8% 47%;
+    background-position:50% 47%; /* keeps the full villa in frame across ~1.78-2.22 mobile aspect ratios (cover crop) */
     transform:scale(1.08);
     transition:transform 1.8s cubic-bezier(.2,.7,.3,1); /* photo zoom-settle */
   }
@@ -333,7 +333,9 @@
   }
   .reveal-overlay{
     z-index:1;
-    background:radial-gradient(circle at 50% 42%, rgba(248,243,231,0.12), rgba(248,243,231,0.55) 100%);
+    background:
+      linear-gradient(to bottom, rgba(18,20,10,0.58) 0%, rgba(18,20,10,0) 34%, rgba(18,20,10,0) 66%, rgba(18,20,10,0.55) 100%),
+      radial-gradient(circle at 50% 42%, rgba(248,243,231,0.08), rgba(248,243,231,0.3) 100%);
   }
 
   .envelope-sender{
@@ -341,7 +343,7 @@
     z-index:3;
     text-align:center;
     color:#fff;
-    transition:opacity 0.6s ease 0.7s; /* sender fades, after flap */
+    transition:opacity 0.6s ease 1.4s; /* sender fades, after flap */
   }
   .envelope-cover.opened .envelope-sender{
     opacity:0;
@@ -349,18 +351,18 @@
   .envelope-sender .sender-names{
     display:block;
     font-family:'Pinyon Script', cursive;
-    font-size:44px;
-    line-height:1;`
-    text-shadow:0 2px 10px rgba(0,0,0,0.4);
+    font-size:52px;
+    line-height:1;
+    text-shadow:0 1px 3px rgba(0,0,0,0.65), 0 2px 14px rgba(0,0,0,0.55);
   }
   .envelope-sender .sender-note{
     display:block;
     margin-top:8px;
     font-family:'Cormorant SC', serif;
-    font-size:12px;
+    font-size:14px;
     letter-spacing:3px;
     text-transform:uppercase;
-    text-shadow:0 1px 8px rgba(0,0,0,0.35);
+    text-shadow:0 1px 2px rgba(0,0,0,0.6), 0 1px 10px rgba(0,0,0,0.5);
   }
 
   .envelope-btn{
@@ -369,44 +371,52 @@
     cursor:pointer;
     position:relative;
     z-index:3;
-    width:min(300px, 72vw);
-    aspect-ratio:3/2;
-    perspective:1400px;
+    width:min(280px, 68vw);
+    aspect-ratio:175/212; /* matches the envelope-open/closed.png canvas (700x848) */
     filter:drop-shadow(0 22px 30px rgba(30,40,25,0.3));
-    transition:opacity 0.6s ease 0.7s; /* envelope fades, after flap */
+    transition:opacity 0.6s ease 1.4s; /* envelope fades, after flap */
   }
   .envelope-cover.opened .envelope-btn{
     opacity:0;
   }
 
-  .envelope-body-wrap, .envelope-flap-wrap{
+  /* Real envelope photos: closed/open crossfade in place of a flap animation.
+     Both PNGs are pre-aligned (see tools/) so the envelope body sits at the
+     same spot in both — only the flap area visibly changes during the fade. */
+  .envelope-photo{
     position:absolute;
     inset:0;
-    display:block;
+    background-size:contain;
+    background-position:bottom center;
+    background-repeat:no-repeat;
+    transition:opacity 1.4s ease; /* flap opens (crossfade), slowed */
   }
-  .envelope-body-wrap svg, .envelope-flap-wrap svg{
-    width:100%;
-    height:100%;
-    display:block;
-    overflow:visible;
-  }
-
-  .envelope-flap-wrap{
-    height:62%;
-    transform-origin:top center;
-    transition:transform 0.7s cubic-bezier(.62,0,.3,1); /* flap opens */
+  .envelope-photo-closed{
+    background-image:url('images/envelope-closed.png');
     z-index:2;
   }
-  .envelope-cover.opened .envelope-flap-wrap{
-    transform:rotateX(-172deg);
+  .envelope-photo-open{
+    background-image:url('images/envelope-open.png');
+    z-index:1;
+    opacity:0;
+  }
+  .envelope-cover.opened .envelope-photo-closed{
+    opacity:0;
+  }
+  .envelope-cover.opened .envelope-photo-open{
+    opacity:1;
   }
 
   .envelope-seal{
     position:absolute;
-    top:54%; left:50%;
+    top:66%; left:50%;
     transform:translate(-50%,-50%);
-    width:68px; height:68px;
+    width:78px; height:78px;
     z-index:3;
+    background-image:url('images/seal.png');
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
     filter:drop-shadow(0 6px 10px rgba(60,45,15,0.45));
     transition:opacity 0.6s ease, transform 0.6s ease; /* seal fades */
   }
@@ -414,36 +424,17 @@
     opacity:0;
     transform:translate(-50%,-50%) scale(0.5);
   }
-  .seal-svg{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    display:block;
-  }
-  .seal-mono{
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-family:'Pinyon Script', cursive;
-    color:#3d2a10;
-    text-shadow:0 1px 0 rgba(255,235,190,0.5), 0 -1px 0 rgba(0,0,0,0.35);
-  }
-  .mono-letter{ font-size:32px; line-height:1; }
-  .mono-amp{ font-size:15px; align-self:flex-end; margin:0 -2px 7px; }
 
   .envelope-hint{
     position:relative;
     z-index:3;
     font-family:'Cormorant SC', serif;
-    font-size:12px;
+    font-size:14px;
     letter-spacing:3px;
     text-transform:uppercase;
     color:#fff;
-    text-shadow:0 1px 8px rgba(0,0,0,0.35);
-    transition:opacity 0.6s ease 0.7s; /* hint fades, after flap */
+    text-shadow:0 1px 2px rgba(0,0,0,0.6), 0 1px 10px rgba(0,0,0,0.5);
+    transition:opacity 0.6s ease 1.4s; /* hint fades, after flap */
   }
   .envelope-cover.opened .envelope-hint{
     opacity:0;
@@ -462,70 +453,9 @@
   </div>
 
   <button class="envelope-btn" id="envelopeBtn" aria-label="Odpri vabilo">
-    <span class="envelope-body-wrap">
-      <svg viewBox="0 0 300 200" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#fffdf8"/>
-            <stop offset="100%" stop-color="#eee0c2"/>
-          </linearGradient>
-          <filter id="paperGrain" x="-5%" y="-5%" width="110%" height="110%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="n"/>
-            <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0" result="g"/>
-            <feComposite in="g" in2="SourceGraphic" operator="in" result="gc"/>
-            <feBlend in="SourceGraphic" in2="gc" mode="multiply"/>
-          </filter>
-        </defs>
-        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#647353" stroke-width="1.5" filter="url(#paperGrain)"/>
-        <path d="M10,193 L150,116 L290,193" fill="none" stroke="#647353" stroke-width="1" opacity="0.35"/>
-      </svg>
-    </span>
-    <span class="envelope-flap-wrap">
-      <svg viewBox="0 0 300 124" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="flapGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#fffdf8"/>
-            <stop offset="100%" stop-color="#e7d8b8"/>
-          </linearGradient>
-        </defs>
-        <polygon points="3,4 297,4 150,121" fill="url(#flapGrad)" filter="url(#paperGrain)"/>
-        <path d="M150,106 C174,87 196,61 220,33" fill="none" stroke="#647353" stroke-width="1" opacity="0.2"/>
-        <circle cx="220" cy="33" r="2.2" fill="#647353" opacity="0.24"/>
-        <circle cx="202" cy="51" r="1.5" fill="#647353" opacity="0.22"/>
-        <circle cx="184" cy="69" r="1.5" fill="#647353" opacity="0.22"/>
-        <circle cx="236" cy="24" r="1.3" fill="#647353" opacity="0.2"/>
-        <path d="M3,4 L150,121 L297,4" fill="none" stroke="#647353" stroke-width="1.5" stroke-linejoin="round"/>
-      </svg>
-    </span>
-    <span class="envelope-seal" aria-hidden="true">
-      <svg class="seal-svg" viewBox="0 0 100 100">
-        <defs>
-          <radialGradient id="sealOuter" cx="38%" cy="30%" r="80%">
-            <stop offset="0%" stop-color="#fbeec2"/>
-            <stop offset="35%" stop-color="#e8c479"/>
-            <stop offset="65%" stop-color="#c69a45"/>
-            <stop offset="100%" stop-color="#87611f"/>
-          </radialGradient>
-          <radialGradient id="sealInner" cx="42%" cy="38%" r="70%">
-            <stop offset="0%" stop-color="#e9c983"/>
-            <stop offset="45%" stop-color="#c69a45"/>
-            <stop offset="80%" stop-color="#93701f"/>
-            <stop offset="100%" stop-color="#6e4d15"/>
-          </radialGradient>
-          <filter id="waxGrain" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="noise"/>
-            <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0" result="grain"/>
-            <feComposite in="grain" in2="SourceGraphic" operator="in" result="grainClip"/>
-            <feBlend in="SourceGraphic" in2="grainClip" mode="multiply"/>
-          </filter>
-        </defs>
-        <path d="M 50.00 10.00 C 56.17 10.00 62.58 14.71 68.50 17.96 C 74.42 21.21 82.26 24.16 85.51 29.50 C 88.76 34.84 87.71 43.00 88.00 50.00 C 88.29 57.00 90.32 65.87 87.24 71.50 C 84.16 77.13 75.71 80.69 69.50 83.77 C 63.29 86.86 56.25 90.43 50.00 90.00 C 43.75 89.57 38.06 84.34 32.00 81.18 C 25.94 78.01 16.96 76.20 13.63 71.00 C 10.29 65.80 11.86 56.92 12.00 50.00 C 12.14 43.08 11.24 34.84 14.49 29.50 C 17.74 24.16 25.58 21.21 31.50 17.96 C 37.42 14.71 43.83 10.00 50.00 10.00 Z"
-              fill="url(#sealOuter)" filter="url(#waxGrain)"/>
-        <circle cx="50" cy="50" r="31" fill="url(#sealInner)" filter="url(#waxGrain)"/>
-        <circle cx="50" cy="50" r="31" fill="none" stroke="#6e4d15" stroke-width="0.8" opacity="0.55"/>
-      </svg>
-      <span class="seal-mono"><span class="mono-letter">T</span><span class="mono-amp">&amp;</span><span class="mono-letter">A</span></span>
-    </span>
+    <span class="envelope-photo envelope-photo-closed"></span>
+    <span class="envelope-photo envelope-photo-open"></span>
+    <span class="envelope-seal" aria-hidden="true"></span>
   </button>
 
   <div class="envelope-hint">Klikni na kuverto</div>
@@ -646,7 +576,7 @@
         document.body.classList.remove('locked');
         window.scrollTo(0, 0);
         cover.style.display = 'none';
-      }, 4750); // matches cover fade: 1.3s delay + 3.4s fade
+      }, 5400); // matches cover fade: 2.0s delay + 3.4s fade
     }
     btn.addEventListener('click', openEnvelope);
   })();

@@ -1,7 +1,7 @@
 # Save the Date — Tjaša & Andraž
 
 A single-page animated save-the-date site. No build tools, no framework —
-one static `index.html` plus two images.
+one static `index.html` plus a handful of images.
 
 ## The wedding
 
@@ -21,17 +21,30 @@ index.html              the whole site (styles + markup + script inline)
 images/
   vila-watercolour.png   aerial watercolour painting of Vila Vipolže, used
                           full-bleed behind the closed envelope (replaced
-                          the real aerial photo below)
-  vila-vipolze.jpg       real aerial photo of Vila Vipolže (from brda.si);
-                          unused since the watercolour swap, kept in case
-                          we want it again
+                          the real aerial photo, which has been deleted)
   vila-sketch.jpg        architectural elevation drawing, recolored as a
                           duotone (paper/ink) to match the palette; still
                           used for the villa band on the main page
+  envelope-closed.png    real cream envelope photos (AI-generated,
+  envelope-open.png      background already removed), cropped/scaled/
+                          aligned onto a shared canvas so the envelope's
+                          body sits at the same spot in both — see
+                          tools/prep_envelope_photos.py (gitignored, kept
+                          locally) if these ever need reprocessing
+  seal.png               real photographed wax seal (sage wax, gold "T&A"
+                          monogram) — replaced the old SVG-drawn seal
 tools/
   build_artifact.py       generates the Claude Artifact build from index.html
 inspiration/             reference material (not deployed, gitignored)
 ```
+
+`tools/prep_envelope_photos.py` (gitignored — deliberately not tracked/pushed)
+cuts out + aligns a pair of envelope photos into the envelope-*.png files
+above: crops each to content, scales both to the same body width, and
+places them on a shared canvas anchored to the same bottom-center point,
+so a closed/open crossfade doesn't jump. Re-run it locally whenever the
+source envelope photos change; it still exists on disk even though git
+doesn't track it.
 
 `index.html` is the source of truth. It's a normal standalone document
 (`<!DOCTYPE html>`, `<head>` with viewport meta, `<body>`) because it's
@@ -69,14 +82,15 @@ served as-is by GitHub Pages — it does **not** assume any wrapping skeleton.
 ## Design
 
 - Palette: cream/paper background (`--paper: #f8f3e7`), sage green ink
-  (`--ink: #647353`) for all text/borders/outlines, gold only for the wax
-  seal's own gradient (it's meant to look like an actual wax seal, not a
-  UI accent).
+  (`--ink: #647353`) for all text/borders/outlines, gold reserved for the
+  wax seal (now a real photographed seal, `images/seal.png` — sage wax
+  with a gold-embossed monogram — not a UI accent).
 - Fonts: Google Fonts — Cormorant Garamond (body), Cormorant SC (small
   caps labels/dates), Pinyon Script (the ornate cursive used for the
-  "Save"/"Date" headline, the envelope's sender line, and the wax seal
-  monogram — chosen to match the swash calligraphy in the Etsy/Canva
-  inspiration video under `inspiration/`).
+  "Save"/"Date" headline and the envelope's sender line — chosen to match
+  the swash calligraphy in the Etsy/Canva inspiration video under
+  `inspiration/`; the wax seal's "T&A" monogram is baked into `seal.png`
+  itself, not set in this font).
 - The villa sketch (`images/vila-sketch.jpg`) is a duotone: original
   black-on-white line art remapped so black→ink color, white→paper color,
   baked into the image itself (not a CSS filter — an earlier invert+hue-
@@ -92,10 +106,14 @@ Sequence, roughly (every transition/animation in `index.html` has a short
 inline comment like `/* flap opens */` or `/* 4: date */` — read those
 before guessing at timings):
 
-1. Page loads on a closed envelope (SVG-drawn: cream paper gradient, gold
-   trim, gold wax seal) sitting over the villa watercolour, full-bleed,
-   with a soft light veil overlay. `body.locked` blocks scrolling.
-2. Click → the flap opens first (~0.7s), *then* the whole envelope +
+1. Page loads on a closed envelope (a real cream envelope photo, background
+   removed — see `envelope-closed.png` above — plus a real wax seal photo,
+   `seal.png`, overlaid on top) sitting over the villa watercolour,
+   full-bleed, with a dark top/bottom veil behind the sender text/hint for
+   legibility. `body.locked` blocks scrolling.
+2. Click → the closed photo crossfades to the open one in place (~1.4s,
+   there's no separate flap layer to rotate — the two photos are pre-aligned
+   so only the flap area visibly changes), *then* the whole envelope +
    sender line ("Tjaša in Andraž pošiljata pošto") + hint ("Klikni na
    kuverto") fade away together — sequential, not simultaneous.
 3. A slow crossfade (~3.4s) reveals the cream page underneath, which has
@@ -120,6 +138,10 @@ Tagged checkpoints on `main`, each with a GitHub Release:
 - `v2` — light/paper theme + SVG envelope with sketch→photo reveal
 - `v3` — envelope/page imagery swapped back, sequenced open animation,
   darker sage contrast pass, 3pm countdown
+- `v4` — real photographed envelope (closed/open crossfade) and wax seal
+  replace the SVG-drawn versions, watercolour painting replaces the real
+  aerial photo behind the envelope, Pinyon Script headline/sender text,
+  slower open animation, darker text-legibility veil on the intro
 
 Tag before any major redesign so it's easy to roll back:
 `git tag -a vN -m "..." && git push origin vN && gh release create vN ...`
@@ -137,20 +159,28 @@ Tag before any major redesign so it's easy to roll back:
   in an actual browser, not just via screenshots.
 
 ## Changes requested (mark a change as completed when completed)
-- [x] Envelope needs to have texture. Like a picture of real envelope. How to deal with that? Lmk what you need.
-  → No licensed photo was available, so this is done procedurally instead:
-  a `feTurbulence`-based SVG grain filter (`#paperGrain`) is applied to the
-  envelope body and flap for a paper-like texture, plus a faint embossed
-  floral sprig (reusing the page's own sprig motif) on the flap next to the
-  seal, echoing the inspiration video's embossed envelope.
-- [x] New initials, we want initials like in inspiration (the canva website). Like same font. Tjasa in Andraz in that special font along. Same font for save the date.
-  → Added Pinyon Script (Google Fonts) to match the inspiration video's
-  swash script; used for the "Save"/"Date" headline, the envelope's
-  "Tjaša in Andraž" sender line, and the wax seal's "T&A" monogram.
-- [x] Seal on the envelope is just a fucking circle. Make it look real (so wax-like). Lmk if you need sth here.
-  → Rebuilt as an SVG wax blob (irregular smoothed edge, not a perfect
-  circle) with a gold radial gradient, the same grain filter for texture,
-  and a "T&A" monogram in Pinyon Script with an engraved-looking bevel.
-- [x] Text in the start (before opening) is dogshit. Tjasa in Andraz should be in fancy font mentioned in above issue. As well as T&A.
-  → Envelope sender line now reads "Tjaša in Andraž" in large Pinyon
-  Script with a small-caps "pošiljata pošto" line beneath it.
+- [x] Text on the first page isn't clearly visible.
+  → The envelope-cover's `.reveal-overlay` was a light cream veil, which
+  worked against white text on the airier watercolour (vs. the darker real
+  photo it replaced). Added a dark top/bottom `linear-gradient` layer
+  (concentrated behind the sender line and the "Klikni na kuverto" hint,
+  transparent through the middle over the envelope) plus stronger doubled
+  text-shadows, and bumped the sender/hint font sizes up for legibility.
+- [x] I need a perfect alignemnt between watercolour bkg and villa sketch. On all mobile displays (resolutions can differ a bit).
+  → The villa-sketch band (main page) already shows the full, uncropped
+  image at any width — it was already device-independent. The watercolour
+  behind the envelope uses `background-size:cover`, which crops differently
+  per viewport aspect ratio, so it needed a `background-position` that
+  keeps the *entire* villa building in frame across the aspect-ratio range
+  phones actually come in (~1.78 for older/smaller phones like iPhone SE up
+  to ~2.22 for tall modern ones) — verified by computing the visible crop
+  window at several real device sizes (see the reasoning in git history)
+  rather than eyeballing one viewport. Landed on `50% 47%`; vertical
+  position doesn't actually matter for this image/viewport combination
+  (portrait phones are always height-driven under `cover`, so the full
+  image height shows regardless of the Y value) but is kept for clarity
+  and in case this ever renders in a wider (desktop) window.
+- [x] Wax seal was an SVG placeholder ("just a circle").
+  → Swapped in the real photographed wax seal (`images/seal.png`,
+  background already transparent, no processing needed) in place of the
+  SVG gradient-circle-plus-Pinyon-Script-monogram version.
