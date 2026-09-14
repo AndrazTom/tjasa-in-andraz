@@ -327,7 +327,6 @@
     background-position:50% 47%; /* keeps the full villa in frame across ~1.78-2.22 mobile aspect ratios (cover crop) */
     transform:scale(1.08);
     transition:transform 1.8s cubic-bezier(.2,.7,.3,1); /* photo zoom-settle */
-    will-change:transform;
   }
   .envelope-cover.opened .reveal-photo{
     transform:scale(1);
@@ -352,7 +351,7 @@
   .envelope-sender .sender-names{
     display:block;
     font-family:'Pinyon Script', cursive;
-    font-size:52px;
+    font-size:56px;
     line-height:1;
     text-shadow:0 1px 3px rgba(0,0,0,0.65), 0 2px 14px rgba(0,0,0,0.55);
   }
@@ -360,7 +359,7 @@
     display:block;
     margin-top:8px;
     font-family:'Cormorant SC', serif;
-    font-size:17px;
+    font-size:25px;
     letter-spacing:3px;
     text-transform:uppercase;
     text-shadow:0 1px 2px rgba(0,0,0,0.6), 0 1px 10px rgba(0,0,0,0.5);
@@ -398,7 +397,6 @@
     background-position:center;
     background-repeat:no-repeat;
     transition:opacity 1.4s ease; /* crossfades with .envelope-photo */
-    will-change:opacity;
   }
   .envelope-shadow-closed{
     background-image:url('images/envelope-shadow-closed.png');
@@ -428,7 +426,6 @@
     background-position:bottom center;
     background-repeat:no-repeat;
     transition:opacity 1.4s ease; /* flap opens (crossfade), slowed */
-    will-change:opacity; /* pre-promote to a layer so the crossfade doesn't jank on first frame */
   }
   .envelope-photo-closed{
     background-image:url('images/envelope-closed.png');
@@ -487,7 +484,7 @@
     position:relative;
     z-index:3;
     font-family:'Cormorant SC', serif;
-    font-size:17px;
+    font-size:25px;
     letter-spacing:3px;
     text-transform:uppercase;
     color:#fff;
