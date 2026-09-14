@@ -630,20 +630,32 @@
      deterministic — that band always shows the whole sketch uncropped),
      then solve for a background-size/-position pair — chosen ourselves,
      not the `cover` keyword — that (a) places the watercolour's villa
-     exactly on that point on BOTH axes and (b) still fully covers the
-     viewport with no gaps. Solving both axes needs the freedom to zoom in
-     a bit more than the bare `cover` minimum whenever the target point
-     isn't where `cover` would naturally put it — there's no way around
-     that and still hit an exact target on both axes.
+     exactly on that point on BOTH axes, (b) sizes it to match the sketch
+     villa's on-screen width, and (c) still fully covers the viewport with
+     no gaps.
 
-     CX_S/CY_S and CX_W/CY_W are each image's villa-center as a fraction of
-     its own canvas — roof-ridge-to-ground-line, wall-to-wall — measured
-     directly off the source files (grid overlay + pixel coordinates, see
-     git history for this change). Re-measure and update these if either
-     source image is ever replaced or re-cropped. */
+     (b) and (c) can conflict, and when they do, (c) wins — a gap at the
+     edge of the screen would look broken, a size mismatch just looks
+     slightly less perfect. In practice they conflict on most ordinary
+     tall phone screens: covering a tall narrow viewport with this square
+     image already demands more zoom than matching the villa's size alone
+     would need (the crop has to reach further into a small watercolour
+     painted on a big square canvas), so on most phones the watercolour
+     villa ends up a bit larger than the sketch's, floored by whatever
+     zoom `cover` itself would demand. Wider/shorter viewports have more
+     slack and hit the size match exactly. There's no way to satisfy both
+     everywhere at once without changing the source image itself (e.g. a
+     version cropped tighter around the villa to begin with).
+
+     CX_S/CY_S/WIDTH_S and CX_W/CY_W/WIDTH_W are each image's villa center
+     and on-screen width as a fraction of its own canvas — roof-ridge-to-
+     ground-line, wall-to-wall — measured directly off the source files
+     (grid overlay + pixel coordinates, see git history for this change).
+     Re-measure and update these if either source image is ever replaced
+     or re-cropped. */
   (function(){
-    var CX_S = 0.499, CY_S = 0.4919;  // vila-sketch.jpg (1300x866) villa center
-    var CX_W = 0.4585, CY_W = 0.5076; // vila-watercolour.png villa center
+    var CX_S = 0.499, CY_S = 0.4919, WIDTH_S = 0.9354;  // vila-sketch.jpg (1300x866) villa center + width
+    var CX_W = 0.464, CY_W = 0.5076, WIDTH_W = 0.3557;  // vila-watercolour.png villa center + width
     var IMG_W = 1254, IMG_H = 1254;   // vila-watercolour.png's own canvas size
 
     var hero = document.querySelector('.villa-hero');
@@ -655,16 +667,22 @@
       var vw = window.innerWidth, vh = window.innerHeight;
       var targetX = heroRect.left + heroRect.width * CX_S;
       var targetY = heroRect.top + heroRect.height * CY_S;
+      var targetWidth = heroRect.width * WIDTH_S;
 
       // Smallest scale that both covers the viewport AND leaves enough
       // room on every edge to place (CX_W,CY_W) exactly at (targetX,targetY).
-      var scale = Math.max(
+      var minScale = Math.max(
         vw / IMG_W, vh / IMG_H,                     // base "cover" minimum
         targetX / (CX_W * IMG_W),                    // left edge covered
         (vw - targetX) / (IMG_W * (1 - CX_W)),        // right edge covered
         targetY / (CY_W * IMG_H),                     // top edge covered
         (vh - targetY) / (IMG_H * (1 - CY_W))         // bottom edge covered
       );
+      // The scale that would make the watercolour villa the same on-screen
+      // width as the sketch villa — used whenever it doesn't violate the
+      // coverage floor above (see comment above this function).
+      var sizeMatchScale = targetWidth / (WIDTH_W * IMG_W);
+      var scale = Math.max(minScale, sizeMatchScale);
 
       var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
       var offsetX = targetX - CX_W * scaledW;
