@@ -58,7 +58,7 @@
     color:#48583c;
     letter-spacing:1px;
     margin-top:44px;
-    animation:fadeDown 1s ease both;
+    animation:fadeDown 0.9s ease both 2.3s;
   }
 
   .sprig{
@@ -66,12 +66,12 @@
     height:auto;
     opacity:0.85;
     margin-top:14px;
-    animation:fadeIn 1.4s ease both 0.2s;
+    animation:fadeIn 0.9s ease both 2.45s;
   }
 
   .headline{
     margin-top:6px;
-    animation:fadeIn 1.4s ease both 0.3s;
+    animation:fadeIn 0.9s ease both 2.6s;
   }
   .save{
     font-family:'Alex Brush', cursive;
@@ -98,13 +98,17 @@
     height:1px;
     background:linear-gradient(90deg, transparent, var(--line-strong), transparent);
     margin:22px 0 16px;
+    opacity:0;
   }
+  .rule-1{ animation:fadeIn 0.8s ease both 2.75s; }
+  .rule-2{ animation:fadeIn 0.8s ease both 3.0s; }
 
   .wedding-date{
     font-family:'Cormorant SC', serif;
     font-size:24px;
     letter-spacing:6px;
     color:var(--ink);
+    animation:fadeIn 0.8s ease both 2.85s;
   }
 
   .venue-line{
@@ -112,6 +116,7 @@
     font-style:italic;
     font-size:17px;
     color:var(--ink-soft);
+    animation:fadeIn 0.8s ease both 2.95s;
   }
 
   .names{
@@ -119,6 +124,7 @@
     font-size:27px;
     letter-spacing:5px;
     color:var(--ink);
+    animation:fadeIn 0.8s ease both 3.15s;
   }
   .amp{
     font-family:'Cormorant Garamond', serif;
@@ -127,6 +133,7 @@
     color:var(--ink);
     margin:6px 0;
     letter-spacing:1px;
+    animation:fadeIn 0.8s ease both 3.15s;
   }
 
   .top{
@@ -162,7 +169,7 @@
   .countdown{
     display:flex;
     gap:14px;
-    animation:fadeIn 1.4s ease both 0.3s;
+    animation:fadeIn 0.8s ease both 3.35s;
   }
   .cd-unit{
     display:flex;
@@ -200,7 +207,7 @@
     display:flex;
     flex-direction:column;
     gap:10px;
-    animation:fadeIn 1.4s ease both 0.4s;
+    animation:fadeIn 0.8s ease both 3.55s;
   }
   .loc-card{
     display:flex;
@@ -247,7 +254,7 @@
 
   .contact{
     margin-top:26px;
-    animation:fadeIn 1.4s ease both 0.5s;
+    animation:fadeIn 0.8s ease both 3.75s;
   }
   .contact-kicker{
     font-family:'Cormorant SC', serif;
@@ -274,6 +281,7 @@
 
   .footer{
     margin-top:36px;
+    animation:fadeIn 0.8s ease both 3.9s;
   }
   .footer-note{
     font-size:12px;
@@ -306,7 +314,7 @@
     justify-content:center;
     gap:20px;
     background:var(--paper);
-    transition:opacity 0.7s ease 1.85s;
+    transition:opacity 1.7s ease 0.5s;
   }
   .envelope-cover.opened{
     opacity:0;
@@ -356,6 +364,10 @@
     aspect-ratio:3/2;
     perspective:1400px;
     filter:drop-shadow(0 22px 30px rgba(30,40,25,0.3));
+    transition:opacity 0.5s ease;
+  }
+  .envelope-cover.opened .envelope-btn{
+    opacity:0;
   }
 
   .envelope-body-wrap, .envelope-flap-wrap{
@@ -373,7 +385,7 @@
   .envelope-flap-wrap{
     height:62%;
     transform-origin:top center;
-    transition:transform 1s cubic-bezier(.62,0,.3,1);
+    transition:transform 0.5s cubic-bezier(.62,0,.3,1);
     z-index:2;
   }
   .envelope-cover.opened .envelope-flap-wrap{
@@ -474,10 +486,10 @@
       <div class="date-word">Date</div>
     </div>
 
-    <div class="rule"></div>
+    <div class="rule rule-1"></div>
     <div class="wedding-date">18 · 9 · 2027</div>
     <div class="venue-line">Goriška Brda &amp; Vipavska dolina</div>
-    <div class="rule"></div>
+    <div class="rule rule-2"></div>
 
     <div class="names">TJAŠA</div>
     <div class="amp">in</div>
@@ -563,7 +575,7 @@
       setTimeout(function(){
         document.body.classList.remove('locked');
         cover.style.display = 'none';
-      }, 2600);
+      }, 2300);
     }
     btn.addEventListener('click', openEnvelope);
   })();
