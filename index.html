@@ -160,8 +160,13 @@
   .villa-hero::before{ top:0; background:linear-gradient(180deg, var(--paper), transparent); }
   .villa-hero::after{ bottom:0; background:linear-gradient(0deg, var(--paper), transparent); }
 
-  .bottom{
+  .names-section{
     padding-top:34px;
+    padding-bottom:30px;
+  }
+
+  .bottom{
+    padding-top:0;
     padding-bottom:36px;
   }
 
@@ -347,7 +352,8 @@
     font-style:italic;
     font-size:17px;
     line-height:1.5;
-    color:var(--ink-soft);
+    color:#fff;
+    text-shadow:0 1px 8px rgba(0,0,0,0.35);
     transition:opacity 0.4s ease;
   }
   .envelope-cover.opened .envelope-sender{
@@ -422,7 +428,8 @@
     font-size:12px;
     letter-spacing:3px;
     text-transform:uppercase;
-    color:var(--ink);
+    color:#fff;
+    text-shadow:0 1px 8px rgba(0,0,0,0.35);
     transition:opacity 0.4s ease;
   }
   .envelope-cover.opened .envelope-hint{
@@ -490,13 +497,15 @@
     <div class="wedding-date">18 · 9 · 2027</div>
     <div class="venue-line">Goriška Brda &amp; Vipavska dolina</div>
     <div class="rule rule-2"></div>
+  </div>
 
+  <div class="villa-hero"></div>
+
+  <div class="section names-section">
     <div class="names">TJAŠA</div>
     <div class="amp">in</div>
     <div class="names">ANDRAŽ</div>
   </div>
-
-  <div class="villa-hero"></div>
 
   <div class="section bottom">
     <div class="countdown" id="countdown">
