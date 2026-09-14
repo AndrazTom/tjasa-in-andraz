@@ -48,7 +48,7 @@
     height:auto;
     opacity:0.85;
     margin-top:44px;
-    animation:fadeIn 1.3s ease both 3.1s;
+    animation:fadeIn 1.3s ease both 4.35s;
   }
 
   .headline{
@@ -57,23 +57,23 @@
     align-items:baseline;
     justify-content:center;
     gap:10px;
-    animation:fadeIn 1.3s ease both 3.45s;
+    animation:fadeIn 1.3s ease both 4.7s;
   }
   .save{
     font-family:'Alex Brush', cursive;
-    font-size:42px;
+    font-size:50px;
     line-height:0.9;
     color:var(--ink);
   }
   .the{
     font-family:'Cormorant SC', serif;
-    font-size:16px;
+    font-size:19px;
     letter-spacing:4px;
     color:var(--ink);
   }
   .date-word{
     font-family:'Alex Brush', cursive;
-    font-size:46px;
+    font-size:54px;
     line-height:0.9;
     color:var(--ink);
   }
@@ -85,23 +85,23 @@
     margin:22px 0 16px;
     opacity:0;
   }
-  .rule-1{ animation:fadeIn 1.2s ease both 3.8s; }
-  .rule-2{ animation:fadeIn 1.2s ease both 4.55s; }
+  .rule-1{ animation:fadeIn 1.2s ease both 5.05s; }
+  .rule-2{ animation:fadeIn 1.2s ease both 5.8s; }
 
   .wedding-date{
     font-family:'Cormorant SC', serif;
-    font-size:24px;
+    font-size:28px;
     letter-spacing:6px;
     color:var(--ink);
-    animation:fadeIn 1.2s ease both 4.15s;
+    animation:fadeIn 1.2s ease both 5.4s;
   }
 
   .venue-line{
     margin-top:6px;
     font-style:italic;
-    font-size:17px;
+    font-size:19px;
     color:var(--ink-soft);
-    animation:fadeIn 1.2s ease both 4.3s;
+    animation:fadeIn 1.2s ease both 5.55s;
   }
 
   .names{
@@ -109,7 +109,7 @@
     font-size:27px;
     letter-spacing:5px;
     color:var(--ink);
-    animation:fadeIn 1.2s ease both 4.9s;
+    animation:fadeIn 1.2s ease both 6.15s;
   }
   .amp{
     font-family:'Cormorant Garamond', serif;
@@ -118,11 +118,11 @@
     color:var(--ink);
     margin:6px 0;
     letter-spacing:1px;
-    animation:fadeIn 1.2s ease both 4.9s;
+    animation:fadeIn 1.2s ease both 6.15s;
   }
 
   .top{
-    padding-bottom:18px;
+    padding-bottom:8px;
   }
 
   /* Villa photo band - sized to the photo's own aspect ratio so it
@@ -161,7 +161,7 @@
   .countdown{
     display:flex;
     gap:14px;
-    animation:fadeIn 1.2s ease both 5.25s;
+    animation:fadeIn 1.2s ease both 6.5s;
   }
   .cd-unit{
     display:flex;
@@ -199,7 +199,7 @@
     display:flex;
     flex-direction:column;
     gap:10px;
-    animation:fadeIn 1.2s ease both 5.6s;
+    animation:fadeIn 1.2s ease both 6.85s;
   }
   .loc-card{
     display:flex;
@@ -246,7 +246,7 @@
 
   .contact{
     margin-top:26px;
-    animation:fadeIn 1.2s ease both 5.95s;
+    animation:fadeIn 1.2s ease both 7.2s;
   }
   .contact-kicker{
     font-family:'Cormorant SC', serif;
@@ -273,7 +273,7 @@
 
   .footer{
     margin-top:36px;
-    animation:fadeIn 1.2s ease both 6.3s;
+    animation:fadeIn 1.2s ease both 7.55s;
   }
   .footer-note{
     font-size:12px;
@@ -287,9 +287,9 @@
   @keyframes fadeDown{ from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:none;} }
 
   @media (max-width:380px){
-    .save{ font-size:34px; }
-    .date-word{ font-size:38px; }
-    .the{ font-size:14px; letter-spacing:3px; }
+    .save{ font-size:40px; }
+    .date-word{ font-size:44px; }
+    .the{ font-size:16px; letter-spacing:3px; }
     .names{ font-size:23px; letter-spacing:4px; }
   }
 
@@ -307,7 +307,7 @@
     justify-content:center;
     gap:20px;
     background:var(--paper);
-    transition:opacity 2.5s ease 0.5s;
+    transition:opacity 3.4s ease 0.85s;
   }
   .envelope-cover.opened{
     opacity:0;
@@ -342,7 +342,7 @@
     line-height:1.5;
     color:#fff;
     text-shadow:0 1px 8px rgba(0,0,0,0.35);
-    transition:opacity 0.4s ease;
+    transition:opacity 0.7s ease;
   }
   .envelope-cover.opened .envelope-sender{
     opacity:0;
@@ -358,7 +358,7 @@
     aspect-ratio:3/2;
     perspective:1400px;
     filter:drop-shadow(0 22px 30px rgba(30,40,25,0.3));
-    transition:opacity 0.5s ease;
+    transition:opacity 0.85s ease;
   }
   .envelope-cover.opened .envelope-btn{
     opacity:0;
@@ -379,7 +379,7 @@
   .envelope-flap-wrap{
     height:62%;
     transform-origin:top center;
-    transition:transform 0.5s cubic-bezier(.62,0,.3,1);
+    transition:transform 0.85s cubic-bezier(.62,0,.3,1);
     z-index:2;
   }
   .envelope-cover.opened .envelope-flap-wrap{
@@ -402,7 +402,7 @@
     color:#48583c;
     letter-spacing:1px;
     z-index:3;
-    transition:opacity 0.35s ease, transform 0.35s ease;
+    transition:opacity 0.65s ease, transform 0.65s ease;
   }
   .envelope-cover.opened .envelope-seal{
     opacity:0;
@@ -418,7 +418,7 @@
     text-transform:uppercase;
     color:#fff;
     text-shadow:0 1px 8px rgba(0,0,0,0.35);
-    transition:opacity 0.4s ease;
+    transition:opacity 0.7s ease;
   }
   .envelope-cover.opened .envelope-hint{
     opacity:0;
@@ -570,7 +570,7 @@
       setTimeout(function(){
         document.body.classList.remove('locked');
         cover.style.display = 'none';
-      }, 3100);
+      }, 4300);
     }
     btn.addEventListener('click', openEnvelope);
   })();
