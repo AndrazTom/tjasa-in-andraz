@@ -8,17 +8,20 @@
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Alex+Brush&display=swap');
 
   :root{
-    --ink:#faf7ef;
-    --gold:#c7a45c;
-    --gold-soft:#e3cd97;
-    --forest-1:#1c2417;
-    --forest-2:#3a4530;
+    --paper:#f8f3e7;
+    --card:rgba(44,58,35,0.05);
+    --card-border:rgba(150,113,45,0.35);
+    --ink:#2c3a23;
+    --ink-soft:rgba(44,58,35,0.68);
+    --ink-faint:rgba(44,58,35,0.5);
+    --gold:#b3893f;
+    --gold-deep:#8a6a2e;
   }
 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background:var(--forest-1);
+    background:var(--paper);
     color:var(--ink);
     font-family:'Cormorant Garamond', serif;
   }
@@ -30,6 +33,7 @@
     min-height:100dvh;
     display:flex;
     flex-direction:column;
+    background:var(--paper);
   }
 
   .section{
@@ -46,7 +50,7 @@
     height:74px;
     border-radius:50%;
     background:radial-gradient(circle at 32% 28%, #f3dfa2, #c9a457 45%, #8a6c2e 100%);
-    box-shadow:0 6px 14px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(255,255,255,0.25);
+    box-shadow:0 6px 14px rgba(120,90,30,0.3), inset 0 0 0 2px rgba(255,255,255,0.25);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -81,7 +85,7 @@
     font-size:19px;
     letter-spacing:9px;
     margin:2px 0;
-    color:var(--gold-soft);
+    color:var(--gold-deep);
   }
   .date-word{
     font-family:'Alex Brush', cursive;
@@ -101,14 +105,14 @@
     font-family:'Cormorant SC', serif;
     font-size:24px;
     letter-spacing:6px;
-    color:var(--gold-soft);
+    color:var(--gold-deep);
   }
 
   .venue-line{
     margin-top:6px;
     font-style:italic;
     font-size:17px;
-    color:rgba(250,247,239,0.85);
+    color:var(--ink-soft);
   }
 
   .names{
@@ -121,7 +125,7 @@
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
     font-size:16px;
-    color:var(--gold-soft);
+    color:var(--gold-deep);
     margin:6px 0;
     letter-spacing:1px;
   }
@@ -147,8 +151,8 @@
     height:56px;
     pointer-events:none;
   }
-  .villa-hero::before{ top:0; background:linear-gradient(180deg, var(--forest-1), transparent); }
-  .villa-hero::after{ bottom:0; background:linear-gradient(0deg, var(--forest-1), transparent); }
+  .villa-hero::before{ top:0; background:linear-gradient(180deg, var(--paper), transparent); }
+  .villa-hero::after{ bottom:0; background:linear-gradient(0deg, var(--paper), transparent); }
 
   .bottom{
     padding-top:34px;
@@ -172,8 +176,8 @@
     font-weight:600;
     font-size:26px;
     color:var(--ink);
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(199,164,92,0.5);
+    background:var(--card);
+    border:1px solid var(--card-border);
     border-radius:8px;
     width:52px;
     height:52px;
@@ -187,7 +191,7 @@
     font-size:11px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:rgba(250,247,239,0.65);
+    color:var(--ink-faint);
   }
 
   /* Locations */
@@ -204,20 +208,20 @@
     align-items:center;
     gap:12px;
     padding:12px 16px;
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(199,164,92,0.35);
+    background:var(--card);
+    border:1px solid var(--card-border);
     border-radius:12px;
     text-decoration:none;
     color:var(--ink);
     text-align:left;
     transition:background 0.2s ease;
   }
-  .loc-card:active{ background:rgba(255,255,255,0.14); }
+  .loc-card:active{ background:rgba(44,58,35,0.1); }
   .loc-icon{
     flex:none;
     width:20px;
     height:20px;
-    color:var(--gold-soft);
+    color:var(--gold-deep);
   }
   .loc-text{ flex:1; min-width:0; }
   .loc-kind{
@@ -225,7 +229,7 @@
     font-size:12px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:var(--gold-soft);
+    color:var(--gold-deep);
   }
   .loc-name{
     font-size:17px;
@@ -234,11 +238,11 @@
   .loc-sub{
     font-size:13px;
     font-style:italic;
-    color:rgba(250,247,239,0.7);
+    color:var(--ink-soft);
   }
   .loc-arrow{
     flex:none;
-    color:rgba(250,247,239,0.5);
+    color:var(--ink-faint);
     font-size:16px;
   }
 
@@ -251,7 +255,7 @@
     font-size:12px;
     letter-spacing:3px;
     text-transform:uppercase;
-    color:var(--gold-soft);
+    color:var(--gold-deep);
     margin-bottom:8px;
   }
   .contact-emails{
@@ -262,12 +266,12 @@
   .contact-emails a{
     font-size:15px;
     font-style:italic;
-    color:rgba(250,247,239,0.85);
+    color:var(--ink-soft);
     text-decoration:none;
-    border-bottom:1px solid rgba(199,164,92,0.4);
+    border-bottom:1px solid var(--card-border);
     padding-bottom:1px;
   }
-  .contact-emails a:active{ color:var(--gold-soft); }
+  .contact-emails a:active{ color:var(--gold-deep); }
 
   .footer{
     margin-top:36px;
@@ -276,7 +280,7 @@
     font-size:12px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:rgba(250,247,239,0.6);
+    color:var(--ink-faint);
     line-height:1.8;
   }
 
@@ -301,9 +305,9 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:26px;
-    background:var(--forest-1);
-    transition:opacity 0.7s ease 1.6s;
+    gap:20px;
+    background:var(--paper);
+    transition:opacity 0.7s ease 1.85s;
   }
   .envelope-cover.opened{
     opacity:0;
@@ -319,13 +323,18 @@
     background-image:url('images/vila-vipolze.jpg');
     background-size:cover;
     background-position:47.2% 55%;
+    transform:scale(1.08);
+    transition:transform 1.8s cubic-bezier(.2,.7,.3,1);
+  }
+  .envelope-cover.opened .reveal-photo{
+    transform:scale(1);
   }
   /* Solid backdrop behind the sketch image, kept separate from .reveal-sketch
-     so the invert() filter below doesn't also invert a background-color */
+     so its color filter below doesn't also tint a background-color */
   .reveal-sketch-bg{
     z-index:1;
-    background:var(--forest-1);
-    transition:opacity 1.1s ease;
+    background:var(--paper);
+    transition:opacity 1.3s ease;
   }
   .reveal-sketch{
     z-index:1;
@@ -333,21 +342,35 @@
     background-size:contain;
     background-repeat:no-repeat;
     background-position:center;
-    filter:invert(1) brightness(1.1) sepia(0.2) hue-rotate(50deg) saturate(1.4);
-    transition:opacity 1.1s ease, transform 1.3s ease;
+    filter:blur(0px);
+    transition:opacity 1.3s ease, transform 1.5s ease, filter 1.5s ease;
   }
   .reveal-overlay{
     z-index:2;
-    background:radial-gradient(circle at 50% 40%, rgba(28,36,23,0.35), rgba(18,23,15,0.78) 72%);
+    background:radial-gradient(circle at 50% 42%, rgba(248,243,231,0.1), rgba(248,243,231,0.6) 100%);
   }
   .envelope-cover.opened .reveal-sketch-bg{
     opacity:0;
-    transition-delay:0.25s;
+    transition-delay:0.2s;
   }
   .envelope-cover.opened .reveal-sketch{
     opacity:0;
-    transform:scale(1.06);
-    transition-delay:0.25s;
+    transform:scale(1.08);
+    filter:blur(16px);
+    transition-delay:0.2s;
+  }
+
+  .envelope-sender{
+    position:relative;
+    z-index:3;
+    font-style:italic;
+    font-size:17px;
+    line-height:1.5;
+    color:var(--ink-soft);
+    transition:opacity 0.4s ease;
+  }
+  .envelope-cover.opened .envelope-sender{
+    opacity:0;
   }
 
   .envelope-btn{
@@ -356,57 +379,47 @@
     cursor:pointer;
     position:relative;
     z-index:3;
-    width:min(320px, 76vw);
+    width:min(300px, 72vw);
     aspect-ratio:3/2;
-    perspective:1200px;
+    perspective:1400px;
+    filter:drop-shadow(0 22px 30px rgba(120,90,30,0.28));
   }
 
-  .envelope-body{
+  .envelope-body-wrap, .envelope-flap-wrap{
     position:absolute;
     inset:0;
-    border-radius:4px;
-    background:linear-gradient(155deg, #a7b183, #8b9770 55%, #737d59);
-    box-shadow:0 25px 50px -18px rgba(0,0,0,0.65);
-    overflow:hidden;
+    display:block;
   }
-  .envelope-body::before{
-    content:"";
-    position:absolute;
-    left:0; right:0; bottom:0;
-    height:64%;
-    background:
-      linear-gradient(to bottom right, transparent 49.5%, rgba(0,0,0,0.10) 50.5%) top left / 51% 100% no-repeat,
-      linear-gradient(to bottom left, transparent 49.5%, rgba(0,0,0,0.10) 50.5%) top right / 51% 100% no-repeat;
+  .envelope-body-wrap svg, .envelope-flap-wrap svg{
+    width:100%;
+    height:100%;
+    display:block;
+    overflow:visible;
   }
 
-  .envelope-flap{
-    position:absolute;
-    top:0; left:0; right:0;
-    height:60%;
-    clip-path:polygon(0 0, 100% 0, 50% 100%);
-    background:linear-gradient(155deg, #bcc599, #9aa679);
+  .envelope-flap-wrap{
+    height:62%;
     transform-origin:top center;
-    transition:transform 0.9s cubic-bezier(.6,0,.3,1);
-    box-shadow:0 8px 16px rgba(0,0,0,0.18);
+    transition:transform 1s cubic-bezier(.62,0,.3,1);
     z-index:2;
   }
-  .envelope-cover.opened .envelope-flap{
-    transform:rotateX(-170deg);
+  .envelope-cover.opened .envelope-flap-wrap{
+    transform:rotateX(-172deg);
   }
 
   .envelope-seal{
     position:absolute;
-    top:56%; left:50%;
+    top:54%; left:50%;
     transform:translate(-50%,-50%);
-    width:60px; height:60px;
+    width:56px; height:56px;
     border-radius:50%;
     background:radial-gradient(circle at 32% 28%, #f3dfa2, #c9a457 45%, #8a6c2e 100%);
-    box-shadow:0 6px 14px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(255,255,255,0.25);
+    box-shadow:0 6px 14px rgba(120,90,30,0.4), inset 0 0 0 2px rgba(255,255,255,0.25);
     display:flex;
     align-items:center;
     justify-content:center;
     font-family:'Cormorant SC', serif;
-    font-size:18px;
+    font-size:17px;
     color:#2b2109;
     letter-spacing:1px;
     z-index:3;
@@ -424,7 +437,7 @@
     font-size:12px;
     letter-spacing:3px;
     text-transform:uppercase;
-    color:rgba(250,247,239,0.7);
+    color:var(--gold-deep);
     transition:opacity 0.4s ease;
   }
   .envelope-cover.opened .envelope-hint{
@@ -439,12 +452,38 @@
   <div class="reveal-sketch-bg"></div>
   <div class="reveal-sketch"></div>
   <div class="reveal-overlay"></div>
+
+  <div class="envelope-sender">Tjaša in Andraž<br>pošiljata pošto</div>
+
   <button class="envelope-btn" id="envelopeBtn" aria-label="Odpri vabilo">
-    <span class="envelope-body"></span>
-    <span class="envelope-flap"></span>
+    <span class="envelope-body-wrap">
+      <svg viewBox="0 0 300 200" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fffdf8"/>
+            <stop offset="100%" stop-color="#eee0c2"/>
+          </linearGradient>
+        </defs>
+        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#b3893f" stroke-width="1.5"/>
+        <path d="M10,193 L150,116 L290,193" fill="none" stroke="#b3893f" stroke-width="1" opacity="0.35"/>
+      </svg>
+    </span>
+    <span class="envelope-flap-wrap">
+      <svg viewBox="0 0 300 124" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="flapGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fffdf8"/>
+            <stop offset="100%" stop-color="#e7d8b8"/>
+          </linearGradient>
+        </defs>
+        <polygon points="3,4 297,4 150,121" fill="url(#flapGrad)"/>
+        <path d="M3,4 L150,121 L297,4" fill="none" stroke="#b3893f" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+    </span>
     <span class="envelope-seal">T&amp;A</span>
   </button>
-  <div class="envelope-hint">Tapni, da odpreš</div>
+
+  <div class="envelope-hint">Klikni na kuverto</div>
 </div>
 
 <div class="page">
@@ -553,7 +592,7 @@
       setTimeout(function(){
         document.body.classList.remove('locked');
         cover.style.display = 'none';
-      }, 2350);
+      }, 2600);
     }
     btn.addEventListener('click', openEnvelope);
   })();
