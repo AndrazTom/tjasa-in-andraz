@@ -359,6 +359,11 @@
     opacity:0;
     animation:fadeIn 0.8s ease both 0.9s; /* intro: 2 names, after the note settles */
   }
+  .envelope-sender .sender-amp{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:0.6em; /* Pinyon Script's own & glyph read oddly here; borrow the plainer serif italic instead */
+  }
   .envelope-sender .sender-note{
     display:block;
     font-family:'Cormorant SC', serif;
@@ -485,7 +490,7 @@
 
   <div class="envelope-sender">
     <span class="sender-note">Prispelo je pismo</span>
-    <span class="sender-names">Tjaše in<br>Andraža</span>
+    <span class="sender-names">Tjaše <span class="sender-amp">&amp;</span><br>Andraža</span>
   </div>
 
   <button class="envelope-btn" id="envelopeBtn" aria-label="Odpri vabilo">
