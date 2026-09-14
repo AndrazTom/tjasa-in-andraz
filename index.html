@@ -325,7 +325,7 @@
   .reveal-photo{
     background-image:url('images/vila-watercolour.png');
     background-size:cover;
-    background-position:50% 47%; /* keeps the full villa in frame across ~1.78-2.22 mobile aspect ratios (cover crop) */
+    background-position:50% 47%; /* no-JS fallback only — the <script> at the bottom of the page computes and overrides both of these to land the villa exactly on the sketch's villa position, see the comment there */
     transform:scale(1.08);
     transition:transform 1.8s cubic-bezier(.2,.7,.3,1); /* photo zoom-settle */
   }
@@ -608,17 +608,33 @@
      compositions (the watercolour is a small building in a huge aerial
      landscape; the sketch is the building filling almost the whole frame),
      so there's no static CSS background-position that works for every
-     viewport size — .reveal-photo is a full-viewport background-size:cover
-     while .villa-hero is a fixed-aspect-ratio box inside the 480px-wide
-     .page column, and how much of the watercolour's width gets cropped by
-     `cover` depends on the live viewport's aspect ratio.
+     viewport size — .reveal-photo is a full-viewport background while
+     .villa-hero is a fixed-aspect-ratio box inside the 480px-wide .page
+     column, and where things land depends on the live viewport.
 
-     Instead: measure where .villa-hero's own villa lands on screen (its
-     position is fully determined by its own box, which always shows the
-     whole sketch uncropped — see .villa-hero above), then solve for the
-     background-position that puts the watercolour's villa at that same
-     screen point, given `cover`'s known scale/crop math. This is exact for
-     any viewport size, unlike hand-picked percentages.
+     Deliberately NOT using background-size:cover: for this square source
+     image, `cover` on any portrait viewport is always height-driven (the
+     full image height exactly fills the viewport, unconditionally), which
+     makes the *vertical* background-position mathematically inert — no
+     percentage can move the villa up/down, since there's no vertical crop
+     room to place it within. That's why an earlier version of this that
+     tried to fix vertical alignment via background-position-y silently did
+     nothing, and the actual vertical mismatch (which scales with how much
+     a phone's viewport height differs from whatever it happened to be
+     tested on, since the fixed-px text above .villa-hero eats a different
+     *fraction* of a shorter vs. taller screen) came out small on one phone
+     and huge on another — not a calibration error, a missing degree of
+     freedom.
+
+     Instead: measure where .villa-hero's own villa lands on screen (fully
+     deterministic — that band always shows the whole sketch uncropped),
+     then solve for a background-size/-position pair — chosen ourselves,
+     not the `cover` keyword — that (a) places the watercolour's villa
+     exactly on that point on BOTH axes and (b) still fully covers the
+     viewport with no gaps. Solving both axes needs the freedom to zoom in
+     a bit more than the bare `cover` minimum whenever the target point
+     isn't where `cover` would naturally put it — there's no way around
+     that and still hit an exact target on both axes.
 
      CX_S/CY_S and CX_W/CY_W are each image's villa-center as a fraction of
      its own canvas — roof-ridge-to-ground-line, wall-to-wall — measured
@@ -640,15 +656,22 @@
       var targetX = heroRect.left + heroRect.width * CX_S;
       var targetY = heroRect.top + heroRect.height * CY_S;
 
-      var scale = Math.max(vw / IMG_W, vh / IMG_H); // background-size:cover
+      // Smallest scale that both covers the viewport AND leaves enough
+      // room on every edge to place (CX_W,CY_W) exactly at (targetX,targetY).
+      var scale = Math.max(
+        vw / IMG_W, vh / IMG_H,                     // base "cover" minimum
+        targetX / (CX_W * IMG_W),                    // left edge covered
+        (vw - targetX) / (IMG_W * (1 - CX_W)),        // right edge covered
+        targetY / (CY_W * IMG_H),                     // top edge covered
+        (vh - targetY) / (IMG_H * (1 - CY_W))         // bottom edge covered
+      );
+
       var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
+      var offsetX = targetX - CX_W * scaledW;
+      var offsetY = targetY - CY_W * scaledH;
 
-      var posX = Math.abs(scaledW - vw) < 0.5 ? 50 : 100 * (targetX - CX_W * scaledW) / (vw - scaledW);
-      var posY = Math.abs(scaledH - vh) < 0.5 ? 50 : 100 * (targetY - CY_W * scaledH) / (vh - scaledH);
-      posX = Math.max(0, Math.min(100, posX));
-      posY = Math.max(0, Math.min(100, posY));
-
-      photo.style.backgroundPosition = posX.toFixed(2) + '% ' + posY.toFixed(2) + '%';
+      photo.style.backgroundSize = scaledW.toFixed(2) + 'px ' + scaledH.toFixed(2) + 'px';
+      photo.style.backgroundPosition = offsetX.toFixed(2) + 'px ' + offsetY.toFixed(2) + 'px';
     }
 
     alignVilla(); // best-effort immediately, using fallback-font metrics
