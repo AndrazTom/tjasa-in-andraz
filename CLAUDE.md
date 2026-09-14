@@ -33,18 +33,22 @@ images/
                           locally) if these ever need reprocessing
   seal.png               real photographed wax seal (sage wax, gold "T&A"
                           monogram) — replaced the old SVG-drawn seal
-tools/
+tools/                   gitignored — kept locally, not tracked/pushed
   build_artifact.py       generates the Claude Artifact build from index.html
+  prep_envelope_photos.py cuts out + aligns envelope photos, see below
 inspiration/             reference material (not deployed, gitignored)
 ```
 
-`tools/prep_envelope_photos.py` (gitignored — deliberately not tracked/pushed)
-cuts out + aligns a pair of envelope photos into the envelope-*.png files
-above: crops each to content, scales both to the same body width, and
-places them on a shared canvas anchored to the same bottom-center point,
-so a closed/open crossfade doesn't jump. Re-run it locally whenever the
-source envelope photos change; it still exists on disk even though git
-doesn't track it.
+`tools/prep_envelope_photos.py` cuts out + aligns a pair of envelope photos
+into the envelope-*.png files above: crops each to content, scales both to
+the same body width, and places them on a shared canvas anchored to the
+same bottom-center point, so a closed/open crossfade doesn't jump. Re-run
+it locally whenever the source envelope photos change.
+
+`tools/build_artifact.py` was briefly tracked/pushed (commit 0d95106) before
+being moved under the `tools/` gitignore rule like the rest of this
+directory — both scripts now stay local-only, they still exist on disk
+even though git doesn't track either.
 
 `index.html` is the source of truth. It's a normal standalone document
 (`<!DOCTYPE html>`, `<head>` with viewport meta, `<body>`) because it's
@@ -157,6 +161,23 @@ Tag before any major redesign so it's easy to roll back:
   `animation:none!important;opacity:1!important` on a scratch copy to
   inspect static end-states. Always verify real interaction timing live
   in an actual browser, not just via screenshots.
+
+- Mobile-only flash during the envelope-open animation: on tap, a sharp-edged
+  gray rectangle briefly flashes, sized exactly to `.envelope-photo`'s own
+  (padded) box. Diagnosed by extracting frames from a screen recording
+  (`ffmpeg -i recording.mp4 frame_%03d.png`, then diffing consecutive frames
+  with PIL/numpy to isolate the exact flash frame and its bounding box) —
+  don't try to debug this class of issue by guessing from descriptions
+  alone, get a recording. Root cause: forcing the element onto its own GPU
+  compositing layer via `transform:translateZ(0)` (tried as a "pre-promote
+  the layer before the animation starts" fix) backfired — the mobile
+  browser shows that layer's blank backing store for a frame when the
+  opacity transition invalidates it, which is worse than not forcing a
+  dedicated layer at all. Removed; not yet replaced with a working fix,
+  so the flash itself is still unresolved. Do not reintroduce
+  `translateZ(0)`/`will-change` on `.envelope-photo`, `.reveal-photo`,
+  `.envelope-cover`, or `.envelope-seal` without re-testing against a
+  fresh recording first.
 
 ## Changes requested (mark a change as completed when completed)
 - Villa is too much on the left on phone display. I need perfect alignment.

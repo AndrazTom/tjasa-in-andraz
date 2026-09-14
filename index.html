@@ -310,7 +310,6 @@
     gap:20px;
     background:var(--paper);
     transition:opacity 3.4s ease 2.0s; /* cover to page, after envelope gone */
-    transform:translateZ(0); /* force this layer onto the GPU well before the click, see .envelope-photo comment below */
   }
   .envelope-cover.opened{
     opacity:0;
@@ -326,11 +325,11 @@
     background-image:url('images/vila-watercolour.png');
     background-size:cover;
     background-position:50% 47%; /* keeps the full villa in frame across ~1.78-2.22 mobile aspect ratios (cover crop) */
-    transform:scale(1.08) translateZ(0);
+    transform:scale(1.08);
     transition:transform 1.8s cubic-bezier(.2,.7,.3,1); /* photo zoom-settle */
   }
   .envelope-cover.opened .reveal-photo{
-    transform:scale(1) translateZ(0);
+    transform:scale(1);
   }
   .reveal-overlay{
     z-index:1;
@@ -403,14 +402,6 @@
     background-position:center;
     background-repeat:no-repeat;
     transition:opacity 1.4s ease; /* flap opens (crossfade), slowed */
-    /* Forces this onto its own GPU compositing layer from page load instead
-       of at the moment the crossfade starts. Mobile Safari/Chrome can flash
-       a newly-created layer's first frame black before its texture upload
-       finishes — the envelope sits idle for several seconds before anyone
-       taps it, so pre-promoting here (rather than via will-change, which is
-       only an advisory hint some browsers defer) gives it time to actually
-       happen well ahead of the click. */
-    transform:translateZ(0);
   }
   .envelope-photo-closed{
     background-image:url('images/envelope-closed-shadowed.png');
@@ -431,7 +422,7 @@
   .envelope-seal{
     position:absolute;
     top:75%; left:50%; /* flap's actual fold tip, measured off envelope-closed.png, nudged up slightly */
-    transform:translate(-50%,-50%) translateZ(0);
+    transform:translate(-50%,-50%);
     width:62.5px; height:62.5px; /* 50px seal * 1.25 (40px padding on a 320px source) — shadow baked into seal-shadowed.png, see envelope-photo comment above */
     z-index:3;
     background-image:url('images/seal-shadowed.png');
@@ -442,7 +433,7 @@
   }
   .envelope-cover.opened .envelope-seal{
     opacity:0;
-    transform:translate(-50%,-50%) scale(0.5) translateZ(0);
+    transform:translate(-50%,-50%) scale(0.5);
   }
 
   .envelope-hint{
