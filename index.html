@@ -10,12 +10,11 @@
   :root{
     --paper:#f8f3e7;
     --card:rgba(44,58,35,0.05);
-    --card-border:rgba(150,113,45,0.35);
+    --card-border:rgba(44,58,35,0.35);
     --ink:#2c3a23;
     --ink-soft:rgba(44,58,35,0.68);
     --ink-faint:rgba(44,58,35,0.5);
-    --gold:#b3893f;
-    --gold-deep:#8a6a2e;
+    --line-strong:rgba(44,58,35,0.55);
   }
 
   *{box-sizing:border-box;}
@@ -85,7 +84,7 @@
     font-size:19px;
     letter-spacing:9px;
     margin:2px 0;
-    color:var(--gold-deep);
+    color:var(--ink);
   }
   .date-word{
     font-family:'Alex Brush', cursive;
@@ -97,7 +96,7 @@
   .rule{
     width:150px;
     height:1px;
-    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    background:linear-gradient(90deg, transparent, var(--line-strong), transparent);
     margin:22px 0 16px;
   }
 
@@ -105,7 +104,7 @@
     font-family:'Cormorant SC', serif;
     font-size:24px;
     letter-spacing:6px;
-    color:var(--gold-deep);
+    color:var(--ink);
   }
 
   .venue-line{
@@ -125,7 +124,7 @@
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
     font-size:16px;
-    color:var(--gold-deep);
+    color:var(--ink);
     margin:6px 0;
     letter-spacing:1px;
   }
@@ -138,10 +137,10 @@
      shows in full, uncropped, instead of being zoomed into a tall strip */
   .villa-hero{
     width:100%;
-    aspect-ratio:1200/674;
-    background-image:url('images/vila-vipolze.jpg');
+    aspect-ratio:1300/866;
+    background-image:url('images/vila-sketch.jpg');
     background-size:cover;
-    background-position:47.2% 55%;
+    background-position:center;
     position:relative;
   }
   .villa-hero::before, .villa-hero::after{
@@ -221,7 +220,7 @@
     flex:none;
     width:20px;
     height:20px;
-    color:var(--gold-deep);
+    color:var(--ink);
   }
   .loc-text{ flex:1; min-width:0; }
   .loc-kind{
@@ -229,7 +228,7 @@
     font-size:12px;
     letter-spacing:2px;
     text-transform:uppercase;
-    color:var(--gold-deep);
+    color:var(--ink);
   }
   .loc-name{
     font-size:17px;
@@ -255,7 +254,7 @@
     font-size:12px;
     letter-spacing:3px;
     text-transform:uppercase;
-    color:var(--gold-deep);
+    color:var(--ink);
     margin-bottom:8px;
   }
   .contact-emails{
@@ -271,7 +270,7 @@
     border-bottom:1px solid var(--card-border);
     padding-bottom:1px;
   }
-  .contact-emails a:active{ color:var(--gold-deep); }
+  .contact-emails a:active{ color:var(--ink); }
 
   .footer{
     margin-top:36px;
@@ -314,7 +313,7 @@
     pointer-events:none;
   }
 
-  .reveal-photo, .reveal-sketch-bg, .reveal-sketch, .reveal-overlay{
+  .reveal-photo, .reveal-overlay{
     position:absolute;
     inset:0;
     z-index:0;
@@ -329,35 +328,9 @@
   .envelope-cover.opened .reveal-photo{
     transform:scale(1);
   }
-  /* Solid backdrop behind the sketch image, kept separate from .reveal-sketch
-     so its color filter below doesn't also tint a background-color */
-  .reveal-sketch-bg{
-    z-index:1;
-    background:var(--paper);
-    transition:opacity 1.3s ease;
-  }
-  .reveal-sketch{
-    z-index:1;
-    background-image:url('images/vila-sketch.jpg');
-    background-size:contain;
-    background-repeat:no-repeat;
-    background-position:center;
-    filter:blur(0px);
-    transition:opacity 1.3s ease, transform 1.5s ease, filter 1.5s ease;
-  }
   .reveal-overlay{
-    z-index:2;
-    background:radial-gradient(circle at 50% 42%, rgba(248,243,231,0.1), rgba(248,243,231,0.6) 100%);
-  }
-  .envelope-cover.opened .reveal-sketch-bg{
-    opacity:0;
-    transition-delay:0.2s;
-  }
-  .envelope-cover.opened .reveal-sketch{
-    opacity:0;
-    transform:scale(1.08);
-    filter:blur(16px);
-    transition-delay:0.2s;
+    z-index:1;
+    background:radial-gradient(circle at 50% 42%, rgba(248,243,231,0.12), rgba(248,243,231,0.55) 100%);
   }
 
   .envelope-sender{
@@ -382,7 +355,7 @@
     width:min(300px, 72vw);
     aspect-ratio:3/2;
     perspective:1400px;
-    filter:drop-shadow(0 22px 30px rgba(120,90,30,0.28));
+    filter:drop-shadow(0 22px 30px rgba(30,40,25,0.3));
   }
 
   .envelope-body-wrap, .envelope-flap-wrap{
@@ -437,7 +410,7 @@
     font-size:12px;
     letter-spacing:3px;
     text-transform:uppercase;
-    color:var(--gold-deep);
+    color:var(--ink);
     transition:opacity 0.4s ease;
   }
   .envelope-cover.opened .envelope-hint{
@@ -449,8 +422,6 @@
 
 <div class="envelope-cover" id="envelopeCover">
   <div class="reveal-photo"></div>
-  <div class="reveal-sketch-bg"></div>
-  <div class="reveal-sketch"></div>
   <div class="reveal-overlay"></div>
 
   <div class="envelope-sender">Tjaša in Andraž<br>pošiljata pošto</div>
@@ -464,8 +435,8 @@
             <stop offset="100%" stop-color="#eee0c2"/>
           </linearGradient>
         </defs>
-        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#b3893f" stroke-width="1.5"/>
-        <path d="M10,193 L150,116 L290,193" fill="none" stroke="#b3893f" stroke-width="1" opacity="0.35"/>
+        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#2c3a23" stroke-width="1.5"/>
+        <path d="M10,193 L150,116 L290,193" fill="none" stroke="#2c3a23" stroke-width="1" opacity="0.35"/>
       </svg>
     </span>
     <span class="envelope-flap-wrap">
@@ -477,7 +448,7 @@
           </linearGradient>
         </defs>
         <polygon points="3,4 297,4 150,121" fill="url(#flapGrad)"/>
-        <path d="M3,4 L150,121 L297,4" fill="none" stroke="#b3893f" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M3,4 L150,121 L297,4" fill="none" stroke="#2c3a23" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
     </span>
     <span class="envelope-seal">T&amp;A</span>
