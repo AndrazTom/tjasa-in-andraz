@@ -1,0 +1,390 @@
+<title>Tjaša & Andraž</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Alex+Brush&display=swap');
+
+  :root{
+    --ink:#faf7ef;
+    --gold:#c7a45c;
+    --gold-soft:#e3cd97;
+    --forest-1:#1c2417;
+    --forest-2:#3a4530;
+    --page-bg:#e9e4d4;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--page-bg);
+    color:var(--ink);
+    font-family:'Cormorant Garamond', serif;
+    display:flex;
+    justify-content:center;
+    padding-block:32px;
+  }
+
+  .stage{
+    width:100%;
+    max-width:480px;
+    min-height:calc(100dvh - 64px);
+    position:relative;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 30px 70px -25px rgba(20,20,10,0.45);
+    isolation:isolate;
+  }
+
+  .stage::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:url('images/vila-vipolze.jpg');
+    background-size:cover;
+    background-position:47.2% 55%;
+    z-index:-2;
+  }
+
+  .stage::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(180deg, rgba(18,22,14,0.72) 0%, rgba(20,24,16,0.40) 22%, rgba(22,26,17,0.55) 55%, rgba(14,17,11,0.88) 88%, rgba(10,13,8,0.95) 100%);
+    z-index:-1;
+  }
+
+  .content{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    padding:44px 28px 36px;
+    min-height:calc(100dvh - 64px);
+  }
+
+  /* Monogram */
+  .seal{
+    width:74px;
+    height:74px;
+    border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, #f3dfa2, #c9a457 45%, #8a6c2e 100%);
+    box-shadow:0 6px 14px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(255,255,255,0.25);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Cormorant SC', serif;
+    font-size:22px;
+    color:#2b2109;
+    letter-spacing:1px;
+    margin-top:4px;
+    animation:fadeDown 1s ease both;
+  }
+
+  .sprig{
+    width:120px;
+    height:auto;
+    opacity:0.85;
+    margin-top:14px;
+    animation:fadeIn 1.4s ease both 0.2s;
+  }
+
+  .headline{
+    margin-top:6px;
+    animation:fadeIn 1.4s ease both 0.3s;
+  }
+  .save{
+    font-family:'Alex Brush', cursive;
+    font-size:70px;
+    line-height:0.9;
+    color:var(--ink);
+    text-shadow:0 2px 18px rgba(0,0,0,0.35);
+  }
+  .the{
+    font-family:'Cormorant SC', serif;
+    font-size:19px;
+    letter-spacing:9px;
+    margin:2px 0;
+    color:var(--gold-soft);
+  }
+  .date-word{
+    font-family:'Alex Brush', cursive;
+    font-size:76px;
+    line-height:0.9;
+    color:var(--ink);
+    text-shadow:0 2px 18px rgba(0,0,0,0.35);
+  }
+
+  .rule{
+    width:150px;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin:22px 0 16px;
+  }
+
+  .names{
+    font-family:'Cormorant SC', serif;
+    font-size:27px;
+    letter-spacing:5px;
+    color:var(--ink);
+  }
+  .amp{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:16px;
+    color:var(--gold-soft);
+    margin:6px 0;
+    letter-spacing:1px;
+  }
+
+  .villa-space{
+    height:210px;
+  }
+
+  .wedding-date{
+    margin-top:0;
+    font-family:'Cormorant SC', serif;
+    font-size:24px;
+    letter-spacing:6px;
+    color:var(--gold-soft);
+  }
+
+  .venue-line{
+    margin-top:6px;
+    font-style:italic;
+    font-size:17px;
+    color:rgba(250,247,239,0.85);
+  }
+
+  /* Countdown */
+  .countdown{
+    display:flex;
+    gap:14px;
+    margin-top:26px;
+    animation:fadeIn 1.4s ease both 0.5s;
+  }
+  .cd-unit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-width:52px;
+  }
+  .cd-num{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:26px;
+    color:var(--ink);
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(199,164,92,0.5);
+    border-radius:8px;
+    width:52px;
+    height:52px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-variant-numeric:tabular-nums;
+  }
+  .cd-label{
+    margin-top:6px;
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:rgba(250,247,239,0.65);
+  }
+
+  /* Locations */
+  .locations{
+    margin-top:30px;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    animation:fadeIn 1.4s ease both 0.6s;
+  }
+  .loc-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 16px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(199,164,92,0.35);
+    border-radius:12px;
+    text-decoration:none;
+    color:var(--ink);
+    text-align:left;
+    transition:background 0.2s ease;
+  }
+  .loc-card:active{ background:rgba(255,255,255,0.16); }
+  .loc-icon{
+    flex:none;
+    width:20px;
+    height:20px;
+    color:var(--gold-soft);
+  }
+  .loc-text{ flex:1; min-width:0; }
+  .loc-kind{
+    font-family:'Cormorant SC', serif;
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+  }
+  .loc-name{
+    font-size:17px;
+    line-height:1.25;
+  }
+  .loc-sub{
+    font-size:13px;
+    font-style:italic;
+    color:rgba(250,247,239,0.7);
+  }
+  .loc-arrow{
+    flex:none;
+    color:rgba(250,247,239,0.5);
+    font-size:16px;
+  }
+
+  .contact{
+    margin-top:26px;
+    animation:fadeIn 1.4s ease both 0.7s;
+  }
+  .contact-kicker{
+    font-family:'Cormorant SC', serif;
+    font-size:12px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+    margin-bottom:8px;
+  }
+  .contact-emails{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .contact-emails a{
+    font-size:15px;
+    font-style:italic;
+    color:rgba(250,247,239,0.85);
+    text-decoration:none;
+    border-bottom:1px solid rgba(199,164,92,0.4);
+    padding-bottom:1px;
+  }
+  .contact-emails a:active{ color:var(--gold-soft); }
+
+  .footer{
+    margin-top:36px;
+    padding-top:0;
+    padding-bottom:8px;
+  }
+  .footer-note{
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:rgba(250,247,239,0.6);
+    line-height:1.8;
+  }
+
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+  @keyframes fadeDown{ from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:none;} }
+
+  @media (max-width:380px){
+    .save{ font-size:58px; }
+    .date-word{ font-size:64px; }
+    .names{ font-size:23px; letter-spacing:4px; }
+  }
+</style>
+
+<div class="stage">
+  <div class="content">
+    <div class="seal">T&amp;A</div>
+
+    <svg class="sprig" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M10 20 C60 5, 140 5, 190 20" stroke="#c7a45c" stroke-width="1" opacity="0.7"/>
+      <circle cx="100" cy="20" r="2.5" fill="#c7a45c"/>
+      <circle cx="70" cy="14" r="1.6" fill="#c7a45c" opacity="0.8"/>
+      <circle cx="130" cy="14" r="1.6" fill="#c7a45c" opacity="0.8"/>
+    </svg>
+
+    <div class="headline">
+      <div class="save">Save</div>
+      <div class="the">THE</div>
+      <div class="date-word">Date</div>
+    </div>
+
+    <div class="rule"></div>
+    <div class="names">TJAŠA</div>
+    <div class="amp">in</div>
+    <div class="names">ANDRAŽ</div>
+    <div class="rule"></div>
+
+    <div class="villa-space"></div>
+
+    <div class="wedding-date">18 · 9 · 2027</div>
+    <div class="venue-line">Goriška Brda &amp; Vipavska dolina</div>
+
+    <div class="countdown" id="countdown">
+      <div class="cd-unit"><div class="cd-num" id="cd-days">–</div><div class="cd-label">dni</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cd-hours">–</div><div class="cd-label">ur</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cd-min">–</div><div class="cd-label">min</div></div>
+      <div class="cd-unit"><div class="cd-num" id="cd-sec">–</div><div class="cd-label">sek</div></div>
+    </div>
+
+    <div class="locations">
+      <a class="loc-card" href="https://www.google.com/maps/search/?api=1&query=Vila+Vipol%C5%BEe%2C+Vipol%C5%BEe+29%2C+5212+Dobrovo" target="_blank" rel="noopener">
+        <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
+        <div class="loc-text">
+          <div class="loc-kind">Slovesnost</div>
+          <div class="loc-name">Vila Vipolže</div>
+          <div class="loc-sub">Vipolže, Goriška Brda</div>
+        </div>
+        <div class="loc-arrow">→</div>
+      </a>
+      <a class="loc-card" href="https://www.google.com/maps/search/?api=1&query=Posestvo+Rouna%2C+Slap+15%2C+5271+Vipava" target="_blank" rel="noopener">
+        <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
+        <div class="loc-text">
+          <div class="loc-kind">Zabava</div>
+          <div class="loc-name">Posestvo Rouna</div>
+          <div class="loc-sub">Slap, Vipavska dolina</div>
+        </div>
+        <div class="loc-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="contact">
+      <div class="contact-kicker">Za vsa vprašanja</div>
+      <div class="contact-emails">
+        <a href="mailto:tjasamiric@gmail.com">tjasamiric@gmail.com</a>
+        <a href="mailto:tomsic.andraz@gmail.com">tomsic.andraz@gmail.com</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-note">Uradno vabilo in podrobnosti&nbsp;sledijo</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var target = new Date('2027-09-18T14:00:00+02:00').getTime();
+    var elD = document.getElementById('cd-days');
+    var elH = document.getElementById('cd-hours');
+    var elM = document.getElementById('cd-min');
+    var elS = document.getElementById('cd-sec');
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function tick(){
+      var now = Date.now();
+      var diff = Math.max(0, target - now);
+      var s = Math.floor(diff/1000);
+      var days = Math.floor(s/86400);
+      var hours = Math.floor((s%86400)/3600);
+      var mins = Math.floor((s%3600)/60);
+      var secs = s%60;
+      elD.textContent = days;
+      elH.textContent = pad(hours);
+      elM.textContent = pad(mins);
+      elS.textContent = pad(secs);
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>
