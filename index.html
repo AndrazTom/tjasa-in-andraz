@@ -683,12 +683,17 @@
       // needs more zoom than plain center-cropping (baseCover) would use —
       // on most ordinary tall phones that extra zoom pushes the villa
       // close enough to the screen edges to look cramped, no margin at
-      // all. MARGIN_RELAX trades a little position precision back for
+      // all. MARGIN_RELAX can trade a little position precision back for
       // breathing room by blending minScale toward baseCover; 0 is exact
       // (no margin), 1 is plain centered cover (max margin, no alignment).
       // baseCover is still always the floor, so the image never fails to
-      // cover the viewport regardless of this value.
-      var MARGIN_RELAX = 0.3;
+      // cover the viewport regardless of this value. Left at 0 — exact X/Y
+      // match takes priority, and since .villa-hero's size (further down)
+      // targets *this* image's actual rendered villa size, relaxing this
+      // also shrinks that target, making the sketch band smaller too. Only
+      // raise it again once X/Y/size are all solid and margin is the only
+      // thing left to fix.
+      var MARGIN_RELAX = 0;
       var scale = baseCover + (minScale - baseCover) * (1 - MARGIN_RELAX);
 
       var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
@@ -712,7 +717,7 @@
       var watercolourVillaWidth = WIDTH_W * scaledW;
       var pageWidth = hero.parentElement.getBoundingClientRect().width;
       var wantedHeroWidth = watercolourVillaWidth / WIDTH_S;
-      var heroWidth = Math.max(pageWidth * 0.8, Math.min(pageWidth * 0.94, wantedHeroWidth));
+      var heroWidth = Math.max(pageWidth * 0.8, Math.min(pageWidth * 0.98, wantedHeroWidth));
       hero.style.width = heroWidth.toFixed(2) + 'px';
     }
 
