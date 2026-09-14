@@ -125,8 +125,7 @@
     padding-bottom:8px;
   }
 
-  /* Villa photo band - sized to the photo's own aspect ratio so it
-     shows in full, uncropped, instead of being zoomed into a tall strip */
+  /* sized to the photo's own aspect ratio so it shows uncropped */
   .villa-hero{
     width:80%;
     margin:0 auto;
@@ -310,7 +309,7 @@
     justify-content:center;
     gap:20px;
     background:var(--paper);
-    transition:opacity 3.4s ease 2.5s; /* cover to page, after envelope gone — extra pause added so it doesn't start the instant the envelope finishes fading */
+    transition:opacity 3.4s ease 2.5s; /* cover to page, after envelope gone */
   }
   .envelope-cover.opened{
     opacity:0;
@@ -325,7 +324,7 @@
   .reveal-photo{
     background-image:url('images/vila-watercolour.png');
     background-size:cover;
-    background-position:50% 47%; /* no-JS fallback only — the <script> at the bottom of the page computes and overrides both of these to land the villa exactly on the sketch's villa position, see the comment there */
+    background-position:50% 47%; /* no-JS fallback; script overrides both, see below */
     transform:scale(1.08);
     transition:transform 1.8s cubic-bezier(.2,.7,.3,1); /* photo zoom-settle */
   }
@@ -360,7 +359,7 @@
     animation:fadeIn 0.8s ease both 0.9s; /* intro: 2 names, after the note settles */
   }
   .envelope-sender .sender-amp{
-    font-family:'Alex Brush', cursive; /* Pinyon Script's own & glyph read oddly here; a second, complementary script pairs better than reusing the same face or dropping to a plain serif */
+    font-family:'Alex Brush', cursive; /* Pinyon Script's own & glyph looked off */
     font-size:1.15em;
   }
   .envelope-sender .sender-note{
@@ -384,45 +383,18 @@
     aspect-ratio:175/212; /* matches the envelope-open/closed.png canvas (700x848) */
     margin-top:-20px; /* nudge up within the centered flex column */
     transition:opacity 0.6s ease 1.4s; /* envelope fades, after flap */
-    -webkit-tap-highlight-color:transparent; /* the mobile-only gray flash on tap: this is WebKit/Chrome's default touch feedback rectangle, not our animation — every animation-timing fix left it pixel-identical, which only makes sense if it was never animation-related */
-    /* intro: 3 envelope+seal pop in together (seal is a child, rides along
-       with this transform). Deliberately on .envelope-btn itself, which has
-       no filter of its own — .envelope-photo/.envelope-seal's drop-shadows
-       live on those children, not here. Animating a `transform` on the same
-       element as a live `filter` is what caused a visible rendering
-       artifact earlier in this project (see git history / CLAUDE.md); this
-       sidesteps that by keeping the animated element and the filtered
-       elements separate.
-       popIn only touches `transform`, deliberately never `opacity` — this
-       same element's opacity is separately driven by the `transition`
-       above for the close-on-click fade, and layering an opacity-touching
-       `animation` on top of that broke the fade-out (see .envelope-hint's
-       comment below for the same issue spelled out in more detail). Scaling
-       from 0 already reads as "appearing from nothing" without needing
-       opacity too. */
-    animation:popIn 0.6s cubic-bezier(.34,1.56,.64,1) both 1.5s; /* intro: 3 envelope+seal pop */
+    -webkit-tap-highlight-color:transparent; /* kills WebKit's default tap-flash */
+    animation:popIn 0.6s cubic-bezier(.34,1.56,.64,1) both 1.5s; /* intro: 3 envelope+seal pop; transform only, never opacity — that fought the close-fade transition below */
   }
   .envelope-cover.opened .envelope-btn{
     opacity:0;
   }
 
-  /* Real envelope photos: closed/open crossfade in place of a flap animation.
-     Both PNGs are pre-aligned (see tools/) so the envelope body sits at the
-     same spot in both — only the flap area visibly changes during the fade.
-
-     Live CSS filter:drop-shadow, on a box deliberately made larger than
-     the envelope photo itself (inset negative, background-size <100%) so
-     the photo has transparent margin to bleed the shadow into. The
-     envelope PNG fits ITS OWN canvas edge-to-edge with ~0 margin — a
-     drop-shadow applied to a box that size has nowhere to spread and gets
-     clipped into a flat rectangular "border". Padding the box (not the
-     image) sidesteps that without needing to pre-bake the shadow into a
-     separate image (compare the fix for the villa-sketch duotone, which
-     — unlike this — can't be done live, see CLAUDE.md's Design section). */
+  /* closed/open crossfade in place of a flap animation; both PNGs pre-aligned (see tools/) */
   .envelope-photo{
     position:absolute;
-    inset:-14.1509% -17.1429%; /* box padding: 120px on a 700x848 source, expressed as %/box */
-    background-size:74.468% 77.941%; /* shrinks the photo back down to fill only the un-padded center of the box (700/940, 848/1088) */
+    inset:-14.1509% -17.1429%; /* box padded beyond the photo so the drop-shadow has room to bleed, else it clips into a hard rectangle */
+    background-size:74.468% 77.941%; /* shrinks photo back down to fit the un-padded center of the box */
     background-position:center;
     background-repeat:no-repeat;
     transition:opacity 1.4s ease; /* flap opens (crossfade), slowed */
@@ -444,19 +416,10 @@
     opacity:1;
   }
 
-  /* Same box-padding trick as .envelope-photo above: seal.png's wax circle
-     touches its own canvas edge with ~0 margin, so the box here (100px) is
-     bigger than the seal's tuned 50px display size, with background-size
-     shrinking it back down to that 50px — leaving a 25px margin on every
-     side for the drop-shadow (blur 10 + offset 6 = 16px reach) to bleed
-     into. This margin is sized in real CSS px against the *displayed*
-     50px size and the filter's own blur/offset, not against seal.png's
-     own (400px) canvas — those are unrelated scales once background-size
-     is shrinking the image down by 8x, unlike .envelope-photo above where
-     the box and the source photo happen to share the same scale. */
+  /* same box-padding trick as .envelope-photo — box (100px) sized bigger than the seal's 50px display size for shadow room */
   .envelope-seal{
     position:absolute;
-    top:75%; left:50%; /* flap's actual fold tip, measured off envelope-closed.png, nudged up slightly */
+    top:75%; left:50%; /* flap's fold tip */
     transform:translate(-50%,-50%);
     width:100px; height:100px;
     z-index:3;
@@ -472,15 +435,8 @@
     transform:translate(-50%,-50%) scale(0.5);
   }
 
-  /* The entrance animation lives on the inner .hint-text span, not on
-     .envelope-hint itself, deliberately: .envelope-hint needs its own
-     later opacity *transition* to fade out on close, and putting an
-     opacity-animating `animation` on the very same element/property that
-     a later `transition` also needs to drive turned out to be unreliable
-     — the fade-out on close silently stopped working once the entrance
-     animation was added (see git history). Splitting entrance vs. close
-     across a parent/child pair sidesteps that outright instead of relying
-     on animation-vs-transition precedence working out. */
+  /* entrance animation on the inner span, not here — an opacity animation
+     and the close-fade transition on the same element fought each other */
   .envelope-hint{
     position:relative;
     z-index:3;
@@ -602,61 +558,15 @@
   window.scrollTo(0, 0);
   window.addEventListener('pageshow', function(){ window.scrollTo(0, 0); }); // iOS bfcache restore
 
-  /* Aligns the intro watercolour's villa to land at the exact same on-screen
-     spot the main page's villa sketch does, so the crossfade between them
-     doesn't visibly jump. The two source images are completely different
-     compositions (the watercolour is a small building in a huge aerial
-     landscape; the sketch is the building filling almost the whole frame),
-     so there's no static CSS background-position that works for every
-     viewport size — .reveal-photo is a full-viewport background while
-     .villa-hero is a fixed-aspect-ratio box inside the 480px-wide .page
-     column, and where things land depends on the live viewport.
-
-     Deliberately NOT using background-size:cover: for this square source
-     image, `cover` on any portrait viewport is always height-driven (the
-     full image height exactly fills the viewport, unconditionally), which
-     makes the *vertical* background-position mathematically inert — no
-     percentage can move the villa up/down, since there's no vertical crop
-     room to place it within. That's why an earlier version of this that
-     tried to fix vertical alignment via background-position-y silently did
-     nothing, and the actual vertical mismatch (which scales with how much
-     a phone's viewport height differs from whatever it happened to be
-     tested on, since the fixed-px text above .villa-hero eats a different
-     *fraction* of a shorter vs. taller screen) came out small on one phone
-     and huge on another — not a calibration error, a missing degree of
-     freedom.
-
-     Instead: measure where .villa-hero's own villa lands on screen (its
-     position is fully deterministic — that band always shows the whole
-     sketch uncropped), then solve for a background-size/-position pair —
-     chosen ourselves, not the `cover` keyword — that (a) places the
-     watercolour's villa exactly on that point on both axes and (b) still
-     fully covers the viewport with no gaps, with a bit of deliberate
-     slack (MARGIN_RELAX below) so hitting (a) doesn't force so much zoom
-     that the villa ends up edge-to-edge with no breathing room.
-
-     Then: .villa-hero itself is resized (its width, in px, overriding the
-     CSS 80%) so the *sketch's* villa ends up the same on-screen width as
-     the watercolour's villa just came out to. Sizing runs this direction
-     — sketch adapting to watercolour, not the other way — because the
-     watercolour's size is the one under real constraints (must cover the
-     viewport, needs room for position + margin); .villa-hero has none of
-     that, it's free to be whatever width makes the two match.
-
-     CX_S/CY_S/WIDTH_S and CX_W/CY_W/WIDTH_W are each image's villa center
-     and on-screen width as a fraction of its own canvas — roof-ridge-to-
-     ground-line, wall-to-wall — measured directly off the source files
-     (grid overlay + pixel coordinates, see git history for this change).
-     Re-measure and update these if either source image is ever replaced
-     or re-cropped. */
+  /* Aligns the intro watercolour's villa to the main page sketch's villa
+     (position + size) so the crossfade between them doesn't jump. Not
+     background-size:cover — computes its own size/position per viewport
+     instead, since cover can't hit an exact target on both axes. CY_S
+     tweaks the target vertically (aims the watercolour, never moves the
+     sketch); CX_S/WIDTH_S/CX_W/CY_W/WIDTH_W are each image's villa
+     center/width as a fraction of its own canvas, measured off the
+     source files — re-measure if either image is ever replaced. */
   (function(){
-    // To manually tweak vertical alignment: raise CY_S to aim the
-    // watercolour LOWER (i.e. if the watercolour villa is sitting too
-    // high vs. the sketch), lower it to aim HIGHER. This is the sketch's
-    // own target fraction, not something applied to the sketch itself —
-    // .villa-hero always shows the full sketch image uncropped regardless
-    // of this value, so changing it never moves the sketch, only where
-    // the watercolour tries to match it.
     var CX_S = 0.499, CY_S = 0.38, WIDTH_S = 0.9354;  // vila-sketch.jpg (1300x866) villa center + width
     var CX_W = 0.464, CY_W = 0.5, WIDTH_W = 0.3557;  // vila-watercolour.png villa center + width
     var IMG_W = 1254, IMG_H = 1254;   // vila-watercolour.png's own canvas size
@@ -666,61 +576,33 @@
     if (!hero || !photo) return;
 
     function alignVilla(){
-      // Read the hero's rect BEFORE this function resizes it further down
-      // — its target position (center) doesn't move when its width does
-      // (margin:0 auto keeps it centered either way), so this stays valid
-      // even after the resize at the end of this function.
-      var heroRect = hero.getBoundingClientRect();
+      var heroRect = hero.getBoundingClientRect(); // read before resizing hero below; center doesn't move when width does
       var vw = window.innerWidth, vh = window.innerHeight;
       var targetX = heroRect.left + heroRect.width * CX_S;
       var targetY = heroRect.top + heroRect.height * CY_S;
 
-      var baseCover = Math.max(vw / IMG_W, vh / IMG_H); // bare minimum to fully cover the viewport, no position guarantee
-      // Smallest scale that both covers the viewport AND leaves enough
-      // room on every edge to place (CX_W,CY_W) exactly at (targetX,targetY).
+      var baseCover = Math.max(vw / IMG_W, vh / IMG_H);
+      // smallest scale that covers the viewport AND leaves room to place (CX_W,CY_W) exactly at (targetX,targetY)
       var minScale = Math.max(
         baseCover,
-        targetX / (CX_W * IMG_W),                    // left edge covered
-        (vw - targetX) / (IMG_W * (1 - CX_W)),        // right edge covered
-        targetY / (CY_W * IMG_H),                     // top edge covered
-        (vh - targetY) / (IMG_H * (1 - CY_W))         // bottom edge covered
+        targetX / (CX_W * IMG_W),
+        (vw - targetX) / (IMG_W * (1 - CX_W)),
+        targetY / (CY_W * IMG_H),
+        (vh - targetY) / (IMG_H * (1 - CY_W))
       );
-
-      // minScale nails the villa's position exactly, but getting there
-      // needs more zoom than plain center-cropping (baseCover) would use —
-      // on most ordinary tall phones that extra zoom pushes the villa
-      // close enough to the screen edges to look cramped, no margin at
-      // all. MARGIN_RELAX can trade a little position precision back for
-      // breathing room by blending minScale toward baseCover; 0 is exact
-      // (no margin), 1 is plain centered cover (max margin, no alignment).
-      // baseCover is still always the floor, so the image never fails to
-      // cover the viewport regardless of this value. Left at 0 — exact X/Y
-      // match takes priority, and since .villa-hero's size (further down)
-      // targets *this* image's actual rendered villa size, relaxing this
-      // also shrinks that target, making the sketch band smaller too. Only
-      // raise it again once X/Y/size are all solid and margin is the only
-      // thing left to fix.
-      var MARGIN_RELAX = 0;
+      var MARGIN_RELAX = 0; // 0 = exact match, 1 = plain centered cover; see CLAUDE.md if tweaking
       var scale = baseCover + (minScale - baseCover) * (1 - MARGIN_RELAX);
 
       var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
       var offsetX = targetX - CX_W * scaledW;
       var offsetY = targetY - CY_W * scaledH;
-      // Once MARGIN_RELAX pulls `scale` below minScale, hitting the exact
-      // target on every edge is no longer geometrically possible without a
-      // gap — clamp to the nearest position that still fully covers the
-      // viewport (a no-op whenever scale >= minScale, i.e. MARGIN_RELAX 0).
-      offsetX = Math.min(0, Math.max(vw - scaledW, offsetX));
+      offsetX = Math.min(0, Math.max(vw - scaledW, offsetX)); // clamp so coverage always holds even if MARGIN_RELAX > 0
       offsetY = Math.min(0, Math.max(vh - scaledH, offsetY));
 
       photo.style.backgroundSize = scaledW.toFixed(2) + 'px ' + scaledH.toFixed(2) + 'px';
       photo.style.backgroundPosition = offsetX.toFixed(2) + 'px ' + offsetY.toFixed(2) + 'px';
 
-      // Resize .villa-hero so the sketch's villa comes out the same
-      // on-screen width as the watercolour villa above. Never shrink it
-      // below 85% of .page — only grow it — and cap it short of the full
-      // page width so it still reads as a "band" with its own side margin
-      // rather than edge-to-edge.
+      // resize .villa-hero so the sketch villa matches the watercolour villa's on-screen width, clamped to [85.5%, 98%] of .page
       var watercolourVillaWidth = WIDTH_W * scaledW;
       var pageWidth = hero.parentElement.getBoundingClientRect().width;
       var wantedHeroWidth = watercolourVillaWidth / WIDTH_S;

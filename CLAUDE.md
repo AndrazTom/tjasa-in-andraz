@@ -46,20 +46,12 @@ bottom-center point, so a closed/open crossfade doesn't jump. Re-run it
 locally whenever the *source* envelope photos change.
 
 The envelope's and seal's drop-shadows are a **live** CSS
-`filter:drop-shadow`, not baked into the images (an earlier version baked
-them in, and there was a script for it — both are gone now, see the
-`.envelope-photo`/`.envelope-seal` comments in `index.html` for why the
-live version doesn't hit the clipping bug that made baking seem necessary
-in the first place: it wasn't about live-vs-baked, it was that the
-envelope/seal PNGs fit their own canvas edge-to-edge with ~0 margin, and
-the box the filter renders into needs room around the visible content for
-the blur+offset to spread into. Fixed by making the CSS box itself larger
-than the photo (negative `inset`) and shrinking the photo back down within
-it (`background-size` < 100%), leaving transparent margin in the box for
-the filter — no separate baking step needed. If you resize/replace
-`envelope-closed/open.png` or `seal.png` with a source that has a
-meaningfully different content-to-canvas margin, re-check the `inset`/
-`background-size` percentages in `index.html` still leave enough room.
+`filter:drop-shadow`, not baked into the images. The photos fit their own
+canvas edge-to-edge with ~0 margin, so the filter needs the CSS box made
+larger than the photo (negative `inset`, `background-size` < 100%) to have
+room to spread — see the `.envelope-photo`/`.envelope-seal` rules in
+`index.html`. Re-check those percentages if you swap in source images with
+a different content-to-canvas margin.
 
 `index.html` is the source of truth. It's a normal standalone document
 (`<!DOCTYPE html>`, `<head>` with viewport meta, `<body>`) because it's
@@ -101,19 +93,13 @@ served as-is by GitHub Pages — it does **not** assume any wrapping skeleton.
   wax seal (a real photographed seal, `images/seal.png` — sage wax with a
   gold-embossed monogram — not a UI accent).
 - Fonts: Google Fonts — Cormorant Garamond (body), Cormorant SC (small
-  caps labels/dates), Pinyon Script (the ornate cursive used for the
-  "Save"/"Date" headline and the envelope's sender line — chosen to match
-  the swash calligraphy in the Etsy/Canva inspiration video under
-  `inspiration/`; the wax seal's "T&A" monogram is baked into `seal.png`
-  itself, not set in this font).
-- The villa sketch (`images/vila-sketch.jpg`) is a duotone: original
-  black-on-white line art remapped so black→ink color, white→paper color,
-  baked into the image itself (not a CSS filter — an earlier invert+hue-
-  rotate filter approach left a visible seam where the filtered white
-  background didn't exactly match the page background). Regenerate it
-  with the same paper/ink RGB values whenever the palette changes:
-  see the inline duotone snippet used throughout this project's history
-  (grayscale → per-channel LUT lerp between ink and paper).
+  caps labels/dates), Pinyon Script (headline + envelope sender names,
+  matching the Etsy/Canva inspiration video under `inspiration/`), Alex
+  Brush (just the sender line's "&" — Pinyon Script's own glyph looked off).
+- The villa sketch (`images/vila-sketch.jpg`) is a duotone (black→ink,
+  white→paper) baked into the image itself, not a CSS filter — an earlier
+  filter approach left a visible seam at the edges. Regenerate with the
+  same paper/ink RGB values if the palette ever changes.
 
 ## The envelope-opening intro
 
@@ -121,23 +107,20 @@ Sequence, roughly (every transition/animation in `index.html` has a short
 inline comment like `/* flap opens */` or `/* 4: date */` — read those
 before guessing at timings):
 
-1. Page loads on a closed envelope (`envelope-closed.png`, see above —
-   plus the wax seal, `seal.png`, overlaid on top) sitting over the villa
-   watercolour, full-bleed, with a dark top/bottom veil behind the sender
-   text/hint for legibility. `body.locked` blocks
-   scrolling.
-2. Click → the closed photo crossfades to the open one in place (~1.4s,
-   there's no separate flap layer to rotate — the two photos are pre-aligned
-   so only the flap area visibly changes), *then* the whole envelope +
-   sender line ("Tjaša in Andraž pošiljata pošto") + hint ("Klikni na
-   kuverto") fade away together — sequential, not simultaneous.
-3. A slow crossfade (~3.4s) reveals the cream page underneath, which has
-   the villa **sketch** (not the photo) in its own band partway down —
-   the photo/sketch roles are deliberately swapped between the intro and
-   the page.
-4. Text then fades in top-to-bottom, one block at a time ("Harry Potter
-   letter" effect): sprig → headline → rule → date/venue → rule → names →
-   countdown → locations → contact → footer.
+1. Page loads on a closed envelope (`envelope-closed.png` + `seal.png`)
+   over the villa watercolour, full-bleed, dark top/bottom veil behind the
+   text for legibility. `body.locked` blocks scrolling. Sender text
+   ("Prispelo je pismo" / "Tjaše & Andraža") fades in, then envelope+seal
+   pop in together, then the "Klikni na kuverto" hint.
+2. Click → closed photo crossfades to open (~1.4s, no separate flap
+   layer — the two photos are pre-aligned so only the flap area visibly
+   changes), then envelope + sender + hint fade away together.
+3. A slow crossfade (~3.4s) reveals the page underneath, with the villa
+   **sketch** (not the photo) in its own band — photo/sketch roles are
+   deliberately swapped between the intro and the page.
+4. Page text fades in top-to-bottom, one block at a time: sprig →
+   headline → rule → date/venue → rule → names → countdown → locations →
+   contact → footer.
 5. `history.scrollRestoration = 'manual'` + forced `scrollTo(0,0)` on
    load, `pageshow`, and envelope-open — iOS Safari otherwise restores a
    guest's previous scroll offset on reload, which looked broken.
@@ -174,42 +157,13 @@ Tag before any major redesign so it's easy to roll back:
 
 ## Known open items
 
-- Screenshot-testing timing-based CSS animations with headless Chrome is
-  unreliable on this machine (`--window-size` doesn't reliably set the
-  actual viewport below ~500px, and `--virtual-time-budget` doesn't
-  advance CSS transition/animation clocks). Workarounds used: wrap
-  `index.html` in an iframe with fixed pixel dimensions inside a wrapper
-  page for accurate mobile-width screenshots; force `.opened` classes and
-  `animation:none!important;opacity:1!important` on a scratch copy to
-  inspect static end-states. Always verify real interaction timing live
-  in an actual browser, not just via screenshots — and for anything that
-  only reproduces on a phone (a past bug: a gray flash on tap, turned out
-  to be WebKit/Chrome's default tap-highlight, fixed with
-  `-webkit-tap-highlight-color:transparent` on `.envelope-btn` and
-  globally on `*`), get a screen recording and diff frames with
-  `ffmpeg -i recording.mp4 frame_%03d.png` + PIL/numpy rather than
-  guessing from a text description — several CSS-timing theories were
-  tried and failed before a recording actually showed what was happening.
+- Headless Chrome on this machine is unreliable for testing timing-based
+  CSS animations: `--window-size` doesn't reliably set the actual viewport
+  below ~500px, and `--virtual-time-budget` doesn't advance animation
+  clocks. Workarounds: force `.opened`/`animation:none!important` on a
+  scratch copy to inspect static end-states; for anything mobile-only,
+  get a screen recording and diff frames (`ffmpeg -i rec.mp4 frame_%03d.png`
+  + PIL/numpy) rather than guessing — that's what found the tap-highlight
+  flash bug after several wrong CSS-timing theories failed.
 
 ## Changes requested (mark a change as completed when completed)
-- [x] Villa is too much on the left on phone display. I need perfect alignment.
-- [x] In all dimensions (placement and size) watercolour villa needs to match sketched villa.
-  So the animation transition is smooth.
-  → Static `background-position` percentages can't do this exactly: the
-  watercolour is a full-viewport `background-size:cover` while the sketch
-  sits in a fixed-aspect-ratio box inside the 480px `.page` column, and how
-  much of the watercolour gets cropped by `cover` depends on the live
-  viewport's aspect ratio — no single hand-picked percentage holds for
-  every phone. Fixed with a small script (in `index.html`'s `<script>`,
-  search "Aligns the intro watercolour's villa") that measures where
-  `.villa-hero`'s villa actually lands on screen via `getBoundingClientRect`
-  (deterministic — that band always shows the full sketch uncropped), then
-  solves `.reveal-photo`'s `background-position` so the watercolour's villa
-  lands at that exact same point, given `cover`'s own scale/crop math. Runs
-  on load, again once web fonts finish (they shift the text height above
-  `.villa-hero`), and on resize/orientation change — exact for any viewport
-  size rather than approximate for an assumed range. The villa-center
-  fractions it solves against (`CX_S/CY_S`, `CX_W/CY_W` in that script) were
-  measured directly off the two source images (grid-overlay + pixel
-  coordinates); re-measure and update them if either image is ever replaced
-  or re-cropped.
