@@ -657,7 +657,7 @@
     // .villa-hero always shows the full sketch image uncropped regardless
     // of this value, so changing it never moves the sketch, only where
     // the watercolour tries to match it.
-    var CX_S = 0.499, CY_S = 0.52, WIDTH_S = 0.9354;  // vila-sketch.jpg (1300x866) villa center + width
+    var CX_S = 0.499, CY_S = 0.48, WIDTH_S = 0.9354;  // vila-sketch.jpg (1300x866) villa center + width
     var CX_W = 0.464, CY_W = 0.5, WIDTH_W = 0.3557;  // vila-watercolour.png villa center + width
     var IMG_W = 1254, IMG_H = 1254;   // vila-watercolour.png's own canvas size
 
@@ -665,27 +665,15 @@
     var photo = document.querySelector('.reveal-photo');
     if (!hero || !photo) return;
 
-    // Both images' villas now aim at this SAME explicit on-screen width
-    // (as a fraction of .page's width), instead of one chasing whatever
-    // the other currently happens to render at. That "chasing" setup was
-    // the actual bug behind the two staying badly mismatched in size
-    // (~2.2x apart, measured on-device) — .villa-hero had its own floor
-    // (85%) that could win independently of what the watercolour was
-    // doing, so the two had no guaranteed relationship to each other at
-    // all. A single shared target removes that disconnect by construction.
-    var TARGET_VILLA_FRACTION = 0.85;
-
     function alignVilla(){
       // Read the hero's rect BEFORE this function resizes it further down
       // — its target position (center) doesn't move when its width does
       // (margin:0 auto keeps it centered either way), so this stays valid
       // even after the resize at the end of this function.
       var heroRect = hero.getBoundingClientRect();
-      var pageWidth = hero.parentElement.getBoundingClientRect().width;
       var vw = window.innerWidth, vh = window.innerHeight;
       var targetX = heroRect.left + heroRect.width * CX_S;
       var targetY = heroRect.top + heroRect.height * CY_S;
-      var targetVillaWidth = pageWidth * TARGET_VILLA_FRACTION; // shared by both images, see comment above
 
       var baseCover = Math.max(vw / IMG_W, vh / IMG_H); // bare minimum to fully cover the viewport, no position guarantee
       // Smallest scale that both covers the viewport AND leaves enough
@@ -697,28 +685,46 @@
         targetY / (CY_W * IMG_H),                     // top edge covered
         (vh - targetY) / (IMG_H * (1 - CY_W))         // bottom edge covered
       );
-      // The scale that would make the watercolour villa exactly
-      // TARGET_VILLA_FRACTION of the page wide.
-      var sizeMatchScale = targetVillaWidth / (WIDTH_W * IMG_W);
-      // Position/coverage are hard requirements — never go below minScale
-      // for those — but whenever there's room, zoom in further to also
-      // hit the shared size target.
-      var scale = Math.max(minScale, sizeMatchScale);
+
+      // minScale nails the villa's position exactly, but getting there
+      // needs more zoom than plain center-cropping (baseCover) would use —
+      // on most ordinary tall phones that extra zoom pushes the villa
+      // close enough to the screen edges to look cramped, no margin at
+      // all. MARGIN_RELAX can trade a little position precision back for
+      // breathing room by blending minScale toward baseCover; 0 is exact
+      // (no margin), 1 is plain centered cover (max margin, no alignment).
+      // baseCover is still always the floor, so the image never fails to
+      // cover the viewport regardless of this value. Left at 0 — exact X/Y
+      // match takes priority, and since .villa-hero's size (further down)
+      // targets *this* image's actual rendered villa size, relaxing this
+      // also shrinks that target, making the sketch band smaller too. Only
+      // raise it again once X/Y/size are all solid and margin is the only
+      // thing left to fix.
+      var MARGIN_RELAX = 0;
+      var scale = baseCover + (minScale - baseCover) * (1 - MARGIN_RELAX);
 
       var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
       var offsetX = targetX - CX_W * scaledW;
       var offsetY = targetY - CY_W * scaledH;
+      // Once MARGIN_RELAX pulls `scale` below minScale, hitting the exact
+      // target on every edge is no longer geometrically possible without a
+      // gap — clamp to the nearest position that still fully covers the
+      // viewport (a no-op whenever scale >= minScale, i.e. MARGIN_RELAX 0).
       offsetX = Math.min(0, Math.max(vw - scaledW, offsetX));
       offsetY = Math.min(0, Math.max(vh - scaledH, offsetY));
 
       photo.style.backgroundSize = scaledW.toFixed(2) + 'px ' + scaledH.toFixed(2) + 'px';
       photo.style.backgroundPosition = offsetX.toFixed(2) + 'px ' + offsetY.toFixed(2) + 'px';
 
-      // .villa-hero sized to the same shared target, clamped to a sane
-      // range of .page's width as a safety net (should be a no-op in
-      // practice since TARGET_VILLA_FRACTION/WIDTH_S already falls inside it).
-      var wantedHeroWidth = targetVillaWidth / WIDTH_S;
-      var heroWidth = Math.max(pageWidth * 0.8, Math.min(pageWidth * 0.98, wantedHeroWidth));
+      // Resize .villa-hero so the sketch's villa comes out the same
+      // on-screen width as the watercolour villa above. Never shrink it
+      // below 85% of .page — only grow it — and cap it short of the full
+      // page width so it still reads as a "band" with its own side margin
+      // rather than edge-to-edge.
+      var watercolourVillaWidth = WIDTH_W * scaledW;
+      var pageWidth = hero.parentElement.getBoundingClientRect().width;
+      var wantedHeroWidth = watercolourVillaWidth / WIDTH_S;
+      var heroWidth = Math.max(pageWidth * 0.85, Math.min(pageWidth * 0.98, wantedHeroWidth));
       hero.style.width = heroWidth.toFixed(2) + 'px';
     }
 
