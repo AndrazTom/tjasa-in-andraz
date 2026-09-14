@@ -48,7 +48,7 @@
     height:auto;
     opacity:0.85;
     margin-top:44px;
-    animation:fadeIn 1.3s ease both 4.35s;
+    animation:fadeIn 1.3s ease both 4.8s; /* 1: sprig */
   }
 
   .headline{
@@ -57,7 +57,7 @@
     align-items:baseline;
     justify-content:center;
     gap:10px;
-    animation:fadeIn 1.3s ease both 4.7s;
+    animation:fadeIn 1.3s ease both 5.15s; /* 2: headline */
   }
   .save{
     font-family:'Alex Brush', cursive;
@@ -85,15 +85,15 @@
     margin:22px 0 16px;
     opacity:0;
   }
-  .rule-1{ animation:fadeIn 1.2s ease both 5.05s; }
-  .rule-2{ animation:fadeIn 1.2s ease both 5.8s; }
+  .rule-1{ animation:fadeIn 1.2s ease both 5.5s; } /* 3: rule above date */
+  .rule-2{ animation:fadeIn 1.2s ease both 6.25s; } /* 6: rule above names */
 
   .wedding-date{
     font-family:'Cormorant SC', serif;
     font-size:28px;
     letter-spacing:6px;
     color:var(--ink);
-    animation:fadeIn 1.2s ease both 5.4s;
+    animation:fadeIn 1.2s ease both 5.85s; /* 4: date */
   }
 
   .venue-line{
@@ -101,7 +101,7 @@
     font-style:italic;
     font-size:19px;
     color:var(--ink-soft);
-    animation:fadeIn 1.2s ease both 5.55s;
+    animation:fadeIn 1.2s ease both 6.0s; /* 5: venue */
   }
 
   .names{
@@ -109,7 +109,7 @@
     font-size:27px;
     letter-spacing:5px;
     color:var(--ink);
-    animation:fadeIn 1.2s ease both 6.15s;
+    animation:fadeIn 1.2s ease both 6.6s; /* 7: names */
   }
   .amp{
     font-family:'Cormorant Garamond', serif;
@@ -118,7 +118,7 @@
     color:var(--ink);
     margin:6px 0;
     letter-spacing:1px;
-    animation:fadeIn 1.2s ease both 6.15s;
+    animation:fadeIn 1.2s ease both 6.6s; /* 7: "in" */
   }
 
   .top{
@@ -161,7 +161,7 @@
   .countdown{
     display:flex;
     gap:14px;
-    animation:fadeIn 1.2s ease both 6.5s;
+    animation:fadeIn 1.2s ease both 6.95s; /* 8: countdown */
   }
   .cd-unit{
     display:flex;
@@ -199,7 +199,7 @@
     display:flex;
     flex-direction:column;
     gap:10px;
-    animation:fadeIn 1.2s ease both 6.85s;
+    animation:fadeIn 1.2s ease both 7.3s; /* 9: locations */
   }
   .loc-card{
     display:flex;
@@ -246,7 +246,7 @@
 
   .contact{
     margin-top:26px;
-    animation:fadeIn 1.2s ease both 7.2s;
+    animation:fadeIn 1.2s ease both 7.65s; /* 10: contact */
   }
   .contact-kicker{
     font-family:'Cormorant SC', serif;
@@ -273,7 +273,7 @@
 
   .footer{
     margin-top:36px;
-    animation:fadeIn 1.2s ease both 7.55s;
+    animation:fadeIn 1.2s ease both 8.0s; /* 11: footer */
   }
   .footer-note{
     font-size:12px;
@@ -307,7 +307,7 @@
     justify-content:center;
     gap:20px;
     background:var(--paper);
-    transition:opacity 3.4s ease 0.85s;
+    transition:opacity 3.4s ease 1.3s; /* cover to page, after envelope gone */
   }
   .envelope-cover.opened{
     opacity:0;
@@ -324,7 +324,7 @@
     background-size:cover;
     background-position:47.2% 55%;
     transform:scale(1.08);
-    transition:transform 1.8s cubic-bezier(.2,.7,.3,1);
+    transition:transform 1.8s cubic-bezier(.2,.7,.3,1); /* photo zoom-settle */
   }
   .envelope-cover.opened .reveal-photo{
     transform:scale(1);
@@ -342,7 +342,7 @@
     line-height:1.5;
     color:#fff;
     text-shadow:0 1px 8px rgba(0,0,0,0.35);
-    transition:opacity 0.7s ease;
+    transition:opacity 0.6s ease 0.7s; /* sender fades, after flap */
   }
   .envelope-cover.opened .envelope-sender{
     opacity:0;
@@ -358,7 +358,7 @@
     aspect-ratio:3/2;
     perspective:1400px;
     filter:drop-shadow(0 22px 30px rgba(30,40,25,0.3));
-    transition:opacity 0.85s ease;
+    transition:opacity 0.6s ease 0.7s; /* envelope fades, after flap */
   }
   .envelope-cover.opened .envelope-btn{
     opacity:0;
@@ -379,7 +379,7 @@
   .envelope-flap-wrap{
     height:62%;
     transform-origin:top center;
-    transition:transform 0.85s cubic-bezier(.62,0,.3,1);
+    transition:transform 0.7s cubic-bezier(.62,0,.3,1); /* flap opens */
     z-index:2;
   }
   .envelope-cover.opened .envelope-flap-wrap{
@@ -402,7 +402,7 @@
     color:#48583c;
     letter-spacing:1px;
     z-index:3;
-    transition:opacity 0.65s ease, transform 0.65s ease;
+    transition:opacity 0.6s ease, transform 0.6s ease; /* seal fades */
   }
   .envelope-cover.opened .envelope-seal{
     opacity:0;
@@ -418,7 +418,7 @@
     text-transform:uppercase;
     color:#fff;
     text-shadow:0 1px 8px rgba(0,0,0,0.35);
-    transition:opacity 0.7s ease;
+    transition:opacity 0.6s ease 0.7s; /* hint fades, after flap */
   }
   .envelope-cover.opened .envelope-hint{
     opacity:0;
@@ -570,7 +570,7 @@
       setTimeout(function(){
         document.body.classList.remove('locked');
         cover.style.display = 'none';
-      }, 4300);
+      }, 4750); // matches cover fade: 1.3s delay + 3.4s fade
     }
     btn.addEventListener('click', openEnvelope);
   })();
