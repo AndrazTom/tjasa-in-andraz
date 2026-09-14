@@ -162,45 +162,33 @@ Tag before any major redesign so it's easy to roll back:
   inspect static end-states. Always verify real interaction timing live
   in an actual browser, not just via screenshots.
 
-- Mobile-only flash during the envelope-open animation: on tap, a sharp-edged
-  gray rectangle briefly flashes, sized exactly to `.envelope-photo`'s own
-  (padded) box, seal silhouette faintly visible inside it. Diagnosed by
-  extracting frames from a screen recording (`ffmpeg -i recording.mp4
-  frame_%03d.png`, **note ffmpeg's output is 1-indexed from frame_001.png —
-  don't off-by-one it against a separately-enumerated list**, then diffing
-  consecutive frames with PIL/numpy to isolate the exact flash frame and its
-  bounding box) — don't try to debug this class of issue by guessing from
-  descriptions alone, get a recording, every fix attempt before the first
-  recording failed.
+- ~~Mobile-only flash during the envelope-open animation~~ — **fixed.**
+  On tap, a sharp-edged gray rectangle used to briefly flash over the
+  envelope. Root cause: WebKit/Chrome's default gray tap-highlight
+  feedback on touch, which only renders on touchscreens (never showed up
+  on PC) and is completely independent of the CSS animation. Fixed with
+  `-webkit-tap-highlight-color:transparent` — set both on `.envelope-btn`
+  and globally on `*`, because the highlight paints on whichever DOM node
+  the browser resolves as the actual tap target, which here was an
+  overflowing absolutely-positioned child (`.envelope-photo`, sized larger
+  than the button via negative `inset`), not the button itself. Setting it
+  only on the button would have missed that child.
 
-  Ruled out:
-  - forcing `.envelope-photo`/`.reveal-photo`/`.envelope-cover`/
-    `.envelope-seal` onto their own GPU compositing layer via
-    `transform:translateZ(0)` — a second recording, taken after this fix
-    was confirmed live, showed a pixel-identical flash, proving it wasn't
-    the cause.
-  - force-decoding `images/envelope-open-shadowed.png` ahead of time via
-    `new Image().decode()`, in case deferred background-image decode was
-    the delay — reported as still happening after this fix was live too,
-    but *not* re-confirmed with a recording, only a verbal report. Don't
-    fully cross this one off without video proof.
-  - removing `will-change`, fusing the shadow into the photo (fewer
-    animating alpha layers), a single-fade-in instead of a true crossfade
-    — tried earlier, before recordings were part of the workflow, also
-    didn't help.
-
-  Current hypothesis, fix applied but not yet confirmed on-device: none of
-  the above touched anything animation-timing related, which stopped
-  making sense as the cause. More likely this was never about our CSS
-  transition at all — it's WebKit/Chrome's own default gray tap-highlight
-  feedback on the tapped `<button>`, which only renders on touchscreens
-  (matches "PC is mostly fine, phone flashes") and is completely
-  independent of whatever the button's content is doing. Fix:
-  `-webkit-tap-highlight-color:transparent` on `.envelope-btn` and
-  globally on `*`. If a fresh recording still shows the flash after this,
-  that theory is wrong too — go back to the recording, don't guess again.
+  Getting here took several wrong turns — `transform:translateZ(0)` GPU
+  layer promotion, force-decoding the hidden open-state image via
+  `Image().decode()`, `will-change`, fusing the shadow into the photo, a
+  single-fade-in instead of a true crossfade — all pixel-identical
+  failures once actually tested, because none of them were the right
+  *category* of cause (a default browser UI behavior, not anything to do
+  with our CSS transition or its assets). The thing that actually cracked
+  it: extracting frames from a screen recording (`ffmpeg -i recording.mp4
+  frame_%03d.png` — note ffmpeg's output is 1-indexed from frame_001.png,
+  don't off-by-one it against a separately-enumerated list — then diffing
+  consecutive frames with PIL/numpy) to get the flash's exact pixel bounds
+  instead of guessing from a text description. If any similar "flash/
+  jank on mobile only" bug shows up again, get a recording first — every
+  fix attempted before that existed failed.
 
 ## Changes requested (mark a change as completed when completed)
 - Villa is too much on the left on phone display. I need perfect alignment.
 - In all dimensions (placement and size) watercolour villa needs to match sketched villa. SO the animation transition is smooth.
-- Text on initial page Tjasa and andraz is great but posiljata posto and klikni na kuverto is way to small, not clearly seen.
