@@ -357,7 +357,7 @@
   }
   .envelope-sender .sender-note{
     display:block;
-    margin-top:8px;
+    margin-top:16px;
     font-family:'Cormorant SC', serif;
     font-size:25px;
     letter-spacing:3px;
@@ -379,60 +379,36 @@
     opacity:0;
   }
 
-  /* Pre-rendered shadows (images/envelope-shadow-closed/open.png, see tools/)
-     instead of a live CSS filter:drop-shadow. The envelope PNG fits its box
-     edge-to-edge with ~0 margin, so a live drop-shadow's blur+offset had
-     nowhere to spread — the browser clipped it at the box edge, showing up
-     as a flat rectangular "border". Baking the shadow into a padded image
-     (same fix already used for the villa-sketch duotone, see CLAUDE.md)
-     sidesteps filter clipping entirely. There are two of them, crossfading
-     together with .envelope-photo below: a single static shadow (shaped
-     like the closed envelope) stayed at full strength through the whole
-     open animation and didn't match the open envelope's silhouette once
-     the photo had crossfaded, so it visibly popped/mismatched. */
-  .envelope-shadow{
-    position:absolute;
-    inset:-14.1509% -17.1429%; /* padding baked into the shadow PNGs (120px on a 700x848 source), expressed as %/box */
-    background-size:contain;
-    background-position:center;
-    background-repeat:no-repeat;
-    transition:opacity 1.4s ease; /* crossfades with .envelope-photo */
-  }
-  .envelope-shadow-closed{
-    background-image:url('images/envelope-shadow-closed.png');
-    z-index:0;
-    transition:opacity 0.9s ease; /* faster than the 1.4s photo crossfade — a soft blurred edge reads as lingering if it fades at the same rate as the sharp photo */
-  }
-  .envelope-shadow-open{
-    background-image:url('images/envelope-shadow-open.png');
-    z-index:0;
-    opacity:0;
-    transition:opacity 1.4s ease 0.3s; /* same pace as the photo, just held back so it starts appearing later */
-  }
-  .envelope-cover.opened .envelope-shadow-closed{
-    opacity:0;
-  }
-  .envelope-cover.opened .envelope-shadow-open{
-    opacity:1;
-  }
-
   /* Real envelope photos: closed/open crossfade in place of a flap animation.
      Both PNGs are pre-aligned (see tools/) so the envelope body sits at the
-     same spot in both — only the flap area visibly changes during the fade. */
+     same spot in both — only the flap area visibly changes during the fade.
+
+     The drop-shadow is baked directly into these images (envelope-closed/
+     open-shadowed.png, see tools/) rather than a live CSS filter:drop-shadow
+     or a separate crossfading shadow layer. Two reasons: (1) the envelope
+     PNG fits its box edge-to-edge with ~0 margin, so a live drop-shadow's
+     blur+offset had nowhere to spread and got clipped into a flat
+     rectangular "border" (same fix as the villa-sketch duotone, see
+     CLAUDE.md); (2) an earlier version kept the shadow as its own crossfading
+     layer (4 animating alpha layers total: 2 shadows + 2 photos), which was
+     too much simultaneous alpha compositing for mobile GPUs — jank, plus a
+     flash of the (dark) shadow's own silhouette during the transition.
+     Fusing shadow+photo into one texture per state halves that back down
+     to 2 layers. */
   .envelope-photo{
     position:absolute;
-    inset:0;
+    inset:-14.1509% -17.1429%; /* padding baked into the shadowed PNGs (120px on a 700x848 source), expressed as %/box */
     background-size:contain;
-    background-position:bottom center;
+    background-position:center;
     background-repeat:no-repeat;
     transition:opacity 1.4s ease; /* flap opens (crossfade), slowed */
   }
   .envelope-photo-closed{
-    background-image:url('images/envelope-closed.png');
+    background-image:url('images/envelope-closed-shadowed.png');
     z-index:2;
   }
   .envelope-photo-open{
-    background-image:url('images/envelope-open.png');
+    background-image:url('images/envelope-open-shadowed.png');
     z-index:1;
     opacity:0;
   }
@@ -443,33 +419,13 @@
     opacity:1;
   }
 
-  /* Same filter-clipping issue as .envelope-shadow above: seal.png's wax
-     circle touches its canvas edge with zero margin, so drop-shadow got
-     clipped into a square. Baked into images/seal-shadow.png instead. */
-  .envelope-seal-shadow{
-    position:absolute;
-    top:75%; left:50%; /* flap's actual fold tip, measured off envelope-closed.png, nudged up slightly */
-    transform:translate(-50%,-50%);
-    width:62.5px; height:62.5px; /* 50px seal * 1.25 (40px padding on a 320px source) */
-    z-index:2;
-    background-image:url('images/seal-shadow.png');
-    background-size:contain;
-    background-repeat:no-repeat;
-    background-position:center;
-    transition:opacity 0.6s ease, transform 0.6s ease; /* fades with the seal */
-  }
-  .envelope-cover.opened .envelope-seal-shadow{
-    opacity:0;
-    transform:translate(-50%,-50%) scale(0.5);
-  }
-
   .envelope-seal{
     position:absolute;
     top:75%; left:50%; /* flap's actual fold tip, measured off envelope-closed.png, nudged up slightly */
     transform:translate(-50%,-50%);
-    width:50px; height:50px;
+    width:62.5px; height:62.5px; /* 50px seal * 1.25 (40px padding on a 320px source) — shadow baked into seal-shadowed.png, see envelope-photo comment above */
     z-index:3;
-    background-image:url('images/seal.png');
+    background-image:url('images/seal-shadowed.png');
     background-size:contain;
     background-repeat:no-repeat;
     background-position:center;
@@ -508,11 +464,8 @@
   </div>
 
   <button class="envelope-btn" id="envelopeBtn" aria-label="Odpri vabilo">
-    <span class="envelope-shadow envelope-shadow-closed" aria-hidden="true"></span>
-    <span class="envelope-shadow envelope-shadow-open" aria-hidden="true"></span>
     <span class="envelope-photo envelope-photo-closed"></span>
     <span class="envelope-photo envelope-photo-open"></span>
-    <span class="envelope-seal-shadow" aria-hidden="true"></span>
     <span class="envelope-seal" aria-hidden="true"></span>
   </button>
 
