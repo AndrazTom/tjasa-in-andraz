@@ -360,9 +360,7 @@
     animation:fadeIn 0.8s ease both 0.9s; /* intro: 2 names, after the note settles */
   }
   .envelope-sender .sender-amp{
-    font-family:'Cormorant Garamond', serif;
-    font-style:italic;
-    font-size:0.6em; /* Pinyon Script's own & glyph read oddly here; borrow the plainer serif italic instead */
+    font-weight:700; /* Pinyon Script's default & glyph read oddly here; bold reads cleaner in the same cursive font */
   }
   .envelope-sender .sender-note{
     display:block;
@@ -383,6 +381,7 @@
     z-index:3;
     width:min(280px, 68vw);
     aspect-ratio:175/212; /* matches the envelope-open/closed.png canvas (700x848) */
+    margin-top:-20px; /* nudge up within the centered flex column */
     transition:opacity 0.6s ease 1.4s; /* envelope fades, after flap */
     -webkit-tap-highlight-color:transparent; /* the mobile-only gray flash on tap: this is WebKit/Chrome's default touch feedback rectangle, not our animation — every animation-timing fix left it pixel-identical, which only makes sense if it was never animation-related */
     /* intro: 3 envelope+seal pop in together (seal is a child, rides along
