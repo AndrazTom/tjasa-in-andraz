@@ -159,28 +159,6 @@ Tag before any major redesign so it's easy to roll back:
   in an actual browser, not just via screenshots.
 
 ## Changes requested (mark a change as completed when completed)
-- [x] Text on the first page isn't clearly visible.
-  → The envelope-cover's `.reveal-overlay` was a light cream veil, which
-  worked against white text on the airier watercolour (vs. the darker real
-  photo it replaced). Added a dark top/bottom `linear-gradient` layer
-  (concentrated behind the sender line and the "Klikni na kuverto" hint,
-  transparent through the middle over the envelope) plus stronger doubled
-  text-shadows, and bumped the sender/hint font sizes up for legibility.
-- [x] I need a perfect alignemnt between watercolour bkg and villa sketch. On all mobile displays (resolutions can differ a bit).
-  → The villa-sketch band (main page) already shows the full, uncropped
-  image at any width — it was already device-independent. The watercolour
-  behind the envelope uses `background-size:cover`, which crops differently
-  per viewport aspect ratio, so it needed a `background-position` that
-  keeps the *entire* villa building in frame across the aspect-ratio range
-  phones actually come in (~1.78 for older/smaller phones like iPhone SE up
-  to ~2.22 for tall modern ones) — verified by computing the visible crop
-  window at several real device sizes (see the reasoning in git history)
-  rather than eyeballing one viewport. Landed on `50% 47%`; vertical
-  position doesn't actually matter for this image/viewport combination
-  (portrait phones are always height-driven under `cover`, so the full
-  image height shows regardless of the Y value) but is kept for clarity
-  and in case this ever renders in a wider (desktop) window.
-- [x] Wax seal was an SVG placeholder ("just a circle").
-  → Swapped in the real photographed wax seal (`images/seal.png`,
-  background already transparent, no processing needed) in place of the
-  SVG gradient-circle-plus-Pinyon-Script-monogram version.
+- Villa is too much on the left on phone display. I need perfect alignment.
+- In all dimensions (placement and size) watercolour villa needs to match sketched villa. SO the animation transition is smooth.
+- Text on initial page Tjasa and andraz is great but posiljata posto and klikni na kuverto is way to small, not clearly seen.
