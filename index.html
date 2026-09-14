@@ -43,52 +43,37 @@
     padding:0 28px;
   }
 
-  /* Monogram */
-  .seal{
-    width:74px;
-    height:74px;
-    border-radius:50%;
-    background:radial-gradient(circle at 30% 24%, #f4f7ee 0%, #d3ddc2 22%, #aebd97 50%, #8fa17c 78%, #7c8f6b 100%);
-    box-shadow:0 6px 14px rgba(95,115,80,0.28), inset 0 0 0 2px rgba(255,255,255,0.4);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-family:'Cormorant SC', serif;
-    font-size:22px;
-    color:#48583c;
-    letter-spacing:1px;
-    margin-top:44px;
-    animation:fadeDown 1.3s ease both 3.1s;
-  }
-
   .sprig{
     width:120px;
     height:auto;
     opacity:0.85;
-    margin-top:14px;
-    animation:fadeIn 1.3s ease both 3.45s;
+    margin-top:44px;
+    animation:fadeIn 1.3s ease both 3.1s;
   }
 
   .headline{
-    margin-top:6px;
-    animation:fadeIn 1.3s ease both 3.8s;
+    margin-top:16px;
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap:10px;
+    animation:fadeIn 1.3s ease both 3.45s;
   }
   .save{
     font-family:'Alex Brush', cursive;
-    font-size:70px;
+    font-size:42px;
     line-height:0.9;
     color:var(--ink);
   }
   .the{
     font-family:'Cormorant SC', serif;
-    font-size:19px;
-    letter-spacing:9px;
-    margin:2px 0;
+    font-size:16px;
+    letter-spacing:4px;
     color:var(--ink);
   }
   .date-word{
     font-family:'Alex Brush', cursive;
-    font-size:76px;
+    font-size:46px;
     line-height:0.9;
     color:var(--ink);
   }
@@ -100,15 +85,15 @@
     margin:22px 0 16px;
     opacity:0;
   }
-  .rule-1{ animation:fadeIn 1.2s ease both 4.15s; }
-  .rule-2{ animation:fadeIn 1.2s ease both 4.9s; }
+  .rule-1{ animation:fadeIn 1.2s ease both 3.8s; }
+  .rule-2{ animation:fadeIn 1.2s ease both 4.55s; }
 
   .wedding-date{
     font-family:'Cormorant SC', serif;
     font-size:24px;
     letter-spacing:6px;
     color:var(--ink);
-    animation:fadeIn 1.2s ease both 4.5s;
+    animation:fadeIn 1.2s ease both 4.15s;
   }
 
   .venue-line{
@@ -116,7 +101,7 @@
     font-style:italic;
     font-size:17px;
     color:var(--ink-soft);
-    animation:fadeIn 1.2s ease both 4.65s;
+    animation:fadeIn 1.2s ease both 4.3s;
   }
 
   .names{
@@ -124,7 +109,7 @@
     font-size:27px;
     letter-spacing:5px;
     color:var(--ink);
-    animation:fadeIn 1.2s ease both 5.25s;
+    animation:fadeIn 1.2s ease both 4.9s;
   }
   .amp{
     font-family:'Cormorant Garamond', serif;
@@ -133,11 +118,11 @@
     color:var(--ink);
     margin:6px 0;
     letter-spacing:1px;
-    animation:fadeIn 1.2s ease both 5.25s;
+    animation:fadeIn 1.2s ease both 4.9s;
   }
 
   .top{
-    padding-bottom:34px;
+    padding-bottom:18px;
   }
 
   /* Villa photo band - sized to the photo's own aspect ratio so it
@@ -176,7 +161,7 @@
   .countdown{
     display:flex;
     gap:14px;
-    animation:fadeIn 1.2s ease both 5.6s;
+    animation:fadeIn 1.2s ease both 5.25s;
   }
   .cd-unit{
     display:flex;
@@ -214,7 +199,7 @@
     display:flex;
     flex-direction:column;
     gap:10px;
-    animation:fadeIn 1.2s ease both 5.95s;
+    animation:fadeIn 1.2s ease both 5.6s;
   }
   .loc-card{
     display:flex;
@@ -261,7 +246,7 @@
 
   .contact{
     margin-top:26px;
-    animation:fadeIn 1.2s ease both 6.3s;
+    animation:fadeIn 1.2s ease both 5.95s;
   }
   .contact-kicker{
     font-family:'Cormorant SC', serif;
@@ -288,7 +273,7 @@
 
   .footer{
     margin-top:36px;
-    animation:fadeIn 1.2s ease both 6.65s;
+    animation:fadeIn 1.2s ease both 6.3s;
   }
   .footer-note{
     font-size:12px;
@@ -302,8 +287,9 @@
   @keyframes fadeDown{ from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:none;} }
 
   @media (max-width:380px){
-    .save{ font-size:58px; }
-    .date-word{ font-size:64px; }
+    .save{ font-size:34px; }
+    .date-word{ font-size:38px; }
+    .the{ font-size:14px; letter-spacing:3px; }
     .names{ font-size:23px; letter-spacing:4px; }
   }
 
@@ -480,19 +466,17 @@
 
 <div class="page">
   <div class="section top">
-    <div class="seal">T&amp;A</div>
-
     <svg class="sprig" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M10 20 C60 5, 140 5, 190 20" stroke="#c7a45c" stroke-width="1" opacity="0.7"/>
-      <circle cx="100" cy="20" r="2.5" fill="#c7a45c"/>
-      <circle cx="70" cy="14" r="1.6" fill="#c7a45c" opacity="0.8"/>
-      <circle cx="130" cy="14" r="1.6" fill="#c7a45c" opacity="0.8"/>
+      <path d="M10 20 C60 5, 140 5, 190 20" stroke="#7c8f6b" stroke-width="1" opacity="0.7"/>
+      <circle cx="100" cy="20" r="2.5" fill="#7c8f6b"/>
+      <circle cx="70" cy="14" r="1.6" fill="#7c8f6b" opacity="0.8"/>
+      <circle cx="130" cy="14" r="1.6" fill="#7c8f6b" opacity="0.8"/>
     </svg>
 
     <div class="headline">
-      <div class="save">Save</div>
-      <div class="the">THE</div>
-      <div class="date-word">Date</div>
+      <span class="save">Save</span>
+      <span class="the">the</span>
+      <span class="date-word">Date</span>
     </div>
 
     <div class="rule rule-1"></div>
