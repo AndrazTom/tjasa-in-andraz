@@ -345,25 +345,28 @@
     text-align:center;
     color:#fff;
     transition:opacity 0.6s ease 1.4s; /* sender fades, after flap */
-    animation:fadeIn 0.8s ease both 0.2s; /* intro: 1 sender */
   }
   .envelope-cover.opened .envelope-sender{
     opacity:0;
   }
   .envelope-sender .sender-names{
     display:block;
+    margin-top:16px;
     font-family:'Pinyon Script', cursive;
     font-size:62px;
-    line-height:1;
+    line-height:1.15;
     text-shadow:0 1px 3px rgba(0,0,0,0.65), 0 2px 14px rgba(0,0,0,0.55);
+    opacity:0;
+    animation:fadeIn 0.8s ease both 0.9s; /* intro: 2 names, after the note settles */
   }
   .envelope-sender .sender-note{
     display:block;
-    margin-top:16px;
     font-family:'Cormorant SC', serif;
     font-size:25px;
     letter-spacing:3px;
     text-transform:uppercase;
+    opacity:0;
+    animation:fadeIn 0.8s ease both 0.3s; /* intro: 1 note */
     text-shadow:0 1px 2px rgba(0,0,0,0.6), 0 1px 10px rgba(0,0,0,0.5);
   }
 
@@ -377,7 +380,7 @@
     aspect-ratio:175/212; /* matches the envelope-open/closed.png canvas (700x848) */
     transition:opacity 0.6s ease 1.4s; /* envelope fades, after flap */
     -webkit-tap-highlight-color:transparent; /* the mobile-only gray flash on tap: this is WebKit/Chrome's default touch feedback rectangle, not our animation — every animation-timing fix left it pixel-identical, which only makes sense if it was never animation-related */
-    /* intro: 2 envelope+seal pop in together (seal is a child, rides along
+    /* intro: 3 envelope+seal pop in together (seal is a child, rides along
        with this transform). Deliberately on .envelope-btn itself, which has
        no filter of its own — .envelope-photo/.envelope-seal's drop-shadows
        live on those children, not here. Animating a `transform` on the same
@@ -385,7 +388,7 @@
        artifact earlier in this project (see git history / CLAUDE.md); this
        sidesteps that by keeping the animated element and the filtered
        elements separate. */
-    animation:popIn 0.6s cubic-bezier(.34,1.56,.64,1) both 0.8s; /* intro: 2 envelope+seal pop */
+    animation:popIn 0.6s cubic-bezier(.34,1.56,.64,1) both 1.5s; /* intro: 3 envelope+seal pop */
   }
   .envelope-cover.opened .envelope-btn{
     opacity:0;
@@ -467,7 +470,7 @@
     color:#fff;
     text-shadow:0 1px 2px rgba(0,0,0,0.6), 0 1px 10px rgba(0,0,0,0.5);
     transition:opacity 0.6s ease 1.4s; /* hint fades, after flap */
-    animation:fadeIn 0.6s ease both 1.5s; /* intro: 3 hint */
+    animation:fadeIn 0.6s ease both 2.2s; /* intro: 4 hint */
   }
   .envelope-cover.opened .envelope-hint{
     opacity:0;
@@ -481,8 +484,8 @@
   <div class="reveal-overlay"></div>
 
   <div class="envelope-sender">
-    <span class="sender-names">Tjaša in Andraž</span>
-    <span class="sender-note">pošiljata pošto</span>
+    <span class="sender-note">Prispelo je pismo</span>
+    <span class="sender-names">Tjaše in<br>Andraža</span>
   </div>
 
   <button class="envelope-btn" id="envelopeBtn" aria-label="Odpri vabilo">
