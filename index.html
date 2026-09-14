@@ -650,7 +650,14 @@
      Re-measure and update these if either source image is ever replaced
      or re-cropped. */
   (function(){
-    var CX_S = 0.499, CY_S = 0.4919, WIDTH_S = 0.9354;  // vila-sketch.jpg (1300x866) villa center + width
+    // To manually tweak vertical alignment: raise CY_S to aim the
+    // watercolour LOWER (i.e. if the watercolour villa is sitting too
+    // high vs. the sketch), lower it to aim HIGHER. This is the sketch's
+    // own target fraction, not something applied to the sketch itself —
+    // .villa-hero always shows the full sketch image uncropped regardless
+    // of this value, so changing it never moves the sketch, only where
+    // the watercolour tries to match it.
+    var CX_S = 0.499, CY_S = 0.5, WIDTH_S = 0.9354;  // vila-sketch.jpg (1300x866) villa center + width
     var CX_W = 0.464, CY_W = 0.5076, WIDTH_W = 0.3557;  // vila-watercolour.png villa center + width
     var IMG_W = 1254, IMG_H = 1254;   // vila-watercolour.png's own canvas size
 
