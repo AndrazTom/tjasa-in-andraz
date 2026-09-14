@@ -173,26 +173,29 @@ Tag before any major redesign so it's easy to roll back:
   descriptions alone, get a recording, every fix attempt before the first
   recording failed.
 
-  Ruled out (tried, then disproved by a second recording after the fix was
-  live): forcing `.envelope-photo`/`.reveal-photo`/`.envelope-cover`/
-  `.envelope-seal` onto their own GPU compositing layer via
-  `transform:translateZ(0)` — removing it did not change the flash at all,
-  so it was never the actual cause, just a coincidentally-still-broken
-  version. Also already tried and didn't help: removing `will-change`,
-  fusing the shadow into the photo (fewer animating alpha layers), a
-  single-fade-in instead of a true crossfade.
+  Ruled out (tried, then disproved by a further recording after the fix
+  was confirmed live) — pixel-identical flash before and after each of
+  these, which is itself the tell that all of them were the wrong category
+  of cause:
+  - forcing `.envelope-photo`/`.reveal-photo`/`.envelope-cover`/
+    `.envelope-seal` onto their own GPU compositing layer via
+    `transform:translateZ(0)`
+  - force-decoding `images/envelope-open-shadowed.png` ahead of time via
+    `new Image().decode()`, in case deferred background-image decode was
+    the delay
+  - removing `will-change`, fusing the shadow into the photo (fewer
+    animating alpha layers), a single-fade-in instead of a true crossfade
 
-  Current hypothesis, fix applied but not yet confirmed on-device:
-  `.envelope-photo-open`'s background-image starts at `opacity:0` (never
-  painted) from page load, and mobile browsers can defer decoding a
-  background-image that's never been visible until the moment it actually
-  needs to paint — i.e. exactly when the crossfade starts. A force-decode
-  of `images/envelope-open-shadowed.png` via `new Image().decode()` runs
-  near the top of the page's `<script>`, using the several idle seconds
-  before anyone can tap the envelope to get the texture fully decoded and
-  resident ahead of time. If a fresh recording still shows the flash after
-  this, the decode-timing theory is wrong too — go back to the recording,
-  don't guess again.
+  Current hypothesis, fix applied but not yet confirmed on-device: none of
+  the above touched anything animation-timing related, which stopped
+  making sense as the cause. More likely this was never about our CSS
+  transition at all — it's WebKit/Chrome's own default gray tap-highlight
+  feedback on the tapped `<button>`, which only renders on touchscreens
+  (matches "PC is mostly fine, phone flashes") and is completely
+  independent of whatever the button's content is doing. Fix:
+  `-webkit-tap-highlight-color:transparent` on `.envelope-btn` and
+  globally on `*`. If a fresh recording still shows the flash after this,
+  that theory is wrong too — go back to the recording, don't guess again.
 
 ## Changes requested (mark a change as completed when completed)
 - Villa is too much on the left on phone display. I need perfect alignment.
