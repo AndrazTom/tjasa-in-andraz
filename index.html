@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tjaša & Andraž</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Alex+Brush&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap');
 
   :root{
     --paper:#f8f3e7;
@@ -60,9 +60,9 @@
     animation:fadeIn 1.3s ease both 5.15s; /* 2: headline */
   }
   .save{
-    font-family:'Alex Brush', cursive;
-    font-size:56px;
-    line-height:0.9;
+    font-family:'Pinyon Script', cursive;
+    font-size:72px;
+    line-height:0.75;
     color:var(--ink);
   }
   .the{
@@ -72,9 +72,9 @@
     color:var(--ink);
   }
   .date-word{
-    font-family:'Alex Brush', cursive;
-    font-size:60px;
-    line-height:0.9;
+    font-family:'Pinyon Script', cursive;
+    font-size:78px;
+    line-height:0.75;
     color:var(--ink);
   }
 
@@ -288,9 +288,10 @@
   @keyframes fadeDown{ from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:none;} }
 
   @media (max-width:380px){
-    .save{ font-size:44px; }
-    .date-word{ font-size:48px; }
-    .the{ font-size:17px; letter-spacing:3px; }
+    .headline{ gap:6px; }
+    .save{ font-size:42px; }
+    .date-word{ font-size:46px; }
+    .the{ font-size:15px; letter-spacing:2px; }
     .names{ font-size:23px; letter-spacing:4px; }
   }
 
@@ -321,9 +322,9 @@
     z-index:0;
   }
   .reveal-photo{
-    background-image:url('images/vila-vipolze.jpg');
+    background-image:url('images/vila-watercolour.png');
     background-size:cover;
-    background-position:47.2% 55%;
+    background-position:50% 47%;
     transform:scale(1.08);
     transition:transform 1.8s cubic-bezier(.2,.7,.3,1); /* photo zoom-settle */
   }
@@ -338,15 +339,28 @@
   .envelope-sender{
     position:relative;
     z-index:3;
-    font-style:italic;
-    font-size:17px;
-    line-height:1.5;
+    text-align:center;
     color:#fff;
-    text-shadow:0 1px 8px rgba(0,0,0,0.35);
     transition:opacity 0.6s ease 0.7s; /* sender fades, after flap */
   }
   .envelope-cover.opened .envelope-sender{
     opacity:0;
+  }
+  .envelope-sender .sender-names{
+    display:block;
+    font-family:'Pinyon Script', cursive;
+    font-size:44px;
+    line-height:1;
+    text-shadow:0 2px 10px rgba(0,0,0,0.4);
+  }
+  .envelope-sender .sender-note{
+    display:block;
+    margin-top:8px;
+    font-family:'Cormorant SC', serif;
+    font-size:12px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    text-shadow:0 1px 8px rgba(0,0,0,0.35);
   }
 
   .envelope-btn{
@@ -391,24 +405,34 @@
     position:absolute;
     top:54%; left:50%;
     transform:translate(-50%,-50%);
-    width:56px; height:56px;
-    border-radius:50%;
-    background:radial-gradient(circle at 30% 24%, #f4f7ee 0%, #d3ddc2 22%, #aebd97 50%, #8fa17c 78%, #647353 100%);
-    box-shadow:0 6px 14px rgba(95,115,80,0.32), inset 0 0 0 2px rgba(255,255,255,0.4);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-family:'Cormorant SC', serif;
-    font-size:17px;
-    color:#48583c;
-    letter-spacing:1px;
+    width:68px; height:68px;
     z-index:3;
+    filter:drop-shadow(0 6px 10px rgba(60,45,15,0.45));
     transition:opacity 0.6s ease, transform 0.6s ease; /* seal fades */
   }
   .envelope-cover.opened .envelope-seal{
     opacity:0;
     transform:translate(-50%,-50%) scale(0.5);
   }
+  .seal-svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  .seal-mono{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Pinyon Script', cursive;
+    color:#3d2a10;
+    text-shadow:0 1px 0 rgba(255,235,190,0.5), 0 -1px 0 rgba(0,0,0,0.35);
+  }
+  .mono-letter{ font-size:32px; line-height:1; }
+  .mono-amp{ font-size:15px; align-self:flex-end; margin:0 -2px 7px; }
 
   .envelope-hint{
     position:relative;
@@ -432,7 +456,10 @@
   <div class="reveal-photo"></div>
   <div class="reveal-overlay"></div>
 
-  <div class="envelope-sender">Tjaša in Andraž<br>pošiljata pošto</div>
+  <div class="envelope-sender">
+    <span class="sender-names">Tjaša in Andraž</span>
+    <span class="sender-note">pošiljata pošto</span>
+  </div>
 
   <button class="envelope-btn" id="envelopeBtn" aria-label="Odpri vabilo">
     <span class="envelope-body-wrap">
@@ -442,8 +469,14 @@
             <stop offset="0%" stop-color="#fffdf8"/>
             <stop offset="100%" stop-color="#eee0c2"/>
           </linearGradient>
+          <filter id="paperGrain" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="n"/>
+            <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0" result="g"/>
+            <feComposite in="g" in2="SourceGraphic" operator="in" result="gc"/>
+            <feBlend in="SourceGraphic" in2="gc" mode="multiply"/>
+          </filter>
         </defs>
-        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#647353" stroke-width="1.5"/>
+        <rect x="3" y="3" width="294" height="194" rx="7" fill="url(#bodyGrad)" stroke="#647353" stroke-width="1.5" filter="url(#paperGrain)"/>
         <path d="M10,193 L150,116 L290,193" fill="none" stroke="#647353" stroke-width="1" opacity="0.35"/>
       </svg>
     </span>
@@ -455,11 +488,44 @@
             <stop offset="100%" stop-color="#e7d8b8"/>
           </linearGradient>
         </defs>
-        <polygon points="3,4 297,4 150,121" fill="url(#flapGrad)"/>
+        <polygon points="3,4 297,4 150,121" fill="url(#flapGrad)" filter="url(#paperGrain)"/>
+        <path d="M150,106 C174,87 196,61 220,33" fill="none" stroke="#647353" stroke-width="1" opacity="0.2"/>
+        <circle cx="220" cy="33" r="2.2" fill="#647353" opacity="0.24"/>
+        <circle cx="202" cy="51" r="1.5" fill="#647353" opacity="0.22"/>
+        <circle cx="184" cy="69" r="1.5" fill="#647353" opacity="0.22"/>
+        <circle cx="236" cy="24" r="1.3" fill="#647353" opacity="0.2"/>
         <path d="M3,4 L150,121 L297,4" fill="none" stroke="#647353" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
     </span>
-    <span class="envelope-seal">T&amp;A</span>
+    <span class="envelope-seal" aria-hidden="true">
+      <svg class="seal-svg" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="sealOuter" cx="38%" cy="30%" r="80%">
+            <stop offset="0%" stop-color="#fbeec2"/>
+            <stop offset="35%" stop-color="#e8c479"/>
+            <stop offset="65%" stop-color="#c69a45"/>
+            <stop offset="100%" stop-color="#87611f"/>
+          </radialGradient>
+          <radialGradient id="sealInner" cx="42%" cy="38%" r="70%">
+            <stop offset="0%" stop-color="#e9c983"/>
+            <stop offset="45%" stop-color="#c69a45"/>
+            <stop offset="80%" stop-color="#93701f"/>
+            <stop offset="100%" stop-color="#6e4d15"/>
+          </radialGradient>
+          <filter id="waxGrain" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="noise"/>
+            <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0" result="grain"/>
+            <feComposite in="grain" in2="SourceGraphic" operator="in" result="grainClip"/>
+            <feBlend in="SourceGraphic" in2="grainClip" mode="multiply"/>
+          </filter>
+        </defs>
+        <path d="M 50.00 10.00 C 56.17 10.00 62.58 14.71 68.50 17.96 C 74.42 21.21 82.26 24.16 85.51 29.50 C 88.76 34.84 87.71 43.00 88.00 50.00 C 88.29 57.00 90.32 65.87 87.24 71.50 C 84.16 77.13 75.71 80.69 69.50 83.77 C 63.29 86.86 56.25 90.43 50.00 90.00 C 43.75 89.57 38.06 84.34 32.00 81.18 C 25.94 78.01 16.96 76.20 13.63 71.00 C 10.29 65.80 11.86 56.92 12.00 50.00 C 12.14 43.08 11.24 34.84 14.49 29.50 C 17.74 24.16 25.58 21.21 31.50 17.96 C 37.42 14.71 43.83 10.00 50.00 10.00 Z"
+              fill="url(#sealOuter)" filter="url(#waxGrain)"/>
+        <circle cx="50" cy="50" r="31" fill="url(#sealInner)" filter="url(#waxGrain)"/>
+        <circle cx="50" cy="50" r="31" fill="none" stroke="#6e4d15" stroke-width="0.8" opacity="0.55"/>
+      </svg>
+      <span class="seal-mono"><span class="mono-letter">T</span><span class="mono-amp">&amp;</span><span class="mono-letter">A</span></span>
+    </span>
   </button>
 
   <div class="envelope-hint">Klikni na kuverto</div>

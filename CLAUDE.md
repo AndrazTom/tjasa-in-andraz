@@ -19,9 +19,15 @@ offset as when this was written — don't "fix" the offset without checking.
 ```
 index.html              the whole site (styles + markup + script inline)
 images/
-  vila-vipolze.jpg       real aerial photo of Vila Vipolže (from brda.si)
+  vila-watercolour.png   aerial watercolour painting of Vila Vipolže, used
+                          full-bleed behind the closed envelope (replaced
+                          the real aerial photo below)
+  vila-vipolze.jpg       real aerial photo of Vila Vipolže (from brda.si);
+                          unused since the watercolour swap, kept in case
+                          we want it again
   vila-sketch.jpg        architectural elevation drawing, recolored as a
-                          duotone (paper/ink) to match the palette
+                          duotone (paper/ink) to match the palette; still
+                          used for the villa band on the main page
 tools/
   build_artifact.py       generates the Claude Artifact build from index.html
 inspiration/             reference material (not deployed, gitignored)
@@ -67,7 +73,10 @@ served as-is by GitHub Pages — it does **not** assume any wrapping skeleton.
   seal's own gradient (it's meant to look like an actual wax seal, not a
   UI accent).
 - Fonts: Google Fonts — Cormorant Garamond (body), Cormorant SC (small
-  caps labels/dates), Alex Brush (the cursive "Save"/"Date" script).
+  caps labels/dates), Pinyon Script (the ornate cursive used for the
+  "Save"/"Date" headline, the envelope's sender line, and the wax seal
+  monogram — chosen to match the swash calligraphy in the Etsy/Canva
+  inspiration video under `inspiration/`).
 - The villa sketch (`images/vila-sketch.jpg`) is a duotone: original
   black-on-white line art remapped so black→ink color, white→paper color,
   baked into the image itself (not a CSS filter — an earlier invert+hue-
@@ -84,7 +93,7 @@ inline comment like `/* flap opens */` or `/* 4: date */` — read those
 before guessing at timings):
 
 1. Page loads on a closed envelope (SVG-drawn: cream paper gradient, gold
-   trim, gold wax seal) sitting over the real villa photo, full-bleed,
+   trim, gold wax seal) sitting over the villa watercolour, full-bleed,
    with a soft light veil overlay. `body.locked` blocks scrolling.
 2. Click → the flap opens first (~0.7s), *then* the whole envelope +
    sender line ("Tjaša in Andraž pošiljata pošto") + hint ("Klikni na
@@ -126,3 +135,22 @@ Tag before any major redesign so it's easy to roll back:
   `animation:none!important;opacity:1!important` on a scratch copy to
   inspect static end-states. Always verify real interaction timing live
   in an actual browser, not just via screenshots.
+
+## Changes requested (mark a change as completed when completed)
+- [x] Envelope needs to have texture. Like a picture of real envelope. How to deal with that? Lmk what you need.
+  → No licensed photo was available, so this is done procedurally instead:
+  a `feTurbulence`-based SVG grain filter (`#paperGrain`) is applied to the
+  envelope body and flap for a paper-like texture, plus a faint embossed
+  floral sprig (reusing the page's own sprig motif) on the flap next to the
+  seal, echoing the inspiration video's embossed envelope.
+- [x] New initials, we want initials like in inspiration (the canva website). Like same font. Tjasa in Andraz in that special font along. Same font for save the date.
+  → Added Pinyon Script (Google Fonts) to match the inspiration video's
+  swash script; used for the "Save"/"Date" headline, the envelope's
+  "Tjaša in Andraž" sender line, and the wax seal's "T&A" monogram.
+- [x] Seal on the envelope is just a fucking circle. Make it look real (so wax-like). Lmk if you need sth here.
+  → Rebuilt as an SVG wax blob (irregular smoothed edge, not a perfect
+  circle) with a gold radial gradient, the same grain filter for texture,
+  and a "T&A" monogram in Pinyon Script with an engraved-looking bevel.
+- [x] Text in the start (before opening) is dogshit. Tjasa in Andraz should be in fancy font mentioned in above issue. As well as T&A.
+  → Envelope sender line now reads "Tjaša in Andraž" in large Pinyon
+  Script with a small-caps "pošiljata pošto" line beneath it.
