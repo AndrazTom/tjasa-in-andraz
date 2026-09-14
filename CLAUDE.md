@@ -17,38 +17,53 @@ offset as when this was written — don't "fix" the offset without checking.
 ## Structure
 
 ```
-index.html              the whole site (styles + markup + script inline)
+index.html                      the whole site (styles + markup + script inline)
 images/
-  vila-watercolour.png   aerial watercolour painting of Vila Vipolže, used
-                          full-bleed behind the closed envelope (replaced
-                          the real aerial photo, which has been deleted)
-  vila-sketch.jpg        architectural elevation drawing, recolored as a
-                          duotone (paper/ink) to match the palette; still
-                          used for the villa band on the main page
-  envelope-closed.png    real cream envelope photos (AI-generated,
-  envelope-open.png      background already removed), cropped/scaled/
-                          aligned onto a shared canvas so the envelope's
-                          body sits at the same spot in both — see
-                          tools/prep_envelope_photos.py (gitignored, kept
-                          locally) if these ever need reprocessing
-  seal.png               real photographed wax seal (sage wax, gold "T&A"
-                          monogram) — replaced the old SVG-drawn seal
-tools/                   gitignored — kept locally, not tracked/pushed
-  build_artifact.py       generates the Claude Artifact build from index.html
-  prep_envelope_photos.py cuts out + aligns envelope photos, see below
-inspiration/             reference material (not deployed, gitignored)
+  vila-watercolour.png          aerial watercolour painting of Vila Vipolže,
+                                used full-bleed behind the closed envelope
+  vila-sketch.jpg               architectural elevation drawing, recolored
+                                as a duotone (paper/ink) to match the
+                                palette; used for the villa band on the
+                                main page
+  envelope-closed.png           real cream envelope photos (AI-generated,
+  envelope-open.png             background already removed), cropped/
+                                scaled/aligned onto a shared canvas so the
+                                envelope's body sits at the same spot in
+                                both — source material, not referenced by
+                                index.html directly, see
+                                tools/prep_envelope_photos.py
+  envelope-closed-shadowed.png  the two above, with a drop-shadow baked in
+  envelope-open-shadowed.png    (padded canvas) — these are what
+                                index.html actually renders, see
+                                tools/bake_shadows.py
+  seal.png                      real photographed wax seal (sage wax, gold
+                                "T&A" monogram) — source material only
+  seal-shadowed.png             seal.png with its drop-shadow baked in —
+                                what index.html actually renders
+tools/                          gitignored — kept locally, not tracked/pushed
+  prep_envelope_photos.py       cuts out + aligns the raw envelope photos
+                                into envelope-closed/open.png, see below
+  bake_shadows.py               generates every *-shadowed.png above from
+                                its plain source, see below
+  build_artifact.py             generates the Claude Artifact build from
+                                index.html
+inspiration/                    reference material (not deployed, gitignored)
 ```
 
 `tools/prep_envelope_photos.py` cuts out + aligns a pair of envelope photos
-into the envelope-*.png files above: crops each to content, scales both to
-the same body width, and places them on a shared canvas anchored to the
-same bottom-center point, so a closed/open crossfade doesn't jump. Re-run
-it locally whenever the source envelope photos change.
+into `envelope-closed/open.png`: crops each to content, scales both to the
+same body width, and places them on a shared canvas anchored to the same
+bottom-center point, so a closed/open crossfade doesn't jump. Re-run it
+locally whenever the *source* envelope photos change.
 
-`tools/build_artifact.py` was briefly tracked/pushed (commit 0d95106) before
-being moved under the `tools/` gitignore rule like the rest of this
-directory — both scripts now stay local-only, they still exist on disk
-even though git doesn't track either.
+`tools/bake_shadows.py` regenerates `envelope-closed/open-shadowed.png` and
+`seal-shadowed.png` from their plain sources — see the script itself for
+why the shadow is baked into a padded image rather than a live CSS
+`filter:drop-shadow`. Re-run it whenever the plain source photos change,
+or when the shadow recipe (offset/blur/color/opacity, at the top of the
+script) changes. If you change its `PAD` values, the CSS in `index.html`
+that depends on them (`.envelope-photo`'s `inset` percentages,
+`.envelope-seal`'s width/height) needs updating too.
 
 `index.html` is the source of truth. It's a normal standalone document
 (`<!DOCTYPE html>`, `<head>` with viewport meta, `<body>`) because it's
@@ -87,8 +102,8 @@ served as-is by GitHub Pages — it does **not** assume any wrapping skeleton.
 
 - Palette: cream/paper background (`--paper: #f8f3e7`), sage green ink
   (`--ink: #647353`) for all text/borders/outlines, gold reserved for the
-  wax seal (now a real photographed seal, `images/seal.png` — sage wax
-  with a gold-embossed monogram — not a UI accent).
+  wax seal (a real photographed seal, `images/seal-shadowed.png` — sage
+  wax with a gold-embossed monogram — not a UI accent).
 - Fonts: Google Fonts — Cormorant Garamond (body), Cormorant SC (small
   caps labels/dates), Pinyon Script (the ornate cursive used for the
   "Save"/"Date" headline and the envelope's sender line — chosen to match
@@ -110,11 +125,11 @@ Sequence, roughly (every transition/animation in `index.html` has a short
 inline comment like `/* flap opens */` or `/* 4: date */` — read those
 before guessing at timings):
 
-1. Page loads on a closed envelope (a real cream envelope photo, background
-   removed — see `envelope-closed.png` above — plus a real wax seal photo,
-   `seal.png`, overlaid on top) sitting over the villa watercolour,
-   full-bleed, with a dark top/bottom veil behind the sender text/hint for
-   legibility. `body.locked` blocks scrolling.
+1. Page loads on a closed envelope (`envelope-closed-shadowed.png`, see
+   above — plus the wax seal, `seal-shadowed.png`, overlaid on top) sitting
+   over the villa watercolour, full-bleed, with a dark top/bottom veil
+   behind the sender text/hint for legibility. `body.locked` blocks
+   scrolling.
 2. Click → the closed photo crossfades to the open one in place (~1.4s,
    there's no separate flap layer to rotate — the two photos are pre-aligned
    so only the flap area visibly changes), *then* the whole envelope +
@@ -160,34 +175,14 @@ Tag before any major redesign so it's easy to roll back:
   page for accurate mobile-width screenshots; force `.opened` classes and
   `animation:none!important;opacity:1!important` on a scratch copy to
   inspect static end-states. Always verify real interaction timing live
-  in an actual browser, not just via screenshots.
-
-- ~~Mobile-only flash during the envelope-open animation~~ — **fixed.**
-  On tap, a sharp-edged gray rectangle used to briefly flash over the
-  envelope. Root cause: WebKit/Chrome's default gray tap-highlight
-  feedback on touch, which only renders on touchscreens (never showed up
-  on PC) and is completely independent of the CSS animation. Fixed with
-  `-webkit-tap-highlight-color:transparent` — set both on `.envelope-btn`
-  and globally on `*`, because the highlight paints on whichever DOM node
-  the browser resolves as the actual tap target, which here was an
-  overflowing absolutely-positioned child (`.envelope-photo`, sized larger
-  than the button via negative `inset`), not the button itself. Setting it
-  only on the button would have missed that child.
-
-  Getting here took several wrong turns — `transform:translateZ(0)` GPU
-  layer promotion, force-decoding the hidden open-state image via
-  `Image().decode()`, `will-change`, fusing the shadow into the photo, a
-  single-fade-in instead of a true crossfade — all pixel-identical
-  failures once actually tested, because none of them were the right
-  *category* of cause (a default browser UI behavior, not anything to do
-  with our CSS transition or its assets). The thing that actually cracked
-  it: extracting frames from a screen recording (`ffmpeg -i recording.mp4
-  frame_%03d.png` — note ffmpeg's output is 1-indexed from frame_001.png,
-  don't off-by-one it against a separately-enumerated list — then diffing
-  consecutive frames with PIL/numpy) to get the flash's exact pixel bounds
-  instead of guessing from a text description. If any similar "flash/
-  jank on mobile only" bug shows up again, get a recording first — every
-  fix attempted before that existed failed.
+  in an actual browser, not just via screenshots — and for anything that
+  only reproduces on a phone (a past bug: a gray flash on tap, turned out
+  to be WebKit/Chrome's default tap-highlight, fixed with
+  `-webkit-tap-highlight-color:transparent` on `.envelope-btn` and
+  globally on `*`), get a screen recording and diff frames with
+  `ffmpeg -i recording.mp4 frame_%03d.png` + PIL/numpy rather than
+  guessing from a text description — several CSS-timing theories were
+  tried and failed before a recording actually showed what was happening.
 
 ## Changes requested (mark a change as completed when completed)
 - Villa is too much on the left on phone display. I need perfect alignment.
