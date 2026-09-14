@@ -538,6 +538,13 @@
 </div>
 
 <script>
+  // iOS Safari (and others) restore the old scroll offset on reload even
+  // though the envelope covers the page; force it back to the top so the
+  // page never opens mid-scroll.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  window.scrollTo(0, 0);
+  window.addEventListener('pageshow', function(){ window.scrollTo(0, 0); }); // iOS bfcache restore
+
   (function(){
     var target = new Date('2027-09-18T14:00:00+02:00').getTime();
     var elD = document.getElementById('cd-days');
@@ -567,9 +574,11 @@
     var btn = document.getElementById('envelopeBtn');
     function openEnvelope(){
       if (cover.classList.contains('opened')) return;
+      window.scrollTo(0, 0); // always start the page at the top
       cover.classList.add('opened');
       setTimeout(function(){
         document.body.classList.remove('locked');
+        window.scrollTo(0, 0);
         cover.style.display = 'none';
       }, 4750); // matches cover fade: 1.3s delay + 3.4s fade
     }
