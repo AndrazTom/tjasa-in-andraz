@@ -87,15 +87,6 @@
     margin-top:-3px; /* pulls "Date" up so it nearly touches "Save the" above it */
   }
 
-  .rule{
-    width:150px;
-    height:1px;
-    background:linear-gradient(90deg, transparent, var(--line-strong), transparent);
-    margin:3px 0 2px;
-    opacity:0;
-  }
-  .rule-1{ animation:fadeIn 1.2s ease both 10.35s; } /* 3: rule above date */
-
   .wedding-date{
     font-family:'Cormorant SC', serif;
     font-size:28px;
@@ -136,7 +127,7 @@
                            it paints on top of the overlap regardless of DOM order — positioned
                            elements always beat non-positioned ones, DOM order doesn't matter */
     z-index:1;
-    animation:fadeIn 1.2s ease both 10.85s; /* 5: venue (bracket pairs with it) */
+    animation:fadeIn 1.2s ease both 10.0s; /* 5: venue (bracket pairs with it) */
   }
 
   .names{
@@ -653,7 +644,6 @@
       <span class="date-word">Date</span>
     </div>
 
-    <div class="rule rule-1"></div>
     <div class="wedding-date">18 · 9 · 2027</div>
     <div class="venue-line">Goriška Brda &amp;<br>Vipavska dolina</div>
 
