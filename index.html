@@ -15,6 +15,8 @@
 <link rel="preload" as="image" href="images/vila-sketch.jpg">
 <link rel="preload" as="image" href="images/bracket-top.png">
 <link rel="preload" as="image" href="images/bracket-bottom.png">
+<link rel="preload" as="image" href="images/landscape.jpg">
+<link rel="preload" as="image" href="images/bottom-bracket.png">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap');
 
@@ -123,25 +125,6 @@
     animation:fadeIn 1.2s ease both 11.0s; /* 2: headline (bracket pairs with it; venue removed, was stage 5) */
   }
 
-  .names{
-    font-family:'Cormorant SC', serif;
-    font-size:27px;
-    line-height:1;
-    letter-spacing:5px;
-    color:var(--ink);
-    animation:fadeIn 1.2s ease both 12.45s; /* 7: names */
-  }
-  .amp{
-    font-family:'Cormorant Garamond', serif;
-    font-style:italic;
-    font-size:16px;
-    line-height:1;
-    color:var(--ink);
-    margin:3px 0;
-    letter-spacing:1px;
-    animation:fadeIn 1.2s ease both 12.45s; /* 7: "in" */
-  }
-
   .top{
     margin-bottom:-25px; /* negative — ok to let bracket-bottom overlap into .villa-hero's own
                              top edge, since the sketch image has a lot of empty/paper margin
@@ -175,14 +158,32 @@
   .villa-hero::before{ top:0; background:linear-gradient(180deg, var(--paper), transparent); }
   .villa-hero::after{ bottom:0; background:linear-gradient(0deg, var(--paper), transparent); }
 
-  .names-section{
-    padding-top:34px;
-    padding-bottom:30px;
-  }
-
   .bottom{
     padding-top:0;
     padding-bottom:36px;
+  }
+
+  /* full-bleed sketched landscape behind everything from here down — edge to edge of .page
+     (no .section padding), matching the villa sketch's duotone style. The countdown/locations/
+     contact/footer below aren't redesigned yet, just re-housed inside the new bracket-frame. */
+  .landscape-band{
+    width:100%;
+    background-image:url('images/landscape.jpg');
+    background-size:cover;
+    background-position:center;
+    padding:40px 20px;
+  }
+  .bracket-frame{
+    position:relative;
+    width:100%;
+    max-width:360px;
+    margin:0 auto;
+    aspect-ratio:941/1672;
+    background-image:url('images/bottom-bracket.png');
+    background-size:100% 100%;
+    background-repeat:no-repeat;
+    padding:100px 45px 60px; /* extra top clearance for the bracket's scalloped top notch,
+                                 which the countdown numbers were poking into */
   }
 
   /* Countdown */
@@ -321,7 +322,6 @@
     .save{ font-size:42px; }
     .date-word{ font-size:46px; margin-top:-4px; }
     .the{ font-size:15px; letter-spacing:2px; }
-    .names{ font-size:23px; letter-spacing:4px; }
   }
 
   /* Envelope intro */
@@ -635,12 +635,8 @@
 
   <div class="villa-hero"></div>
 
-  <div class="section names-section">
-    <div class="names">TJAŠA</div>
-    <div class="amp">in</div>
-    <div class="names">ANDRAŽ</div>
-  </div>
-
+  <div class="landscape-band">
+  <div class="bracket-frame">
   <div class="section bottom">
     <div class="countdown" id="countdown">
       <div class="cd-unit"><div class="cd-num" id="cd-days">–</div><div class="cd-label">dni</div></div>
@@ -681,6 +677,8 @@
     <div class="footer">
       <div class="footer-note">Uradno vabilo in podrobnosti&nbsp;sledijo</div>
     </div>
+  </div>
+  </div>
   </div>
 </div>
 

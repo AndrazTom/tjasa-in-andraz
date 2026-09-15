@@ -38,6 +38,16 @@ images/
                           source image (not kept in the repo), opened
                           around the headline/date/venue block on the
                           main page
+  landscape.jpg           full-bleed sketched Tuscan/Brda landscape (same
+                          duotone style as vila-sketch.jpg), edge-to-edge
+                          background for .landscape-band, the section
+                          below the villa sketch — converted from a raw
+                          landscape.PNG (not kept in the repo, same JPEG
+                          rationale as vila-watercolour.jpg)
+  bottom-bracket.png      tall scalloped label/frame with a baked-in cream
+                          fill, overlaid on .landscape-band as
+                          .bracket-frame's background; the countdown/
+                          locations/contact/footer sit inside it
 tools/                   gitignored — kept locally, not tracked/pushed
   prep_envelope_photos.py cuts out + aligns the raw envelope photos into
                           envelope-closed/open.png, see below
