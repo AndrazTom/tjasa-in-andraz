@@ -30,6 +30,10 @@
     --ink-soft:rgba(99,115,83,0.88);
     --ink-faint:rgba(99,115,83,0.75);
     --line-strong:rgba(99,115,83,0.5);
+    --envelope-cream:#ede7d8; /* scraped (averaged) from images/envelope-open.png's flat paper
+                                  areas — used for the intro popcard "leaflet", not the page's
+                                  own --paper, since it should read as the same cream stock as
+                                  the envelope it pops out of, not the (unrelated) landscape tone */
   }
 
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -171,6 +175,9 @@
   .landscape-band{
     width:100%;
     position:relative; /* anchors the top/bottom paper-fade pseudo-elements below */
+    margin-top:-40px; /* pulls the band up closer to the villa sketch above — it, and the
+                          .bracket-frame inside it, move up together since the frame is just a
+                          normal child; nothing separate needed to keep them in sync */
     background-image:url('images/landscape-color.jpg');
     background-size:cover;
     background-position:center;
@@ -181,16 +188,26 @@
       of the screen is what tells a guest there's more below to scroll to. */
   }
   /* soften the hard edge where the villa sketch's paper background meets the photo — same
-     paper-to-transparent technique as .villa-hero's own fades, just taller since this band is
-     full-bleed. .bracket-frame sits above this (see its z-index) so the fade is free to run
-     under the frame's own baked-in cream fill without showing through it. */
+     paper-to-transparent idea as .villa-hero's own fades, but much taller (longer fade distance)
+     and eased (color-mix stops instead of a flat 2-stop linear-gradient) so it reads as a slow,
+     gradual reveal rather than a quick linear wash — a plain 2-stop gradient looks like it's
+     already half-cleared by its midpoint, which read as too fast. Fine for this to eat well into
+     the photo itself — .bracket-frame sits above it (see its z-index) so the fade is free to run
+     under the frame's own baked-in cream fill without showing through it regardless of height. */
   .landscape-band::before{
     content:"";
     position:absolute;
     top:0; left:0; right:0;
-    height:110px;
+    height:380px;
     pointer-events:none;
-    background:linear-gradient(180deg, var(--paper), transparent);
+    background:linear-gradient(180deg,
+      var(--paper) 0%,
+      color-mix(in srgb, var(--paper) 92%, transparent) 15%,
+      color-mix(in srgb, var(--paper) 75%, transparent) 32%,
+      color-mix(in srgb, var(--paper) 55%, transparent) 50%,
+      color-mix(in srgb, var(--paper) 34%, transparent) 68%,
+      color-mix(in srgb, var(--paper) 15%, transparent) 85%,
+      transparent 100%);
   }
   .bracket-frame{
     position:relative;
@@ -217,7 +234,8 @@
   /* Countdown */
   .countdown{
     display:flex;
-    gap:9px; /* was 14px — narrower gap between the day/hour/min/sec blocks */
+    gap:6px; /* was 9px (originally 14px) — narrower gap between the day/hour/min/sec blocks */
+    margin-top:14px; /* nudges the countdown a bit lower relative to the bracket-frame's top */
   }
   .cd-unit{
     display:flex;
@@ -298,32 +316,6 @@
     color:var(--ink-faint);
     font-size:16px;
   }
-
-  .contact{
-    margin-top:26px;
-  }
-  .contact-kicker{
-    font-family:'Cormorant SC', serif;
-    font-size:12px;
-    letter-spacing:3px;
-    text-transform:uppercase;
-    color:var(--ink);
-    margin-bottom:8px;
-  }
-  .contact-emails{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-  }
-  .contact-emails a{
-    font-size:15px;
-    font-style:italic;
-    color:var(--ink-soft);
-    text-decoration:none;
-    border-bottom:1px solid var(--card-border);
-    padding-bottom:1px;
-  }
-  .contact-emails a:active{ color:var(--ink); }
 
   .footer{
     margin-top:36px;
@@ -519,7 +511,7 @@
                                 drawing inside it is landscape (612x471, measured off its alpha
                                 channel) — match that shape, not the padded file dimensions */
     padding:6px 8px 5px;
-    background:var(--paper);
+    background:var(--envelope-cream);
     border-radius:3px;
     box-shadow:0 10px 26px rgba(15,17,8,0.45);
     pointer-events:none;
@@ -688,14 +680,6 @@
         </div>
         <div class="loc-arrow">→</div>
       </a>
-    </div>
-
-    <div class="contact">
-      <div class="contact-kicker">Za vsa vprašanja</div>
-      <div class="contact-emails">
-        <a href="mailto:tjasamiric@gmail.com">tjasamiric@gmail.com</a>
-        <a href="mailto:tomsic.andraz@gmail.com">tomsic.andraz@gmail.com</a>
-      </div>
     </div>
 
     <div class="footer">
