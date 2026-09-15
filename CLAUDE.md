@@ -122,19 +122,26 @@ before guessing at timings):
 2. Click → closed photo crossfades to open (~1.4s, no separate flap
    layer — the two photos are pre-aligned so only the flap area visibly
    changes), then envelope + sender + hint fade away together.
-3. A slow crossfade (~3.4s) reveals the page underneath, with the villa
+3. A small "Save the Date" card (`.popcard`, reusing bracket-top/bottom.png
+   at mini scale) pops up out of the open envelope, holds for a beat, then
+   fades itself out — self-contained one-shot animation (`popCard`
+   keyframes, `both` fill mode) timed to finish exactly as the next stage's
+   fade starts, so the two never overlap.
+4. A slow crossfade (~3.4s) reveals the page underneath, with the villa
    **sketch** (not the photo) in its own band — photo/sketch roles are
    deliberately swapped between the intro and the page.
-4. Page text fades in top-to-bottom, one block at a time: bracket-top →
+5. Page text fades in top-to-bottom, one block at a time: bracket-top →
    headline → rule → date/venue → bracket-bottom → names → countdown →
    locations → contact → footer.
-5. `history.scrollRestoration = 'manual'` + forced `scrollTo(0,0)` on
+6. `history.scrollRestoration = 'manual'` + forced `scrollTo(0,0)` on
    load, `pageshow`, and envelope-open — iOS Safari otherwise restores a
    guest's previous scroll offset on reload, which looked broken.
 
 If you change one delay, the rest likely need shifting too (each stage's
 start depends on the previous stage's total duration) — the numbered
-comments (`/* 1: sprig */` etc.) make it easy to re-walk the chain.
+comments (`/* 2: headline */` etc., plus the `openEnvelope()` `setTimeout`
+which must keep matching the cover's fade delay+duration) make it easy to
+re-walk the chain.
 
 ## Versions
 

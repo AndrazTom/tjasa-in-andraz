@@ -332,7 +332,7 @@
     justify-content:center;
     gap:20px;
     background:var(--paper);
-    transition:opacity 3.4s ease 2.5s; /* cover to page, after envelope gone */
+    transition:opacity 3.4s ease 3.5s; /* cover to page, after popcard */
   }
   .envelope-cover.opened{
     opacity:0;
@@ -458,6 +458,64 @@
     transform:translate(-50%,-50%) scale(0.5);
   }
 
+  /* small "Save the Date" card that pops out of the open envelope for a
+     beat before the cover dissolves into the real (full-size) page version.
+     Self-contained fade in/out via one animation — by the time the cover's
+     own fade starts (3.5s, see .envelope-cover), this has already faded
+     out on its own, so the two never visually overlap. */
+  .popcard{
+    position:absolute;
+    top:42%;
+    left:50%;
+    z-index:4;
+    width:min(210px, 52vw);
+    padding:14px 10px 8px;
+    background:var(--paper);
+    border-radius:3px;
+    box-shadow:0 10px 26px rgba(15,17,8,0.45);
+    pointer-events:none;
+    opacity:0;
+    animation:popCard 2.1s ease both 1.4s; /* intro: pop-out card, after flap opens */
+  }
+  .popcard-bracket{
+    display:block;
+    width:100%;
+    height:auto;
+  }
+  .popcard-bracket-top{
+    aspect-ratio:1100/373;
+    margin-bottom:-13px;
+  }
+  .popcard-bracket-bottom{
+    aspect-ratio:1100/360;
+    margin-top:-22px;
+  }
+  .popcard-headline{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .popcard-save{
+    font-family:'Pinyon Script', cursive;
+    font-size:25px;
+    line-height:0.9;
+    color:var(--ink);
+  }
+  .popcard-date{
+    font-family:'Pinyon Script', cursive;
+    font-size:29px;
+    line-height:0.9;
+    color:var(--ink);
+    margin-top:-4px;
+  }
+  @keyframes popCard{
+    0%   { opacity:0; transform:translate(-50%,-38%) scale(0.55); }
+    18%  { opacity:1; transform:translate(-50%,-54%) scale(1.04); } /* slight overshoot */
+    26%  { transform:translate(-50%,-50%) scale(1); }
+    80%  { opacity:1; transform:translate(-50%,-50%) scale(1); }
+    100% { opacity:0; transform:translate(-50%,-58%) scale(0.94); }
+  }
+
   /* entrance animation on the inner span, not here — an opacity animation
      and the close-fade transition on the same element fought each other */
   .envelope-hint{
@@ -497,6 +555,15 @@
     <span class="envelope-photo envelope-photo-open"></span>
     <span class="envelope-seal" aria-hidden="true"></span>
   </button>
+
+  <div class="popcard" aria-hidden="true">
+    <img class="popcard-bracket popcard-bracket-top" src="images/bracket-top.png" alt="">
+    <div class="popcard-headline">
+      <span class="popcard-save">Save the</span>
+      <span class="popcard-date">Date</span>
+    </div>
+    <img class="popcard-bracket popcard-bracket-bottom" src="images/bracket-bottom.png" alt="">
+  </div>
 
   <div class="envelope-hint"><span class="hint-text">Klikni na kuverto</span></div>
 </div>
@@ -674,7 +741,7 @@
         document.body.classList.remove('locked');
         window.scrollTo(0, 0);
         cover.style.display = 'none';
-      }, 5900); // matches cover fade: 2.5s delay + 3.4s fade
+      }, 6900); // matches cover fade: 3.5s delay + 3.4s fade
     }
     btn.addEventListener('click', openEnvelope);
   })();
