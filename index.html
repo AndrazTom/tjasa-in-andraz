@@ -155,7 +155,7 @@
   }
 
   .top{
-    padding-bottom:8px;
+    padding-bottom:2px;
   }
 
   /* sized to the photo's own aspect ratio so it shows uncropped */
@@ -756,11 +756,15 @@
       photo.style.backgroundSize = scaledW.toFixed(2) + 'px ' + scaledH.toFixed(2) + 'px';
       photo.style.backgroundPosition = offsetX.toFixed(2) + 'px ' + offsetY.toFixed(2) + 'px';
 
-      // resize .villa-hero so the sketch villa matches the watercolour villa's on-screen width, clamped to [85.5%, 98%] of .page
+      // resize .villa-hero so the sketch villa matches the watercolour villa's on-screen width,
+      // clamped to [50%, 98%] of .page as a sanity bound. wantedHeroWidth naturally computes to
+      // roughly 66-68% across viewports — the floor used to be 85.5%, which silently clamped
+      // every real-world case and meant this "size match" was dead code, always overridden by
+      // the floor (confirmed by measuring wantedHeroWidth vs the actual rendered width).
       var watercolourVillaWidth = WIDTH_W * scaledW;
       var pageWidth = hero.parentElement.getBoundingClientRect().width;
       var wantedHeroWidth = watercolourVillaWidth / WIDTH_S;
-      var heroWidth = Math.max(pageWidth * 0.855, Math.min(pageWidth * 0.98, wantedHeroWidth));
+      var heroWidth = Math.max(pageWidth * 0.5, Math.min(pageWidth * 0.98, wantedHeroWidth));
       hero.style.width = heroWidth.toFixed(2) + 'px';
     }
 
