@@ -474,9 +474,14 @@
                   a behind/in-front z-index flip mid-fade was tried and looked broken: opacity had
                   already ramped up to ~93% *while hidden behind the envelope*, so it read as an
                   instant pop the moment it flipped in front, not a fade */
-    width:min(150px, 40vw); /* narrow — full content (headline+date+venue) at this width
-                                lands close to the envelope's own 175:212 aspect ratio */
-    padding:18px 8px 14px;
+    width:min(210px, 52vw); /* noticeably smaller than the envelope's own min(280px,68vw) box —
+                                a leaflet pulled out shouldn't be bigger than the envelope itself.
+                                Proportions (not just size) scaled down from the wider version so
+                                the landscape ratio is preserved — the envelope's own canvas is a
+                                padded portrait 700x848 file, but the actual *visible* envelope
+                                drawing inside it is landscape (612x471, measured off its alpha
+                                channel) — match that shape, not the padded file dimensions */
+    padding:6px 8px 5px;
     background:var(--paper);
     border-radius:3px;
     box-shadow:0 10px 26px rgba(15,17,8,0.45);
@@ -499,11 +504,11 @@
   }
   .popcard-bracket-top{
     aspect-ratio:1100/373;
-    margin-bottom:-6px;
+    margin-bottom:-10px;
   }
   .popcard-bracket-bottom{
     aspect-ratio:1100/360;
-    margin-top:-13px;
+    margin-top:-16px;
   }
   .popcard-headline{
     display:flex;
@@ -512,43 +517,44 @@
   }
   .popcard-save{
     font-family:'Pinyon Script', cursive;
-    font-size:18px;
+    font-size:14px;
     line-height:0.9;
     color:var(--ink);
   }
   .popcard-dateword{
     font-family:'Pinyon Script', cursive;
-    font-size:21px;
+    font-size:16px;
     line-height:0.9;
     color:var(--ink);
-    margin-top:-3px;
+    margin-top:-2px;
   }
   .popcard-rule{
-    width:60px;
+    width:46px;
     height:1px;
     background:linear-gradient(90deg, transparent, var(--line-strong), transparent);
-    margin:7px auto 6px;
+    margin:2px auto;
   }
   .popcard-daterow{
     font-family:'Cormorant SC', serif;
-    font-size:10px;
-    letter-spacing:2px;
+    font-size:7.5px;
+    line-height:1;
+    letter-spacing:1.5px;
     text-align:center;
     color:var(--ink);
   }
   .popcard-venue{
-    margin-top:3px;
+    margin-top:1px;
     font-style:italic;
-    font-size:9.5px;
-    line-height:1.25;
+    font-size:7.5px;
+    line-height:1.15;
     text-align:center;
     color:var(--ink-soft);
   }
   @keyframes popCard{
-    0%   { opacity:0; transform:translate(-50%,-14%); } /* low, parked at the envelope */
-    35%  { opacity:1; transform:translate(-50%,-34%); } /* slides up while visibly fading in — stops short of the sender text above */
-    78%  { opacity:1; transform:translate(-50%,-34%); } /* holds */
-    100% { opacity:0; transform:translate(-50%,-34%); } /* fades out in place, no more motion */
+    0%   { opacity:0; transform:translate(-50%,-8%); } /* low, parked at the envelope */
+    35%  { opacity:1; transform:translate(-50%,-22%); } /* slides up while visibly fading in — stops short of the sender text above */
+    78%  { opacity:1; transform:translate(-50%,-22%); } /* holds */
+    100% { opacity:0; transform:translate(-50%,-22%); } /* fades out in place, no more motion */
   }
 
   /* entrance animation on the inner span, not here — an opacity animation
