@@ -723,7 +723,11 @@
         targetY / (CY_W * IMG_H),
         (vh - targetY) / (IMG_H * (1 - CY_W))
       );
-      var MARGIN_RELAX = 0; // 0 = exact match, 1 = plain centered cover; see CLAUDE.md if tweaking
+      var MARGIN_RELAX = 0.5; // 0 = exact match, 1 = plain centered cover; see CLAUDE.md if tweaking.
+      // Was 0 (exact match). The bracket art (added later) made .top taller, which pushed
+      // .villa-hero further down the page — exact-match then demands more zoom to reach that
+      // lower target, which is why the intro watercolour started looking noticeably more zoomed
+      // in than before. 0.5 trades a little position precision for a lot less zoom.
       var scale = baseCover + (minScale - baseCover) * (1 - MARGIN_RELAX);
 
       var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
