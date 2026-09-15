@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Tjaša & Andraž</title>
+<!-- preloaded so the whole intro sequence (flap open, popcard, sketch reveal) has everything
+     already in cache instead of fetching mid-animation — biggest win on a first (uncached) load.
+     fetchpriority=high on the three images visible before any interaction; the rest (needed
+     within seconds of the click) preload too, just without competing for top priority. -->
+<link rel="preload" as="image" href="images/vila-watercolour.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="images/envelope-closed.png" fetchpriority="high">
+<link rel="preload" as="image" href="images/seal.png" fetchpriority="high">
+<link rel="preload" as="image" href="images/envelope-open.png">
+<link rel="preload" as="image" href="images/vila-sketch.jpg">
+<link rel="preload" as="image" href="images/bracket-top.png">
+<link rel="preload" as="image" href="images/bracket-bottom.png">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap');
 
@@ -345,7 +356,7 @@
     z-index:0;
   }
   .reveal-photo{
-    background-image:url('images/vila-watercolour.png');
+    background-image:url('images/vila-watercolour.jpg');
     background-size:cover;
     background-position:50% 47%; /* no-JS fallback; script overrides both, see below */
     transform:scale(1.08);
@@ -408,6 +419,12 @@
     transition:opacity 0.6s ease 3.3s; /* envelope fades, after popcard has had its moment */
     -webkit-tap-highlight-color:transparent; /* kills WebKit's default tap-flash */
     animation:popIn 0.6s cubic-bezier(.34,1.56,.64,1) both 1.5s; /* intro: 3 envelope+seal pop; transform only, never opacity — that fought the close-fade transition below */
+    pointer-events:none; /* stays inert until .envelope-cover gets .ready (JS, once the note/
+                             names/pop/hint entrance animations have all finished at ~2.8s) —
+                             a click mid-entrance shouldn't be able to kick off the open sequence */
+  }
+  .envelope-cover.ready .envelope-btn{
+    pointer-events:auto;
   }
   .envelope-cover.opened .envelope-btn{
     opacity:0;
@@ -701,8 +718,8 @@
      source files — re-measure if either image is ever replaced. */
   (function(){
     var CX_S = 0.499, CY_S = 0.38, WIDTH_S = 0.9354;  // vila-sketch.jpg (1300x866) villa center + width
-    var CX_W = 0.464, CY_W = 0.5, WIDTH_W = 0.3557;  // vila-watercolour.png villa center + width
-    var IMG_W = 1254, IMG_H = 1254;   // vila-watercolour.png's own canvas size
+    var CX_W = 0.464, CY_W = 0.5, WIDTH_W = 0.3557;  // vila-watercolour.jpg villa center + width
+    var IMG_W = 1254, IMG_H = 1254;   // vila-watercolour.jpg's own canvas size
 
     var hero = document.querySelector('.villa-hero');
     var photo = document.querySelector('.reveal-photo');
@@ -782,8 +799,12 @@
   (function(){
     var cover = document.getElementById('envelopeCover');
     var btn = document.getElementById('envelopeBtn');
+    // note(1.1s) / names(1.7s) / envelope+seal pop(2.1s) / hint(2.8s) — last of the entrance
+    // animations to finish is the hint; only then does the envelope become clickable.
+    setTimeout(function(){ cover.classList.add('ready'); }, 2800);
     function openEnvelope(){
       if (cover.classList.contains('opened')) return;
+      if (!cover.classList.contains('ready')) return; // guards a stray click landing before pointer-events:auto kicks in
       window.scrollTo(0, 0); // always start the page at the top
       cover.classList.add('opened');
       setTimeout(function(){

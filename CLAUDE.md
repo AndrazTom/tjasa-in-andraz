@@ -19,8 +19,10 @@ offset as when this was written — don't "fix" the offset without checking.
 ```
 index.html              the whole site (styles + markup + script inline)
 images/
-  vila-watercolour.png   aerial watercolour painting of Vila Vipolže, used
-                          full-bleed behind the closed envelope
+  vila-watercolour.jpg   aerial watercolour painting of Vila Vipolže, used
+                          full-bleed behind the closed envelope — JPEG not
+                          PNG (no alpha channel needed): ~3.1MB as a PNG,
+                          ~580KB at quality 90, visually indistinguishable
   vila-sketch.jpg        architectural elevation drawing, recolored as a
                           duotone (paper/ink) to match the palette; used
                           for the villa band on the main page
@@ -63,6 +65,15 @@ a different content-to-canvas margin.
 `index.html` is the source of truth. It's a normal standalone document
 (`<!DOCTYPE html>`, `<head>` with viewport meta, `<body>`) because it's
 served as-is by GitHub Pages — it does **not** assume any wrapping skeleton.
+
+Every image the intro/main page needs gets a `<link rel="preload" as="image">`
+in `<head>` (the three visible before any interaction — watercolour, closed
+envelope, seal — marked `fetchpriority="high"`) so a first, uncached load
+doesn't stall mid-animation waiting on a fetch. `tools/build_artifact.py`
+strips these when building the Artifact, since everything there is already
+inlined as a data URI — keeping them would just duplicate each preloaded
+image's bytes a second time in the output. Add a preload line here whenever
+a new image is added to the intro/page.
 
 ## Deployment (two targets, kept in sync manually)
 
