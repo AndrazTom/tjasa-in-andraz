@@ -190,8 +190,10 @@
     background-repeat:no-repeat;
     padding:100px 45px 60px; /* extra top clearance for the bracket's scalloped top notch,
                                  which the countdown numbers were poking into */
-    opacity:0; /* invisible until the guest actually starts scrolling — see .in-view + the
-                  scroll listener armed in openEnvelope() once scroll unlocks */
+    opacity:0; /* invisible until scrolled into view — see .in-view + the IntersectionObserver
+                  armed in openEnvelope() once scroll unlocks */
+    will-change:opacity; /* keeps the fade a compositor-only operation instead of repainting
+                             this large background image every frame — avoids scroll jank */
   }
   .bracket-frame.in-view{
     animation:fadeIn 2s ease both; /* slower than the landscape band's own fade above */
@@ -846,12 +848,20 @@
       var unlockDelay = Math.max(7500, LANDSCAPE_DONE_AT - Date.now());
       setTimeout(function(){
         document.body.classList.remove('locked');
-        // the bracket (countdown/locations/contact/footer) stays invisible until the guest
-        // actually starts scrolling, then fades itself in slowly — a one-shot listener
-        window.addEventListener('scroll', function onScroll(){
-          frame.classList.add('in-view');
-          window.removeEventListener('scroll', onScroll);
-        }, { passive: true });
+        // the bracket (countdown/locations/contact/footer) stays invisible until scrolled
+        // into view. IntersectionObserver instead of a raw 'scroll' listener + classList
+        // mutation: that combo forced a style recalc right as the scroll gesture began,
+        // which is what caused the felt lag/jank at the start of scrolling.
+        if (!('IntersectionObserver' in window)){ frame.classList.add('in-view'); return; }
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){
+            if (entry.isIntersecting){
+              frame.classList.add('in-view');
+              io.unobserve(frame);
+            }
+          });
+        }, { threshold: 0.05 });
+        io.observe(frame);
       }, unlockDelay);
     }
     btn.addEventListener('click', openEnvelope);
