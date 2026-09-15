@@ -717,8 +717,11 @@
      center/width as a fraction of its own canvas, measured off the
      source files — re-measure if either image is ever replaced. */
   (function(){
-    var CX_S = 0.499, CY_S = 0.38, WIDTH_S = 0.9354;  // vila-sketch.jpg (1300x866) villa center + width
-    var CX_W = 0.464, CY_W = 0.5, WIDTH_W = 0.3557;  // vila-watercolour.jpg villa center + width
+    var CX_S = 0.4896, CY_S = 0.38, WIDTH_S = 0.9054;  // vila-sketch.jpg (1300x866) villa center + width
+    var CX_W = 0.4346, CY_W = 0.5, WIDTH_W = 0.3907;  // vila-watercolour.jpg villa center + width
+    // re-measured from the source files with a pixel grid overlay (old WIDTH_W in particular was
+    // ~10% too small, which — now that the width-matching clamp bug is fixed — was silently
+    // undersizing the sketch villa relative to the watercolour by roughly that much)
     var IMG_W = 1254, IMG_H = 1254;   // vila-watercolour.jpg's own canvas size
 
     var hero = document.querySelector('.villa-hero');
