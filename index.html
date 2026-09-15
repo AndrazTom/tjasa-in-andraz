@@ -155,10 +155,12 @@
   }
 
   .top{
-    margin-bottom:-3px; /* padding can't go negative (was padding-bottom, silently ignored) */
-    /* padding-top is set live by the villa-alignment script (see below) — a static guessed
-       value can't work here since it needs to counteract Mobile Safari's actual viewport
-       height, which varies by device and even by scroll state (address bar hide/show) */
+    padding-bottom:2px;
+    /* margin-top is set live by the villa-alignment script (see below), overwriting whatever's
+       here — a static guessed value can't work since it needs to counteract Mobile Safari's
+       actual viewport height, which varies by device and even by scroll state (address bar
+       hide/show). Editing it here has no visible effect; margin-bottom above is the real,
+       static lever for the gap below this block. */
   }
 
   /* sized to the photo's own aspect ratio so it shows uncropped */
