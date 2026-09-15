@@ -155,8 +155,10 @@
   }
 
   .top{
-    padding-top:2px;
-    padding-bottom:2px;
+    margin-bottom:-3px; /* padding can't go negative (was padding-bottom, silently ignored) */
+    /* padding-top is set live by the villa-alignment script (see below) — a static guessed
+       value can't work here since it needs to counteract Mobile Safari's actual viewport
+       height, which varies by device and even by scroll state (address bar hide/show) */
   }
 
   /* sized to the photo's own aspect ratio so it shows uncropped */
@@ -711,17 +713,26 @@
 
   /* Aligns the intro watercolour's villa to the main page sketch's villa
      (size + vertical position) so the crossfade between them doesn't
-     jump. Three steps, in this order (width before Y — deciding the
-     target size first, then positioning within it, is the natural order
-     since Y-placement depends on the scale but not vice versa):
+     jump. Order:
        1. .villa-hero is sized to HERO_WIDTH_RATIO of .page — simple,
           fixed, no matching involved.
        2. That fixes the sketch villa's on-screen width (heroWidth *
           WIDTH_S). The watercolour is scaled so ITS villa (WIDTH_W of
           its own canvas) comes out the same on-screen width — a safety
           floor still guarantees full viewport coverage regardless.
-       3. With scale now fixed, CY_S/CY_W place the watercolour's
-          matching point at the same on-screen Y as the sketch's.
+       3. The watercolour is positioned to cover the viewport (any extra
+          slack split evenly top/bottom) — this fully determines where
+          its roof-edge match-point lands; it's not chasing anything.
+       4. The SKETCH is the one that moves to meet it: .top's
+          padding-top is corrected live (reset, measure the sketch's
+          natural unadjusted roof-edge Y, then set padding-top to close
+          the gap) so its roof-edge match-point lands exactly on the
+          watercolour's, on *any* device. This replaces an earlier static
+          guessed padding-top, which was wrong on every real device
+          because it can't account for Mobile Safari's actual viewport
+          height (address bar + Dynamic Island eat into it, and it
+          changes as the bar hides on scroll) — measuring and correcting
+          live sidesteps needing to know that number at all.
      X needs no computation at all: both source images are pre-cropped
      so the villa sits horizontally centered in each, so simply centering
      both on the viewport keeps them aligned.
@@ -740,16 +751,18 @@
 
     var hero = document.querySelector('.villa-hero');
     var photo = document.querySelector('.reveal-photo');
-    if (!hero || !photo) return;
+    var topSection = document.querySelector('.top');
+    if (!hero || !photo || !topSection) return;
 
     function alignVilla(){
+      topSection.style.marginTop = '0px'; // reset before measuring anything below
+
       // 1. hero width, fixed and simple
       var pageWidth = hero.parentElement.getBoundingClientRect().width;
       var heroWidth = pageWidth * HERO_WIDTH_RATIO;
       hero.style.width = heroWidth.toFixed(2) + 'px';
 
       // 2. watercolour scale, matched to the now-fixed sketch villa width
-      var heroRect = hero.getBoundingClientRect(); // read AFTER resizing — aspect-ratio has already settled the new height
       var vw = window.innerWidth, vh = window.innerHeight;
       var sketchVillaWidth = heroWidth * WIDTH_S;
       var scaledW = sketchVillaWidth / WIDTH_W;
@@ -758,14 +771,19 @@
       var scale = scaledW / IMG_W;
       var scaledH = IMG_H * scale;
 
-      // 3. Y position, using the scale just fixed above
-      var targetY = heroRect.top + heroRect.height * CY_S;
+      // 3. watercolour position — just covers the viewport, no target to chase
       var offsetX = (vw - scaledW) / 2; // always dead-center — both source images are pre-cropped for this
-      var offsetY = targetY - CY_W * scaledH;
-      offsetY = Math.min(0, Math.max(vh - scaledH, offsetY)); // clamp so coverage always holds
+      var offsetY = Math.min(0, Math.max(vh - scaledH, (vh - scaledH) / 2)); // any slack split evenly
+      var waterRoofY = offsetY + CY_W * scaledH; // wherever that naturally lands is the target below
 
       photo.style.backgroundSize = scaledW.toFixed(2) + 'px ' + scaledH.toFixed(2) + 'px';
       photo.style.backgroundPosition = offsetX.toFixed(2) + 'px ' + offsetY.toFixed(2) + 'px';
+
+      // 4. sketch corrects itself to meet the watercolour, using live-measured values only
+      var heroRect = hero.getBoundingClientRect();
+      var naturalRoofY = heroRect.top + heroRect.height * CY_S;
+      var correction = waterRoofY - naturalRoofY;
+      topSection.style.marginTop = correction.toFixed(2) + 'px';
     }
 
     alignVilla(); // best-effort immediately, using fallback-font metrics
