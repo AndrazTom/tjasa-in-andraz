@@ -167,11 +167,26 @@
      (no .section padding), matching the villa sketch's duotone style. The countdown/locations/
      contact/footer below aren't redesigned yet, just re-housed inside the new bracket-frame. */
   .landscape-band{
+    position:relative; /* containing block for the ::before seam-blend gradient below */
     width:100%;
     background-image:url('images/landscape.jpg');
     background-size:cover;
     background-position:center;
     padding:40px 20px;
+    opacity:0; /* stays hidden until scrolled into view — see .in-view + the
+                  IntersectionObserver in <script> */
+  }
+  .landscape-band::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:40px;
+    background:linear-gradient(180deg, var(--paper), transparent);
+    pointer-events:none; /* soft blend into the paper bg above, matching .villa-hero's own edges */
+  }
+  .landscape-band.in-view{
+    animation:fadeIn 1.3s ease both; /* same slow/gradual fade used elsewhere on the page,
+                                         triggered by scroll instead of a fixed time delay */
   }
   .bracket-frame{
     position:relative;
@@ -189,8 +204,7 @@
   /* Countdown */
   .countdown{
     display:flex;
-    gap:14px;
-    animation:fadeIn 1.2s ease both 12.8s; /* 8: countdown */
+    gap:9px; /* was 14px — narrower gap between the day/hour/min/sec blocks */
   }
   .cd-unit{
     display:flex;
@@ -228,7 +242,6 @@
     display:flex;
     flex-direction:column;
     gap:10px;
-    animation:fadeIn 1.2s ease both 13.15s; /* 9: locations */
   }
   .loc-card{
     display:flex;
@@ -275,7 +288,6 @@
 
   .contact{
     margin-top:26px;
-    animation:fadeIn 1.2s ease both 13.5s; /* 10: contact */
   }
   .contact-kicker{
     font-family:'Cormorant SC', serif;
@@ -302,7 +314,6 @@
 
   .footer{
     margin-top:36px;
-    animation:fadeIn 1.2s ease both 13.85s; /* 11: footer */
   }
   .footer-note{
     font-size:12px;
@@ -819,18 +830,41 @@
     // note(1.1s) / names(1.7s) / envelope+seal pop(2.1s) / hint(2.8s) — last of the entrance
     // animations to finish is the hint; only then does the envelope become clickable.
     setTimeout(function(){ cover.classList.add('ready'); }, 2800);
+    // .headline/.wedding-date's own fadeIn delays (11.0s/11.7s + their durations) are counted
+    // from page load, not from the envelope click — so "when the text above the sketch has
+    // finished appearing" is this fixed point in load-relative time, 12.9s (date: 11.7s + 1.2s).
+    var TEXT_DONE_AT = performance.timeOrigin + 12900;
     function openEnvelope(){
       if (cover.classList.contains('opened')) return;
       if (!cover.classList.contains('ready')) return; // guards a stray click landing before pointer-events:auto kicks in
       window.scrollTo(0, 0); // always start the page at the top
       cover.classList.add('opened');
       setTimeout(function(){
-        document.body.classList.remove('locked');
         window.scrollTo(0, 0);
         cover.style.display = 'none';
       }, 7500); // matches cover fade: 4.1s delay + 3.4s fade
+      // scroll stays locked until the headline/date text above the sketch has finished
+      // appearing (never earlier than the cover itself has finished fading away)
+      var unlockDelay = Math.max(7500, TEXT_DONE_AT - Date.now());
+      setTimeout(function(){
+        document.body.classList.remove('locked');
+      }, unlockDelay);
     }
     btn.addEventListener('click', openEnvelope);
+  })();
+
+  (function(){
+    var band = document.querySelector('.landscape-band');
+    if (!('IntersectionObserver' in window)){ band.classList.add('in-view'); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          band.classList.add('in-view');
+          io.unobserve(band);
+        }
+      });
+    }, { threshold: 0.05 });
+    io.observe(band);
   })();
 </script>
 </body>
