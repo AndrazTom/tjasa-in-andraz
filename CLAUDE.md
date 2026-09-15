@@ -38,12 +38,18 @@ images/
                           source image (not kept in the repo), opened
                           around the headline/date/venue block on the
                           main page
-  landscape.jpg           full-bleed sketched Tuscan/Brda landscape (same
-                          duotone style as vila-sketch.jpg), edge-to-edge
+  landscape.jpg           full-bleed landscape image, edge-to-edge
                           background for .landscape-band, the section
-                          below the villa sketch — converted from a raw
-                          landscape.PNG (not kept in the repo, same JPEG
-                          rationale as vila-watercolour.jpg)
+                          below the villa sketch — center-cropped from a
+                          raw source PNG (not kept in the repo, same JPEG
+                          rationale as vila-watercolour.jpg) to match this
+                          file's own established 2:3 aspect ratio (cutting
+                          off edges rather than stretching/squashing).
+                          Whenever this image is swapped: re-sample
+                          `--paper` from its top edge and regenerate
+                          vila-sketch.jpg's baked paper tone to match (see
+                          Design section below) or the villa/headline area
+                          will show a visible seam against it again.
   bottom-bracket.png      tall scalloped label/frame with a baked-in cream
                           fill, overlaid on .landscape-band as
                           .bracket-frame's background; the countdown/
@@ -116,10 +122,12 @@ a new image is added to the intro/page.
 
 ## Design
 
-- Palette: cream/paper background (`--paper: #f2ede1` — chosen to exactly
-  match the average color sampled from `landscape.jpg`'s top edge, so the
-  villa sketch band meets the landscape band below with no visible seam),
-  sage green ink (`--ink: #647353`) for all text/borders/outlines, gold
+- Palette: cream/paper background (`--paper` — kept re-sampled from
+  whatever `landscape.jpg` currently is, from its top edge, so the villa
+  sketch band meets the landscape band below with no visible seam; as of
+  the 2026-09-15 photo swap this is `#f3efe8`, picked just to match that
+  photo and not yet chosen for overall palette cohesion), sage green ink
+  (`--ink: #647353`) for all text/borders/outlines, gold
   reserved for the wax seal (a real photographed seal, `images/seal.png` —
   sage wax with a gold-embossed monogram — not a UI accent).
 - Fonts: Google Fonts — Cormorant Garamond (body), Cormorant SC (small
