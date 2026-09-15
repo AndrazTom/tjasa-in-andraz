@@ -717,8 +717,12 @@
      center/width as a fraction of its own canvas, measured off the
      source files — re-measure if either image is ever replaced. */
   (function(){
-    var CX_S = 0.4896, CY_S = 0.38, WIDTH_S = 0.9054;  // vila-sketch.jpg (1300x866) villa center + width
-    var CX_W = 0.4346, CY_W = 0.5, WIDTH_W = 0.3907;  // vila-watercolour.jpg villa center + width
+    var CX_S = 0.5, CY_S = 0.38, WIDTH_S = 0.9054;  // vila-sketch.jpg (1300x866) villa center + width
+    var CX_W = 0.5, CY_W = 0.5, WIDTH_W = 0.3907;  // vila-watercolour.jpg villa center + width
+    // CX_S/CX_W forced to dead-center (0.5) rather than the measured ~0.49/0.435 — the small
+    // measured asymmetry was producing a few px of leftward drift in every test I ran here, but
+    // was reported as visibly off-center (rightward) on a real device, so true centering is being
+    // prioritized over exactly matching the source art's own slight off-center villa framing.
     // re-measured from the source files with a pixel grid overlay (old WIDTH_W in particular was
     // ~10% too small, which — now that the width-matching clamp bug is fixed — was silently
     // undersizing the sketch villa relative to the watercolour by roughly that much)
