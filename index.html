@@ -724,16 +724,16 @@
      X needs no computation at all: both source images are pre-cropped
      so the villa sits horizontally centered in each, so simply centering
      both on the viewport keeps them aligned.
-     All fractions below are exact matching-point pixel coords measured
-     directly on the source files — re-measure if either image is ever
-     replaced or re-cropped:
-       sketch (1292x866): villa edge-to-edge width 1212px, Y match-point
-         at (646,456)
-       watercolour (1166x1254): villa edge-to-edge width 544px, Y
-         match-point at (583,729) */
+     All fractions below are exact measurements taken directly on the
+     source files — re-measure if either image is ever replaced or
+     re-cropped:
+       sketch (1292x866): villa edge-to-edge width 1212px, roof-edge Y
+         match-point 367px from the top
+       watercolour (1166x1254): villa edge-to-edge width 544px, roof-edge
+         Y match-point 656px from the top */
   (function(){
-    var WIDTH_S = 1212/1292, CY_S = 456/866;  // vila-sketch.jpg
-    var WIDTH_W = 544/1166, CY_W = 729/1254;  // vila-watercolour.jpg
+    var WIDTH_S = 1212/1292, CY_S = 367/866;  // vila-sketch.jpg
+    var WIDTH_W = 544/1166, CY_W = 656/1254;  // vila-watercolour.jpg
     var IMG_W = 1166, IMG_H = 1254;           // vila-watercolour.jpg's own canvas size
     var HERO_WIDTH_RATIO = 0.90; // .villa-hero as a fraction of .page's width — tune freely
 
