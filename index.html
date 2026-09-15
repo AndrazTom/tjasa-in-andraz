@@ -465,9 +465,9 @@
      out on its own, so the two never visually overlap. */
   .popcard{
     position:absolute;
-    top:42%;
+    top:44%;
     left:50%;
-    z-index:4;
+    z-index:2; /* behind the envelope (z-index 3) until the keyframes flip it in front */
     width:min(210px, 52vw);
     padding:14px 10px 8px;
     background:var(--paper);
@@ -475,7 +475,15 @@
     box-shadow:0 10px 26px rgba(15,17,8,0.45);
     pointer-events:none;
     opacity:0;
-    animation:popCard 2.1s ease both 1.4s; /* intro: pop-out card, after flap opens */
+    transform:translate(-50%,-14%); /* parked low, near the envelope, until opened */
+  }
+  /* animation lives on the .opened-scoped selector (not the bare .popcard
+     above) so its delay counts from the click, not from page load — an
+     unconditional `animation` on .popcard would start its clock at page
+     load, so if someone takes longer than the delay to click, the card
+     pops and vanishes while the envelope is still closed. */
+  .envelope-cover.opened .popcard{
+    animation:popCard 2.1s ease-out both 1.4s; /* intro: card pulls out of the envelope, after flap opens */
   }
   .popcard-bracket{
     display:block;
@@ -509,11 +517,12 @@
     margin-top:-4px;
   }
   @keyframes popCard{
-    0%   { opacity:0; transform:translate(-50%,-38%) scale(0.55); }
-    18%  { opacity:1; transform:translate(-50%,-54%) scale(1.04); } /* slight overshoot */
-    26%  { transform:translate(-50%,-50%) scale(1); }
-    80%  { opacity:1; transform:translate(-50%,-50%) scale(1); }
-    100% { opacity:0; transform:translate(-50%,-58%) scale(0.94); }
+    0%   { opacity:0; z-index:2; transform:translate(-50%,-14%); } /* low, tucked behind the envelope */
+    32%  { z-index:2; } /* stays behind until just before it clears the flap */
+    33%  { z-index:4; } /* now in front — flip lands ~midway between these two, right as it nears the top */
+    35%  { opacity:1; transform:translate(-50%,-50%); } /* slides straight up while fading in */
+    78%  { opacity:1; transform:translate(-50%,-50%); } /* holds */
+    100% { opacity:0; transform:translate(-50%,-50%); } /* fades out in place, no more motion */
   }
 
   /* entrance animation on the inner span, not here — an opacity animation
