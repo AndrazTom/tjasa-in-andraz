@@ -17,6 +17,9 @@
 <link rel="preload" as="image" href="images/bracket-bottom.png">
 <link rel="preload" as="image" href="images/landscape-color.jpg">
 <link rel="preload" as="image" href="images/bottom-bracket.png">
+<link rel="preload" as="image" href="images/swan.jpg">
+<link rel="preload" as="image" href="images/plates.jpg">
+<link rel="preload" as="image" href="images/TA.png">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap');
 
@@ -24,8 +27,9 @@
     --paper:#f3efe8; /* sampled from the current landscape-color.jpg's top edge pixels (swapped in
                          2026-09-15 — a picked-for-now color, not yet chosen for overall
                          cohesion with the new photo) */
-    --card:rgba(99,115,83,0.08);
-    --card-border:rgba(99,115,83,0.35);
+    --motif-cream:#eee9dd; /* scraped (averaged, ~60px patch) from the middle of the plate in
+                               images/plates.jpg — used for the countdown squares so they read
+                               as the same cream tone as the swan/plate motifs above them */
     --ink:#647353;
     --ink-soft:rgba(99,115,83,0.88);
     --ink-faint:rgba(99,115,83,0.75);
@@ -215,17 +219,29 @@
                   otherwise wash out the frame's bottom edge where the two overlap */
     width:100%;
     max-width:360px;
-    margin:0 auto;
+    margin:90px auto 0; /* was 50px — pushed another 40px lower in the landscape-band */
     aspect-ratio:941/1672;
     background-image:url('images/bottom-bracket.png');
     background-size:100% 100%;
     background-repeat:no-repeat;
-    padding:100px 45px 60px; /* extra top clearance for the bracket's scalloped top notch,
-                                 which the countdown numbers were poking into */
+    padding:52px 45px 60px; /* was 100px, then 60px — shrunk another 8px so the T&A monogram
+                                sits 8px higher still, right in the scalloped top notch's clearance */
     opacity:0; /* invisible until scrolled into view — see .in-view + the IntersectionObserver
                   armed in openEnvelope() once scroll unlocks */
     will-change:opacity; /* keeps the fade a compositor-only operation instead of repainting
                              this large background image every frame — avoids scroll jank */
+  }
+  /* T&A monogram, sitting in the scalloped top notch's own clearance (the 52px padding-top
+     above) — being a normal flow child here, it naturally pushes the countdown/locations/
+     footer below it down by its own height + margin, no separate spacing hack needed. Margin
+     bumped to 27px (was 10px, then 32px) each time the padding-top above shrank: the monogram
+     moves higher than the countdown below it, so the gap between them keeps growing to make up
+     the difference. */
+  .ta-monogram{
+    display:block;
+    width:60px;
+    height:auto;
+    margin:0 0 27px;
   }
   .bracket-frame.in-view{
     animation:fadeIn 2s ease both; /* slower than the landscape band's own fade above */
@@ -235,7 +251,7 @@
   .countdown{
     display:flex;
     gap:6px; /* was 9px (originally 14px) — narrower gap between the day/hour/min/sec blocks */
-    margin-top:14px; /* nudges the countdown a bit lower relative to the bracket-frame's top */
+    margin-top:-1px; /* was 14px — moved 15px higher, closer to the T&A monogram above */
   }
   .cd-unit{
     display:flex;
@@ -248,8 +264,7 @@
     font-weight:600;
     font-size:26px;
     color:var(--ink);
-    background:var(--card);
-    border:1px solid var(--card-border);
+    background:var(--motif-cream);
     border-radius:8px;
     width:52px;
     height:52px;
@@ -268,26 +283,51 @@
 
   /* Locations */
   .locations{
-    margin-top:30px;
+    margin-top:14px; /* was 30px — tighter gap under the countdown now the swan motif sits there */
     width:100%;
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:18px; /* was 10px — a bit more room now each card has its own motif above it */
   }
+  .loc-group{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px; /* was 4px — the motif images are already cropped tight to their own artwork,
+                 so this just needs to be a hairline, not real breathing room */
+  }
+  /* decorative motif above each card — swan (Vipolže) / plate+cutlery (Rouna). Both are
+     flattened onto the bottom-bracket's own cream fill (#fdf9ef, see images/swan.jpg and
+     images/plates.jpg), so they read as printed straight onto the card stock with no visible
+     edge against .bracket-frame's background. */
+  .loc-motif{
+    display:block;
+    width:100px;
+    height:auto;
+  }
+  .loc-motif-swan{
+    margin-top:15px;
+  }
+  .loc-motif-plate{
+    width:82px; /* a bit smaller than the swan — the plate/cutlery drawing reads visually
+                    heavier at the same width */
+  }
+  /* no visible card chrome (background/border) any more — just the pin + venue text, sitting
+     directly on the bracket-frame's own cream fill. The whole link area stays exactly as big
+     as before (same padding) so it's still an easy tap target, it just doesn't look like a
+     button until tapped, when :active gives a brief, subtle highlight as feedback. */
   .loc-card{
     display:flex;
     align-items:center;
     gap:12px;
     padding:12px 16px;
-    background:var(--card);
-    border:1px solid var(--card-border);
-    border-radius:12px;
     text-decoration:none;
     color:var(--ink);
     text-align:left;
+    border-radius:12px;
     transition:background 0.2s ease;
   }
-  .loc-card:active{ background:rgba(99,115,83,0.16); }
+  .loc-card:active{ background:rgba(99,115,83,0.12); }
   .loc-icon{
     flex:none;
     width:20px;
@@ -295,13 +335,6 @@
     color:var(--ink);
   }
   .loc-text{ flex:1; min-width:0; }
-  .loc-kind{
-    font-family:'Cormorant SC', serif;
-    font-size:12px;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    color:var(--ink);
-  }
   .loc-name{
     font-size:17px;
     line-height:1.25;
@@ -311,14 +344,9 @@
     font-style:italic;
     color:var(--ink-soft);
   }
-  .loc-arrow{
-    flex:none;
-    color:var(--ink-faint);
-    font-size:16px;
-  }
 
   .footer{
-    margin-top:36px;
+    margin-top:39px; /* was 36px — nudged 3px lower */
   }
   .footer-note{
     font-size:12px;
@@ -654,6 +682,7 @@
   <div class="landscape-band">
   <div class="bracket-frame">
   <div class="section bottom">
+    <img class="ta-monogram" src="images/TA.png" alt="">
     <div class="countdown" id="countdown">
       <div class="cd-unit"><div class="cd-num" id="cd-days">–</div><div class="cd-label">dni</div></div>
       <div class="cd-unit"><div class="cd-num" id="cd-hours">–</div><div class="cd-label">ur</div></div>
@@ -662,24 +691,26 @@
     </div>
 
     <div class="locations">
-      <a class="loc-card" href="https://www.google.com/maps/search/?api=1&query=Vila+Vipol%C5%BEe%2C+Vipol%C5%BEe+29%2C+5212+Dobrovo" target="_blank" rel="noopener">
-        <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
-        <div class="loc-text">
-          <div class="loc-kind">Obred</div>
-          <div class="loc-name">Vila Vipolže</div>
-          <div class="loc-sub">Vipolže, Goriška Brda</div>
-        </div>
-        <div class="loc-arrow">→</div>
-      </a>
-      <a class="loc-card" href="https://www.google.com/maps/search/?api=1&query=Posestvo+Rouna%2C+Slap+15%2C+5271+Vipava" target="_blank" rel="noopener">
-        <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
-        <div class="loc-text">
-          <div class="loc-kind">Zabava</div>
-          <div class="loc-name">Posestvo Rouna</div>
-          <div class="loc-sub">Slap, Vipavska dolina</div>
-        </div>
-        <div class="loc-arrow">→</div>
-      </a>
+      <div class="loc-group">
+        <img class="loc-motif loc-motif-swan" src="images/swan.jpg" alt="">
+        <a class="loc-card" href="https://www.google.com/maps/search/?api=1&query=Vila+Vipol%C5%BEe%2C+Vipol%C5%BEe+29%2C+5212+Dobrovo" target="_blank" rel="noopener">
+          <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
+          <div class="loc-text">
+            <div class="loc-name">Vila Vipolže</div>
+            <div class="loc-sub">Vipolže, Goriška Brda</div>
+          </div>
+        </a>
+      </div>
+      <div class="loc-group">
+        <img class="loc-motif loc-motif-plate" src="images/plates.jpg" alt="">
+        <a class="loc-card" href="https://www.google.com/maps/search/?api=1&query=Posestvo+Rouna%2C+Slap+15%2C+5271+Vipava" target="_blank" rel="noopener">
+          <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
+          <div class="loc-text">
+            <div class="loc-name">Posestvo Rouna</div>
+            <div class="loc-sub">Slap, Vipavska dolina</div>
+          </div>
+        </a>
+      </div>
     </div>
 
     <div class="footer">
