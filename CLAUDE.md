@@ -167,3 +167,7 @@ Tag before any major redesign so it's easy to roll back:
   flash bug after several wrong CSS-timing theories failed.
 
 ## Changes requested (mark a change as completed when completed)
+- [done] Front page names more gothether (T from tjasa and A from andraz) should almost touch
+- [done] use word obred instead of slovesnost second page
+- try Bickham Script Pro oziroma Bickham Script Pro 3 for the names in the front page and save the date font. These are similar to what we want. If i wont like themw e can try Burgues Script, Edwardian Script ITC.
+- I've added curvyBracket to the images folder. The thingy should be split in top and bottom half and reduced in size But not much, probably to half a MB (both halves together). You should split down the middle of it so I can put more text inside of it. Then you put it around save the date and 18.9.2027 and location (goriska, vipava). Like leave it the same as it was just put in bracket.
