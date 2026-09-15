@@ -709,24 +709,21 @@
   window.addEventListener('pageshow', function(){ window.scrollTo(0, 0); }); // iOS bfcache restore
 
   /* Aligns the intro watercolour's villa to the main page sketch's villa
-     (position + size) so the crossfade between them doesn't jump. Not
-     background-size:cover — computes its own size/position per viewport
-     instead, since cover can't hit an exact target on both axes. CY_S
-     tweaks the target vertically (aims the watercolour, never moves the
-     sketch); CX_S/WIDTH_S/CX_W/CY_W/WIDTH_W are each image's villa
-     center/width as a fraction of its own canvas, measured off the
-     source files — re-measure if either image is ever replaced. */
+     (vertical position + size) so the crossfade between them doesn't
+     jump. Not background-size:cover — computes its own size/position per
+     viewport instead, since cover can't hit an exact target on the Y
+     axis. X needs no computation at all: both source images are now
+     cropped so the villa sits horizontally centered in each (see
+     tools/, or whatever cropped them), so simply centering both on the
+     viewport keeps them aligned. CY_S tweaks the target vertically (aims
+     the watercolour, never moves the sketch); WIDTH_S/CY_W/WIDTH_W are
+     the sketch/watercolour villa's width / vertical-center as a fraction
+     of their own canvas, measured off the source files — re-measure if
+     either image is ever replaced or re-cropped. */
   (function(){
-    var CX_S = 0.5, CY_S = 0.38, WIDTH_S = 0.9054;  // vila-sketch.jpg (1300x866) villa center + width
-    var CX_W = 0.5, CY_W = 0.5, WIDTH_W = 0.3907;  // vila-watercolour.jpg villa center + width
-    // CX_S/CX_W forced to dead-center (0.5) rather than the measured ~0.49/0.435 — the small
-    // measured asymmetry was producing a few px of leftward drift in every test I ran here, but
-    // was reported as visibly off-center (rightward) on a real device, so true centering is being
-    // prioritized over exactly matching the source art's own slight off-center villa framing.
-    // re-measured from the source files with a pixel grid overlay (old WIDTH_W in particular was
-    // ~10% too small, which — now that the width-matching clamp bug is fixed — was silently
-    // undersizing the sketch villa relative to the watercolour by roughly that much)
-    var IMG_W = 1254, IMG_H = 1254;   // vila-watercolour.jpg's own canvas size
+    var CY_S = 0.38, WIDTH_S = 0.944;  // vila-sketch.jpg (1292x866) villa width
+    var CY_W = 0.5, WIDTH_W = 0.571;   // vila-watercolour.jpg villa vertical-center + width
+    var IMG_W = 1166, IMG_H = 1254;    // vila-watercolour.jpg's own canvas size
 
     var hero = document.querySelector('.villa-hero');
     var photo = document.querySelector('.reveal-photo');
@@ -735,15 +732,12 @@
     function alignVilla(){
       var heroRect = hero.getBoundingClientRect(); // read before resizing hero below; center doesn't move when width does
       var vw = window.innerWidth, vh = window.innerHeight;
-      var targetX = heroRect.left + heroRect.width * CX_S;
       var targetY = heroRect.top + heroRect.height * CY_S;
 
       var baseCover = Math.max(vw / IMG_W, vh / IMG_H);
-      // smallest scale that covers the viewport AND leaves room to place (CX_W,CY_W) exactly at (targetX,targetY)
+      // smallest scale that covers the viewport AND leaves room to place CY_W exactly at targetY
       var minScale = Math.max(
         baseCover,
-        targetX / (CX_W * IMG_W),
-        (vw - targetX) / (IMG_W * (1 - CX_W)),
         targetY / (CY_W * IMG_H),
         (vh - targetY) / (IMG_H * (1 - CY_W))
       );
@@ -755,9 +749,8 @@
       var scale = baseCover + (minScale - baseCover) * (1 - MARGIN_RELAX);
 
       var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
-      var offsetX = targetX - CX_W * scaledW;
+      var offsetX = (vw - scaledW) / 2; // always dead-center — both source images are pre-cropped for this
       var offsetY = targetY - CY_W * scaledH;
-      offsetX = Math.min(0, Math.max(vw - scaledW, offsetX)); // clamp so coverage always holds even if MARGIN_RELAX > 0
       offsetY = Math.min(0, Math.max(vh - scaledH, offsetY));
 
       photo.style.backgroundSize = scaledW.toFixed(2) + 'px ' + scaledH.toFixed(2) + 'px';
