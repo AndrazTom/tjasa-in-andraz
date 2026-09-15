@@ -116,18 +116,25 @@ a new image is added to the intro/page.
 
 ## Design
 
-- Palette: cream/paper background (`--paper: #f8f3e7`), sage green ink
-  (`--ink: #647353`) for all text/borders/outlines, gold reserved for the
-  wax seal (a real photographed seal, `images/seal.png` — sage wax with a
-  gold-embossed monogram — not a UI accent).
+- Palette: cream/paper background (`--paper: #f2ede1` — chosen to exactly
+  match the average color sampled from `landscape.jpg`'s top edge, so the
+  villa sketch band meets the landscape band below with no visible seam),
+  sage green ink (`--ink: #647353`) for all text/borders/outlines, gold
+  reserved for the wax seal (a real photographed seal, `images/seal.png` —
+  sage wax with a gold-embossed monogram — not a UI accent).
 - Fonts: Google Fonts — Cormorant Garamond (body), Cormorant SC (small
   caps labels/dates), Pinyon Script (headline + envelope sender names,
   matching the Etsy/Canva inspiration video under `inspiration/`), Alex
   Brush (just the sender line's "&" — Pinyon Script's own glyph looked off).
 - The villa sketch (`images/vila-sketch.jpg`) is a duotone (black→ink,
   white→paper) baked into the image itself, not a CSS filter — an earlier
-  filter approach left a visible seam at the edges. Regenerate with the
-  same paper/ink RGB values if the palette ever changes.
+  filter approach left a visible seam at the edges. **If `--paper` ever
+  changes, regenerate this image's paper tone to match** (or it'll show as
+  a mismatched "white" patch again) — solve each pixel's original duotone
+  mix `t` from the image's own old baked paper/ink values, `t = (pixel -
+  OLD_INK) / (OLD_PAPER - OLD_INK)`, then recompute `INK + t*(NEW_PAPER -
+  INK)`; this only shifts the paper tone and leaves ink linework untouched,
+  no need for the original pre-duotone source.
 
 ## The envelope-opening intro
 
