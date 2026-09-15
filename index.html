@@ -96,15 +96,6 @@
     animation:fadeIn 1.2s ease both 10.7s; /* 4: date */
   }
 
-  .venue-line{
-    margin-top:4px;
-    font-style:italic;
-    font-size:19px;
-    line-height:1.0;
-    color:var(--ink-soft);
-    animation:fadeIn 1.2s ease both 10.85s; /* 5: venue */
-  }
-
   /* decorative floral frame (source: images/curvyBracket.png, split top/bottom
      by tools/prep_bracket.py) opened around the headline/date/venue block.
      aspect-ratio reserves layout space before the image loads — without it
@@ -123,12 +114,12 @@
   }
   .bracket-bottom{
     aspect-ratio:1100/360;
-    margin:-65px 0 0;
+    margin:-55px 0 0;
     position:relative; /* .villa-hero (position:relative too) is a later sibling, so without this
                            it paints on top of the overlap regardless of DOM order — positioned
                            elements always beat non-positioned ones, DOM order doesn't matter */
     z-index:1;
-    animation:fadeIn 1.2s ease both 10.0s; /* 5: venue (bracket pairs with it) */
+    animation:fadeIn 1.2s ease both 10.0s; /* 2: headline (bracket pairs with it; venue removed, was stage 5) */
   }
 
   .names{
@@ -646,7 +637,6 @@
     </div>
 
     <div class="wedding-date">18 · 9 · 2027</div>
-    <div class="venue-line">Goriška Brda &amp;<br>Vipavska dolina</div>
 
     <img class="bracket bracket-bottom" src="images/bracket-bottom.png" alt="" aria-hidden="true">
   </div>
