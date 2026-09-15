@@ -69,28 +69,29 @@
   }
   .save{
     font-family:'Pinyon Script', cursive;
-    font-size:72px;
+    font-size:58px;
     line-height:0.75;
     color:var(--ink);
   }
   .the{
     font-family:'Cormorant SC', serif;
-    font-size:21px;
+    font-size:17px;
     letter-spacing:4px;
     color:var(--ink);
   }
   .date-word{
     font-family:'Pinyon Script', cursive;
-    font-size:78px;
+    font-size:63px;
     line-height:0.75;
     color:var(--ink);
-    margin-top:-3px; /* pulls "Date" up so it nearly touches "Save the" above it */
+    margin-top:-2px; /* pulls "Date" up so it nearly touches "Save the" above it — smaller now
+                         that the text itself is smaller, needs less overlap to still nearly touch */
   }
 
   .wedding-date{
     font-family:'Cormorant SC', serif;
     font-size:28px;
-    letter-spacing:6px;
+    letter-spacing:3px; /* was 6px — tighter spacing between the digits */
     color:var(--ink);
     margin-top:-5px; /* pulls it up closer to "Date" now that the divider line is gone */
     animation:fadeIn 1.2s ease both 10.7s; /* 4: date */
@@ -318,7 +319,7 @@
     .headline{ margin-top:-13px; }
     .save-line{ gap:6px; }
     .save{ font-size:42px; }
-    .date-word{ font-size:46px; margin-top:-6px; }
+    .date-word{ font-size:46px; margin-top:-4px; }
     .the{ font-size:15px; letter-spacing:2px; }
     .names{ font-size:23px; letter-spacing:4px; }
   }
