@@ -162,7 +162,7 @@
   .villa-hero{
     width:80%;
     margin:0 auto;
-    aspect-ratio:1300/866;
+    aspect-ratio:1292/866;
     background-color:var(--paper);
     background-image:url('images/vila-sketch.jpg');
     background-size:100%;
@@ -709,66 +709,62 @@
   window.addEventListener('pageshow', function(){ window.scrollTo(0, 0); }); // iOS bfcache restore
 
   /* Aligns the intro watercolour's villa to the main page sketch's villa
-     (vertical position + size) so the crossfade between them doesn't
-     jump. Not background-size:cover — computes its own size/position per
-     viewport instead, since cover can't hit an exact target on the Y
-     axis. X needs no computation at all: both source images are now
-     cropped so the villa sits horizontally centered in each (see
-     tools/, or whatever cropped them), so simply centering both on the
-     viewport keeps them aligned. CY_S tweaks the target vertically (aims
-     the watercolour, never moves the sketch); WIDTH_S/CY_W/WIDTH_W are
-     the sketch/watercolour villa's width / vertical-center as a fraction
-     of their own canvas, measured off the source files — re-measure if
-     either image is ever replaced or re-cropped. */
+     (size + vertical position) so the crossfade between them doesn't
+     jump. Three steps, in this order (width before Y — deciding the
+     target size first, then positioning within it, is the natural order
+     since Y-placement depends on the scale but not vice versa):
+       1. .villa-hero is sized to HERO_WIDTH_RATIO of .page — simple,
+          fixed, no matching involved.
+       2. That fixes the sketch villa's on-screen width (heroWidth *
+          WIDTH_S). The watercolour is scaled so ITS villa (WIDTH_W of
+          its own canvas) comes out the same on-screen width — a safety
+          floor still guarantees full viewport coverage regardless.
+       3. With scale now fixed, CY_S/CY_W place the watercolour's
+          matching point at the same on-screen Y as the sketch's.
+     X needs no computation at all: both source images are pre-cropped
+     so the villa sits horizontally centered in each, so simply centering
+     both on the viewport keeps them aligned.
+     All fractions below are exact matching-point pixel coords measured
+     directly on the source files — re-measure if either image is ever
+     replaced or re-cropped:
+       sketch (1292x866): villa edge-to-edge width 1212px, Y match-point
+         at (646,456)
+       watercolour (1166x1254): villa edge-to-edge width 544px, Y
+         match-point at (583,729) */
   (function(){
-    // exact matching-point pixel coords, measured directly on the source files: sketch (646,456)
-    // of 1292x866, watercolour (583,729) of 1166x1254 — both x's land exactly on 0.5 (confirms
-    // dead-center), expressed here as resolution-agnostic fractions so they hold on any display.
-    var CY_S = 456/866, WIDTH_S = 0.944;  // vila-sketch.jpg (1292x866) villa width
-    var CY_W = 729/1254, WIDTH_W = 0.571;   // vila-watercolour.jpg villa vertical-center + width
-    var IMG_W = 1166, IMG_H = 1254;    // vila-watercolour.jpg's own canvas size
+    var WIDTH_S = 1212/1292, CY_S = 456/866;  // vila-sketch.jpg
+    var WIDTH_W = 544/1166, CY_W = 729/1254;  // vila-watercolour.jpg
+    var IMG_W = 1166, IMG_H = 1254;           // vila-watercolour.jpg's own canvas size
+    var HERO_WIDTH_RATIO = 0.90; // .villa-hero as a fraction of .page's width — tune freely
 
     var hero = document.querySelector('.villa-hero');
     var photo = document.querySelector('.reveal-photo');
     if (!hero || !photo) return;
 
     function alignVilla(){
-      var heroRect = hero.getBoundingClientRect(); // read before resizing hero below; center doesn't move when width does
+      // 1. hero width, fixed and simple
+      var pageWidth = hero.parentElement.getBoundingClientRect().width;
+      var heroWidth = pageWidth * HERO_WIDTH_RATIO;
+      hero.style.width = heroWidth.toFixed(2) + 'px';
+
+      // 2. watercolour scale, matched to the now-fixed sketch villa width
+      var heroRect = hero.getBoundingClientRect(); // read AFTER resizing — aspect-ratio has already settled the new height
       var vw = window.innerWidth, vh = window.innerHeight;
-      var targetY = heroRect.top + heroRect.height * CY_S;
-
+      var sketchVillaWidth = heroWidth * WIDTH_S;
+      var scaledW = sketchVillaWidth / WIDTH_W;
       var baseCover = Math.max(vw / IMG_W, vh / IMG_H);
-      // smallest scale that covers the viewport AND leaves room to place CY_W exactly at targetY
-      var minScale = Math.max(
-        baseCover,
-        targetY / (CY_W * IMG_H),
-        (vh - targetY) / (IMG_H * (1 - CY_W))
-      );
-      var MARGIN_RELAX = 0.5; // 0 = exact match, 1 = plain centered cover; see CLAUDE.md if tweaking.
-      // Was 0 (exact match). The bracket art (added later) made .top taller, which pushed
-      // .villa-hero further down the page — exact-match then demands more zoom to reach that
-      // lower target, which is why the intro watercolour started looking noticeably more zoomed
-      // in than before. 0.5 trades a little position precision for a lot less zoom.
-      var scale = baseCover + (minScale - baseCover) * (1 - MARGIN_RELAX);
+      scaledW = Math.max(scaledW, IMG_W * baseCover); // safety floor: never leave gaps if width-match alone wouldn't cover the viewport
+      var scale = scaledW / IMG_W;
+      var scaledH = IMG_H * scale;
 
-      var scaledW = IMG_W * scale, scaledH = IMG_H * scale;
+      // 3. Y position, using the scale just fixed above
+      var targetY = heroRect.top + heroRect.height * CY_S;
       var offsetX = (vw - scaledW) / 2; // always dead-center — both source images are pre-cropped for this
       var offsetY = targetY - CY_W * scaledH;
-      offsetY = Math.min(0, Math.max(vh - scaledH, offsetY));
+      offsetY = Math.min(0, Math.max(vh - scaledH, offsetY)); // clamp so coverage always holds
 
       photo.style.backgroundSize = scaledW.toFixed(2) + 'px ' + scaledH.toFixed(2) + 'px';
       photo.style.backgroundPosition = offsetX.toFixed(2) + 'px ' + offsetY.toFixed(2) + 'px';
-
-      // resize .villa-hero so the sketch villa matches the watercolour villa's on-screen width,
-      // clamped to [50%, 98%] of .page as a sanity bound. wantedHeroWidth naturally computes to
-      // roughly 66-68% across viewports — the floor used to be 85.5%, which silently clamped
-      // every real-world case and meant this "size match" was dead code, always overridden by
-      // the floor (confirmed by measuring wantedHeroWidth vs the actual rendered width).
-      var watercolourVillaWidth = WIDTH_W * scaledW;
-      var pageWidth = hero.parentElement.getBoundingClientRect().width;
-      var wantedHeroWidth = watercolourVillaWidth / WIDTH_S;
-      var heroWidth = Math.max(pageWidth * 0.5, Math.min(pageWidth * 0.98, wantedHeroWidth));
-      hero.style.width = heroWidth.toFixed(2) + 'px';
     }
 
     alignVilla(); // best-effort immediately, using fallback-font metrics
