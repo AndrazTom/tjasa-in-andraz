@@ -317,24 +317,37 @@
      as before (same padding) so it's still an easy tap target, it just doesn't look like a
      button until tapped, when :active gives a brief, subtle highlight as feedback. */
   .loc-card{
-    display:flex;
-    align-items:center;
-    gap:12px;
+    display:block;
+    width:100%;
     padding:12px 16px;
     text-decoration:none;
     color:var(--ink);
-    text-align:left;
     border-radius:12px;
     transition:background 0.2s ease;
   }
   .loc-card:active{ background:rgba(99,115,83,0.12); }
+  /* .loc-text centers each row (name+icon row, and the address row below) independently on the
+     card's own full width, i.e. the bracket's middle — not as one shared block, so each row's
+     width can differ (the "pyramid" look) without either row dragging the other off-center. */
+  .loc-text{
+    width:fit-content;
+    margin:0 auto;
+    text-align:center;
+  }
+  /* pin sits inline with the venue name specifically, the two centered together as one row,
+     rather than spanning/centered against the full two-line text block. */
+  .loc-name-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
   .loc-icon{
     flex:none;
     width:20px;
     height:20px;
     color:var(--ink);
   }
-  .loc-text{ flex:1; min-width:0; }
   .loc-name{
     font-size:17px;
     line-height:1.25;
@@ -694,9 +707,11 @@
       <div class="loc-group">
         <img class="loc-motif loc-motif-swan" src="images/swan.jpg" alt="">
         <a class="loc-card" href="https://www.google.com/maps/search/?api=1&query=Vila+Vipol%C5%BEe%2C+Vipol%C5%BEe+29%2C+5212+Dobrovo" target="_blank" rel="noopener">
-          <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
           <div class="loc-text">
-            <div class="loc-name">Vila Vipolže</div>
+            <div class="loc-name-row">
+              <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
+              <div class="loc-name">Vila Vipolže</div>
+            </div>
             <div class="loc-sub">Vipolže, Goriška Brda</div>
           </div>
         </a>
@@ -704,9 +719,11 @@
       <div class="loc-group">
         <img class="loc-motif loc-motif-plate" src="images/plates.jpg" alt="">
         <a class="loc-card" href="https://www.google.com/maps/search/?api=1&query=Posestvo+Rouna%2C+Slap+15%2C+5271+Vipava" target="_blank" rel="noopener">
-          <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
           <div class="loc-text">
-            <div class="loc-name">Posestvo Rouna</div>
+            <div class="loc-name-row">
+              <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s7-6.1 7-11.6A7 7 0 0 0 5 9.4C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.4" r="2.4"/></svg>
+              <div class="loc-name">Vina Rouna</div>
+            </div>
             <div class="loc-sub">Slap, Vipavska dolina</div>
           </div>
         </a>
