@@ -220,7 +220,18 @@
     width:100%;
     max-width:360px;
     margin:90px auto 0; /* was 50px — pushed another 40px lower in the landscape-band */
-    aspect-ratio:941/1672;
+    /* No aspect-ratio here (was 941/1672, bottom-bracket.png's own ratio) — this box's actual
+       content (T&A monogram + countdown + locations + footer) is already taller than that ratio
+       implies at every width we've measured, so the box's real height is always content-driven
+       regardless. Content height is close to fixed in px (countdown squares, gaps, padding are
+       all fixed sizes) while an aspect-ratio-derived height only scales with the frame's own
+       width — the two barely differ between an iPhone Pro and Pro Max (~7px frame-width
+       difference), which is consistent with the bug this fixes: text sitting right at/just past
+       the bottom of the artwork on the narrower phone but not the wider one, i.e. a cross-browser
+       difference in whether the box grows for overflowing content when aspect-ratio is set.
+       Dropping aspect-ratio removes that ambiguity — height is always exactly content's height in
+       every browser, and background-size:100% 100% always stretches to match it exactly, so the
+       artwork's bottom edge is always the box's bottom edge and content can't clip past it. */
     background-image:url('images/bottom-bracket.png');
     background-size:100% 100%;
     background-repeat:no-repeat;
@@ -833,7 +844,15 @@
       // 4. sketch corrects itself to meet the watercolour, using live-measured values only
       var heroRect = hero.getBoundingClientRect();
       var naturalRoofY = heroRect.top + heroRect.height * CY_S;
-      var correction = waterRoofY - naturalRoofY;
+      // Clamped to >=0: on short/wide viewports the raw correction can go negative, which
+      // pulls .top (the page's first element) up above the document's own top edge via
+      // negative margin — the page's "top" then depends on this live measurement instead of
+      // being a fixed point, and the sliver poking above y=0 reads as scrollable-past-top /
+      // ill-defined space. The villa's natural (uncorrected) position is the hard ceiling: it
+      // can be pushed lower to meet the watercolour, never pulled higher than where it already
+      // renders. This sacrifices exact roof-edge alignment on those viewports for a well-defined
+      // top; the intro/page crossfade just isn't pixel-perfect there.
+      var correction = Math.max(0, waterRoofY - naturalRoofY);
       topSection.style.marginTop = correction.toFixed(2) + 'px';
     }
 
