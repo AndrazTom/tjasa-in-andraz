@@ -31,9 +31,16 @@ images/
                           tools/prep_envelope_photos.py
   seal.png               real photographed wax seal (sage wax, gold "T&A"
                           monogram), resized down from the source photo
+  bracket-top.png         decorative floral frame, split in half and
+  bracket-bottom.png      downsized by tools/prep_bracket.py from a raw
+                          source image (not kept in the repo), opened
+                          around the headline/date/venue block on the
+                          main page
 tools/                   gitignored — kept locally, not tracked/pushed
   prep_envelope_photos.py cuts out + aligns the raw envelope photos into
                           envelope-closed/open.png, see below
+  prep_bracket.py         splits + downsizes images/curvyBracket.png into
+                          bracket-top/bottom.png, see below
   build_artifact.py       generates the Claude Artifact build from
                           index.html
 inspiration/             reference material (not deployed, gitignored)
@@ -167,7 +174,5 @@ Tag before any major redesign so it's easy to roll back:
   flash bug after several wrong CSS-timing theories failed.
 
 ## Changes requested (mark a change as completed when completed)
-- [done] Front page names more gothether (T from tjasa and A from andraz) should almost touch
-- [done] use word obred instead of slovesnost second page
 - try Bickham Script Pro oziroma Bickham Script Pro 3 for the names in the front page and save the date font. These are similar to what we want. If i wont like themw e can try Burgues Script, Edwardian Script ITC.
-- I've added curvyBracket to the images folder. The thingy should be split in top and bottom half and reduced in size But not much, probably to half a MB (both halves together). You should split down the middle of it so I can put more text inside of it. Then you put it around save the date and 18.9.2027 and location (goriska, vipava). Like leave it the same as it was just put in bracket.
+- [done] I've added curvyBracket to the images folder. The thingy should be split in top and bottom half and reduced in size But not much, probably to half a MB (both halves together). You should split down the middle of it so I can put more text inside of it. Then you put it around save the date and 18.9.2027 and location (goriska, vipava). Like leave it the same as it was just put in bracket.

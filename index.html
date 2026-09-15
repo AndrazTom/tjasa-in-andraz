@@ -104,6 +104,23 @@
     animation:fadeIn 1.2s ease both 7.2s; /* 5: venue */
   }
 
+  /* decorative floral frame (source: images/curvyBracket.png, split top/bottom
+     by tools/prep_bracket.py) opened around the headline/date/venue block */
+  .bracket{
+    display:block;
+    width:100%;
+    max-width:360px;
+    height:auto;
+  }
+  .bracket-top{
+    margin:0 0 -14px;
+    animation:fadeIn 1.3s ease both 6.35s; /* 2: headline (bracket pairs with it) */
+  }
+  .bracket-bottom{
+    margin:-14px 0 0;
+    animation:fadeIn 1.2s ease both 7.2s; /* 5: venue (bracket pairs with it) */
+  }
+
   .names{
     font-family:'Cormorant SC', serif;
     font-size:27px;
@@ -489,6 +506,8 @@
       <circle cx="130" cy="14" r="1.6" fill="#647353" opacity="0.8"/>
     </svg>
 
+    <img class="bracket bracket-top" src="images/bracket-top.png" alt="" aria-hidden="true">
+
     <div class="headline">
       <span class="save">Save</span>
       <span class="the">the</span>
@@ -498,6 +517,9 @@
     <div class="rule rule-1"></div>
     <div class="wedding-date">18 · 9 · 2027</div>
     <div class="venue-line">Goriška Brda &amp; Vipavska dolina</div>
+
+    <img class="bracket bracket-bottom" src="images/bracket-bottom.png" alt="" aria-hidden="true">
+
     <div class="rule rule-2"></div>
   </div>
 
