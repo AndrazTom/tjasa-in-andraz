@@ -182,14 +182,29 @@ Tag before any major redesign so it's easy to roll back:
 
 ## Known open items
 
-- Headless Chrome on this machine is unreliable for testing timing-based
-  CSS animations: `--window-size` doesn't reliably set the actual viewport
-  below ~500px, and `--virtual-time-budget` doesn't advance animation
-  clocks. Workarounds: force `.opened`/`animation:none!important` on a
-  scratch copy to inspect static end-states; for anything mobile-only,
-  get a screen recording and diff frames (`ffmpeg -i rec.mp4 frame_%03d.png`
-  + PIL/numpy) rather than guessing — that's what found the tap-highlight
-  flash bug after several wrong CSS-timing theories failed.
+- Plain `chrome --headless --window-size=W,H` is unreliable below ~500px —
+  it silently renders at some other width (seen clamping to 500) regardless
+  of what's requested, and `--virtual-time-budget` doesn't advance CSS
+  animation clocks either. **`tools/cdp_render.py` fixes the viewport part**:
+  drives Chrome directly over CDP (`Emulation.setDeviceMetricsOverride`)
+  instead of the CLI flag, which reliably hits exact real-device widths —
+  confirmed `window.innerWidth` matches for iPhone SE/13 mini/14/15/15 Pro
+  Max and small Android sizes. `python3 tools/cdp_render.py URL W H OUT.png
+  ["JS expr"] [port]` screenshots at that exact viewport and, if given a JS
+  expression, prints its JSON-stringified result — much more reliable than
+  eyeballing a screenshot for exact pixel/layout values. Still doesn't
+  advance animation clocks, so for timing-based CSS animations the old
+  workarounds still apply: force `.opened`/`animation:none!important` on a
+  scratch copy for static end-states, or for anything mobile-only, get a
+  screen recording and diff frames (`ffmpeg -i rec.mp4 frame_%03d.png` +
+  PIL/numpy) — that's what found the tap-highlight flash bug after several
+  wrong CSS-timing theories failed.
+- Mobile Safari's actual `window.innerHeight` is smaller than the device's
+  full CSS height (address bar + Dynamic Island eat into it), and changes
+  as the address bar hides on scroll — `cdp_render.py` can't replicate this
+  exactly, so pixel-matching work tuned against it (e.g. the villa Y
+  alignment in the intro) should be treated as a close starting point,
+  verified/adjusted against a real device rather than assumed exact.
 
 ## Changes requested (mark a change as completed when completed)
 - try Bickham Script Pro oziroma Bickham Script Pro 3 for the names in the front page and save the date font. These are similar to what we want. If i wont like themw e can try Burgues Script, Edwardian Script ITC.
