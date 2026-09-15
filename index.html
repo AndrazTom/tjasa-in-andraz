@@ -15,13 +15,13 @@
 <link rel="preload" as="image" href="images/vila-sketch.jpg">
 <link rel="preload" as="image" href="images/bracket-top.png">
 <link rel="preload" as="image" href="images/bracket-bottom.png">
-<link rel="preload" as="image" href="images/landscape.jpg">
+<link rel="preload" as="image" href="images/landscape-color.jpg">
 <link rel="preload" as="image" href="images/bottom-bracket.png">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap');
 
   :root{
-    --paper:#f3efe8; /* sampled from the current landscape.jpg's top edge pixels (swapped in
+    --paper:#f3efe8; /* sampled from the current landscape-color.jpg's top edge pixels (swapped in
                          2026-09-15 — a picked-for-now color, not yet chosen for overall
                          cohesion with the new photo) */
     --card:rgba(99,115,83,0.08);
@@ -170,7 +170,8 @@
      contact/footer below aren't redesigned yet, just re-housed inside the new bracket-frame. */
   .landscape-band{
     width:100%;
-    background-image:url('images/landscape.jpg');
+    position:relative; /* anchors the top/bottom paper-fade pseudo-elements below */
+    background-image:url('images/landscape-color.jpg');
     background-size:cover;
     background-position:center;
     padding:40px 20px;
@@ -179,8 +180,22 @@
       (see openEnvelope()'s LANDSCAPE_DONE_AT), so the band showing half cut-off at the bottom
       of the screen is what tells a guest there's more below to scroll to. */
   }
+  /* soften the hard edge where the villa sketch's paper background meets the photo — same
+     paper-to-transparent technique as .villa-hero's own fades, just taller since this band is
+     full-bleed. .bracket-frame sits above this (see its z-index) so the fade is free to run
+     under the frame's own baked-in cream fill without showing through it. */
+  .landscape-band::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:110px;
+    pointer-events:none;
+    background:linear-gradient(180deg, var(--paper), transparent);
+  }
   .bracket-frame{
     position:relative;
+    z-index:1; /* paint above the landscape-band's paper-fade pseudo-elements, which would
+                  otherwise wash out the frame's bottom edge where the two overlap */
     width:100%;
     max-width:360px;
     margin:0 auto;
