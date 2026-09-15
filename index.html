@@ -174,9 +174,10 @@
     background-size:cover;
     background-position:center;
     padding:40px 20px;
-    /* always visible as soon as it's laid out — no fade/scroll-gating here, only
-       .bracket-frame (the content on top of it) animates in; fading the photo itself
-       in on scroll looked wrong */
+    animation:fadeIn 1.3s ease both 13.4s; /* 12: landscape band — starts 0.5s after the date
+      above (11: 11.7s+1.2s=12.9s) finishes, fully in by 14.7s. Scroll is locked for all of this
+      (see openEnvelope()'s LANDSCAPE_DONE_AT), so the band showing half cut-off at the bottom
+      of the screen is what tells a guest there's more below to scroll to. */
   }
   .bracket-frame{
     position:relative;
@@ -189,12 +190,11 @@
     background-repeat:no-repeat;
     padding:100px 45px 60px; /* extra top clearance for the bracket's scalloped top notch,
                                  which the countdown numbers were poking into */
-    opacity:0; /* stays hidden until scrolled into view — see .in-view + the
-                  IntersectionObserver in <script> */
+    opacity:0; /* invisible until the guest actually starts scrolling — see .in-view + the
+                  scroll listener armed in openEnvelope() once scroll unlocks */
   }
   .bracket-frame.in-view{
-    animation:fadeIn 1.3s ease both; /* same slow/gradual fade used elsewhere on the page,
-                                         triggered by scroll instead of a fixed time delay */
+    animation:fadeIn 2s ease both; /* slower than the landscape band's own fade above */
   }
 
   /* Countdown */
@@ -823,13 +823,14 @@
   (function(){
     var cover = document.getElementById('envelopeCover');
     var btn = document.getElementById('envelopeBtn');
+    var frame = document.querySelector('.bracket-frame');
     // note(1.1s) / names(1.7s) / envelope+seal pop(2.1s) / hint(2.8s) — last of the entrance
     // animations to finish is the hint; only then does the envelope become clickable.
     setTimeout(function(){ cover.classList.add('ready'); }, 2800);
-    // .headline/.wedding-date's own fadeIn delays (11.0s/11.7s + their durations) are counted
-    // from page load, not from the envelope click — so "when the text above the sketch has
-    // finished appearing" is this fixed point in load-relative time, 12.9s (date: 11.7s + 1.2s).
-    var TEXT_DONE_AT = performance.timeOrigin + 12900;
+    // .landscape-band's own fadeIn delay+duration (13.4s+1.3s, see its CSS comment) is counted
+    // from page load, not from the envelope click — so "once the landscape has fully appeared"
+    // is this fixed point in load-relative time.
+    var LANDSCAPE_DONE_AT = performance.timeOrigin + 14700;
     function openEnvelope(){
       if (cover.classList.contains('opened')) return;
       if (!cover.classList.contains('ready')) return; // guards a stray click landing before pointer-events:auto kicks in
@@ -839,28 +840,21 @@
         window.scrollTo(0, 0);
         cover.style.display = 'none';
       }, 7500); // matches cover fade: 4.1s delay + 3.4s fade
-      // scroll stays locked until the headline/date text above the sketch has finished
-      // appearing (never earlier than the cover itself has finished fading away)
-      var unlockDelay = Math.max(7500, TEXT_DONE_AT - Date.now());
+      // scroll stays locked until the landscape band has fully faded in (never earlier than
+      // the cover itself has finished fading away) — until then the band shows half cut off
+      // at the bottom of the screen, which is what tells a guest there's more to scroll to
+      var unlockDelay = Math.max(7500, LANDSCAPE_DONE_AT - Date.now());
       setTimeout(function(){
         document.body.classList.remove('locked');
+        // the bracket (countdown/locations/contact/footer) stays invisible until the guest
+        // actually starts scrolling, then fades itself in slowly — a one-shot listener
+        window.addEventListener('scroll', function onScroll(){
+          frame.classList.add('in-view');
+          window.removeEventListener('scroll', onScroll);
+        }, { passive: true });
       }, unlockDelay);
     }
     btn.addEventListener('click', openEnvelope);
-  })();
-
-  (function(){
-    var frame = document.querySelector('.bracket-frame');
-    if (!('IntersectionObserver' in window)){ frame.classList.add('in-view'); return; }
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting){
-          frame.classList.add('in-view');
-          io.unobserve(frame);
-        }
-      });
-    }, { threshold: 0.05 });
-    io.observe(frame);
   })();
 </script>
 </body>
