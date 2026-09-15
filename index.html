@@ -474,8 +474,9 @@
                   a behind/in-front z-index flip mid-fade was tried and looked broken: opacity had
                   already ramped up to ~93% *while hidden behind the envelope*, so it read as an
                   instant pop the moment it flipped in front, not a fade */
-    width:min(210px, 52vw);
-    padding:14px 10px 8px;
+    width:min(150px, 40vw); /* narrow — full content (headline+date+venue) at this width
+                                lands close to the envelope's own 175:212 aspect ratio */
+    padding:18px 8px 14px;
     background:var(--paper);
     border-radius:3px;
     box-shadow:0 10px 26px rgba(15,17,8,0.45);
@@ -498,11 +499,11 @@
   }
   .popcard-bracket-top{
     aspect-ratio:1100/373;
-    margin-bottom:-13px;
+    margin-bottom:-6px;
   }
   .popcard-bracket-bottom{
     aspect-ratio:1100/360;
-    margin-top:-22px;
+    margin-top:-13px;
   }
   .popcard-headline{
     display:flex;
@@ -511,16 +512,37 @@
   }
   .popcard-save{
     font-family:'Pinyon Script', cursive;
-    font-size:25px;
+    font-size:18px;
     line-height:0.9;
     color:var(--ink);
   }
-  .popcard-date{
+  .popcard-dateword{
     font-family:'Pinyon Script', cursive;
-    font-size:29px;
+    font-size:21px;
     line-height:0.9;
     color:var(--ink);
-    margin-top:-4px;
+    margin-top:-3px;
+  }
+  .popcard-rule{
+    width:60px;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--line-strong), transparent);
+    margin:7px auto 6px;
+  }
+  .popcard-daterow{
+    font-family:'Cormorant SC', serif;
+    font-size:10px;
+    letter-spacing:2px;
+    text-align:center;
+    color:var(--ink);
+  }
+  .popcard-venue{
+    margin-top:3px;
+    font-style:italic;
+    font-size:9.5px;
+    line-height:1.25;
+    text-align:center;
+    color:var(--ink-soft);
   }
   @keyframes popCard{
     0%   { opacity:0; transform:translate(-50%,-14%); } /* low, parked at the envelope */
@@ -573,8 +595,11 @@
     <img class="popcard-bracket popcard-bracket-top" src="images/bracket-top.png" alt="">
     <div class="popcard-headline">
       <span class="popcard-save">Save the</span>
-      <span class="popcard-date">Date</span>
+      <span class="popcard-dateword">Date</span>
     </div>
+    <div class="popcard-rule"></div>
+    <div class="popcard-daterow">18 · 9 · 2027</div>
+    <div class="popcard-venue">Goriška Brda &amp;<br>Vipavska dolina</div>
     <img class="popcard-bracket popcard-bracket-bottom" src="images/bracket-bottom.png" alt="">
   </div>
 
