@@ -470,7 +470,10 @@
     position:absolute;
     top:44%;
     left:50%;
-    z-index:2; /* behind the envelope (z-index 3) until the keyframes flip it in front */
+    z-index:4; /* stays in front throughout, so the alpha fade is actually visible as it happens —
+                  a behind/in-front z-index flip mid-fade was tried and looked broken: opacity had
+                  already ramped up to ~93% *while hidden behind the envelope*, so it read as an
+                  instant pop the moment it flipped in front, not a fade */
     width:min(210px, 52vw);
     padding:14px 10px 8px;
     background:var(--paper);
@@ -520,10 +523,8 @@
     margin-top:-4px;
   }
   @keyframes popCard{
-    0%   { opacity:0; z-index:2; transform:translate(-50%,-14%); } /* low, tucked behind the envelope */
-    32%  { z-index:2; } /* stays behind until just before it clears the flap */
-    33%  { z-index:4; } /* now in front — flip lands ~midway between these two, right as it nears the top */
-    35%  { opacity:1; transform:translate(-50%,-34%); } /* slides up while fading in — stops short of the sender text above */
+    0%   { opacity:0; transform:translate(-50%,-14%); } /* low, parked at the envelope */
+    35%  { opacity:1; transform:translate(-50%,-34%); } /* slides up while visibly fading in — stops short of the sender text above */
     78%  { opacity:1; transform:translate(-50%,-34%); } /* holds */
     100% { opacity:0; transform:translate(-50%,-34%); } /* fades out in place, no more motion */
   }
