@@ -159,7 +159,7 @@
   }
 
   .top{
-    margin-bottom:-12px; /* negative — ok to let bracket-bottom overlap into .villa-hero's own
+    margin-bottom:-18px; /* negative — ok to let bracket-bottom overlap into .villa-hero's own
                              top edge, since the sketch image has a lot of empty/paper margin
                              above the actual villa content there */
     /* margin-top is set live by the villa-alignment script (see below), overwriting whatever's
@@ -712,6 +712,22 @@
 </div>
 
 <script>
+  // Backstop for the viewport meta's user-scalable=no/maximum-scale=1 above — modern iOS Safari
+  // silently ignores both (deliberately, for accessibility), so pinch- and double-tap-zoom can
+  // still happen without this. Blocks both gestures directly instead of relying on the meta tag.
+  (function(){
+    document.addEventListener('touchmove', function(e){
+      if (e.touches.length > 1) e.preventDefault(); // pinch (2+ fingers)
+    }, { passive: false });
+    document.addEventListener('gesturestart', function(e){ e.preventDefault(); }); // Safari's own pinch-gesture events
+    var lastTouchEnd = 0;
+    document.addEventListener('touchend', function(e){
+      var now = Date.now();
+      if (now - lastTouchEnd <= 300) e.preventDefault(); // double-tap
+      lastTouchEnd = now;
+    }, { passive: false });
+  })();
+
   // iOS Safari (and others) restore the old scroll offset on reload even
   // though the envelope covers the page; force it back to the top so the
   // page never opens mid-scroll.
