@@ -105,10 +105,10 @@
   }
 
   .venue-line{
-    margin-top:6px;
+    margin-top:4px;
     font-style:italic;
     font-size:19px;
-    line-height:1.05;
+    line-height:1.0;
     color:var(--ink-soft);
     animation:fadeIn 1.2s ease both 10.85s; /* 5: venue */
   }
@@ -132,6 +132,10 @@
   .bracket-bottom{
     aspect-ratio:1100/360;
     margin:-65px 0 0;
+    position:relative; /* .villa-hero (position:relative too) is a later sibling, so without this
+                           it paints on top of the overlap regardless of DOM order — positioned
+                           elements always beat non-positioned ones, DOM order doesn't matter */
+    z-index:1;
     animation:fadeIn 1.2s ease both 10.85s; /* 5: venue (bracket pairs with it) */
   }
 
@@ -155,7 +159,7 @@
   }
 
   .top{
-    margin-bottom:-8px; /* negative — ok to let bracket-bottom overlap into .villa-hero's own
+    margin-bottom:-12px; /* negative — ok to let bracket-bottom overlap into .villa-hero's own
                              top edge, since the sketch image has a lot of empty/paper margin
                              above the actual villa content there */
     /* margin-top is set live by the villa-alignment script (see below), overwriting whatever's
