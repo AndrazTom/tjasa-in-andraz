@@ -38,10 +38,10 @@ images/
                           source image (not kept in the repo), opened
                           around the headline/date/venue block on the
                           main page
-  landscape.jpg           full-bleed landscape image, edge-to-edge
+  landscape-color.jpg     full-bleed landscape photo, edge-to-edge
                           background for .landscape-band, the section
                           below the villa sketch — center-cropped from a
-                          raw source PNG (not kept in the repo, same JPEG
+                          raw source (not kept in the repo, same JPEG
                           rationale as vila-watercolour.jpg) to match this
                           file's own established 2:3 aspect ratio (cutting
                           off edges rather than stretching/squashing).
@@ -49,11 +49,38 @@ images/
                           `--paper` from its top edge and regenerate
                           vila-sketch.jpg's baked paper tone to match (see
                           Design section below) or the villa/headline area
-                          will show a visible seam against it again.
+                          will show a visible seam against it again. The
+                          seam is also softened by .landscape-band::before,
+                          a long (380px) eased paper→transparent fade
+                          (color-mix stops, not a flat linear-gradient, so
+                          it clears slowly instead of at a steady rate).
+  landscape-mono.jpg      unused leftover from an earlier duotone-style
+                          treatment of the landscape band, superseded by
+                          landscape-color.jpg — kept in the repo but not
+                          referenced by index.html; fine to delete once
+                          confirmed nothing still wants it.
   bottom-bracket.png      tall scalloped label/frame with a baked-in cream
-                          fill, overlaid on .landscape-band as
-                          .bracket-frame's background; the countdown/
-                          locations/contact/footer sit inside it
+                          fill (~#fdf9ef), overlaid on .landscape-band as
+                          .bracket-frame's background; the T&A monogram/
+                          countdown/locations/footer sit inside it
+  swan.jpg                decorative motifs above the Vipolže/Rouna location
+  plates.jpg              cards — originally AI-generated PNGs with a
+                          transparent cutout background (a swan pair, a
+                          plate+fork+knife setting), flattened onto
+                          bottom-bracket.png's own cream fill color (see
+                          `.loc-motif` in index.html) rather than kept as
+                          PNGs, since they always sit on that one known
+                          background and a photo doesn't need an alpha
+                          channel. Both cropped tight to their own artwork
+                          (minimal padding) rather than kept at their
+                          source canvas size, which had a lot of dead
+                          margin baked in.
+  TA.png                  "T&A" monogram in an oval line-drawing (sage ink,
+                          transparent background) — kept as a PNG, unlike
+                          swan.jpg/plates.jpg, since it's flat line art that
+                          needs real alpha to sit cleanly in the bracket's
+                          scalloped top notch. Cropped tight to the artwork,
+                          same reasoning as swan.jpg/plates.jpg.
 tools/                   gitignored — kept locally, not tracked/pushed
   prep_envelope_photos.py cuts out + aligns the raw envelope photos into
                           envelope-closed/open.png, see below
@@ -123,13 +150,18 @@ a new image is added to the intro/page.
 ## Design
 
 - Palette: cream/paper background (`--paper` — kept re-sampled from
-  whatever `landscape.jpg` currently is, from its top edge, so the villa
-  sketch band meets the landscape band below with no visible seam; as of
-  the 2026-09-15 photo swap this is `#f3efe8`, picked just to match that
-  photo and not yet chosen for overall palette cohesion), sage green ink
-  (`--ink: #647353`) for all text/borders/outlines, gold
-  reserved for the wax seal (a real photographed seal, `images/seal.png` —
-  sage wax with a gold-embossed monogram — not a UI accent).
+  whatever `landscape-color.jpg` currently is, from its top edge, so the
+  villa sketch band meets the landscape band below with no visible seam;
+  as of the 2026-09-15 photo swap this is `#f3efe8`, picked just to match
+  that photo and not yet chosen for overall palette cohesion), sage green
+  ink (`--ink: #647353`) for all text/borders/outlines, gold reserved for
+  the wax seal (a real photographed seal, `images/seal.png` — sage wax
+  with a gold-embossed monogram — not a UI accent). Two more one-off
+  creams: `--envelope-cream` (scraped from images/envelope-open.png, used
+  only for the intro popcard) and `--motif-cream` (scraped from the middle
+  of images/plates.jpg, used only for the countdown squares) — both
+  deliberately distinct from `--paper`, matching the specific surface each
+  sits on rather than the page background.
 - Fonts: Google Fonts — Cormorant Garamond (body), Cormorant SC (small
   caps labels/dates), Pinyon Script (headline + envelope sender names,
   matching the Etsy/Canva inspiration video under `inspiration/`), Alex
@@ -167,8 +199,13 @@ before guessing at timings):
    **sketch** (not the photo) in its own band — photo/sketch roles are
    deliberately swapped between the intro and the page.
 5. Page text fades in top-to-bottom, one block at a time: bracket-top →
-   headline → rule → date/venue → bracket-bottom → names → countdown →
-   locations → contact → footer.
+   headline → rule → date/venue → bracket-bottom, then the villa sketch,
+   then the landscape band (time-based fade) and finally the bracket-frame
+   card (T&A monogram → countdown → locations → footer), scroll-gated via
+   IntersectionObserver — see `openEnvelope()`'s `LANDSCAPE_DONE_AT`. The
+   original names/contact-email sections were dropped in favor of the
+   landscape band + bracket-frame redesign (v6) and the location cards'
+   own motifs (v7).
 6. `history.scrollRestoration = 'manual'` + forced `scrollTo(0,0)` on
    load, `pageshow`, and envelope-open — iOS Safari otherwise restores a
    guest's previous scroll offset on reload, which looked broken.
@@ -201,6 +238,24 @@ Tagged checkpoints on `main`, each with a GitHub Release:
   match the intro watercolour's villa to the main page sketch's villa
   (position and size) on any viewport, replacing guessed static
   `background-position` percentages; pinch-zoom locked via viewport meta
+- `v6` — TJAŠA/ANDRAŽ names section replaced by a full-bleed landscape
+  band + scalloped `bottom-bracket.png` card holding the countdown/
+  locations/contact/footer; scroll locked until the band's time-based
+  fade completes, then the bracket-frame reveals via IntersectionObserver;
+  `--paper` retuned to the landscape photo's own tone and vila-sketch.jpg's
+  duotone regenerated to match
+- `v7` — location cards redesigned: removed the contact/email block and
+  the "Obred"/"Zabava" labels/arrows, added a swan/plate motif image above
+  each card (flattened from transparent cutouts onto the bracket's cream
+  fill), cards now just pin+venue-name (centered as one unit) with the
+  address centered independently below — no visible card background/
+  border any more, just a large invisible (but still fully clickable)
+  Google Maps link; added a T&A monogram in the bracket's top notch;
+  landscape photo swapped to full color with a much longer, eased
+  (color-mix) top fade instead of a flat linear one; countdown squares
+  recolored to match the motifs' cream tone and un-bordered; popcard
+  background recolored to the actual envelope photo's tone; various
+  pixel-level repositioning of the bracket-frame/countdown/monogram
 
 Tag before any major redesign so it's easy to roll back:
 `git tag -a vN -m "..." && git push origin vN && gh release create vN ...`
