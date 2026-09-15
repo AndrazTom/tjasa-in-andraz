@@ -867,8 +867,31 @@
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(alignVilla); // re-run once web fonts (which shift .villa-hero's height above it) are in
     }
-    window.addEventListener('resize', alignVilla);
-    window.addEventListener('orientationchange', alignVilla);
+    // Bug fix: alignVilla() measures hero.getBoundingClientRect(), which is viewport- (not
+    // document-) relative — correct only while scrolled to the very top, which is the only time
+    // this alignment is actually visible/relevant (it's solely for the intro-to-page crossfade).
+    // Mobile Safari fires 'resize' when its address bar hides/shows *during an ordinary scroll
+    // gesture*, with no width change at all — if that resize re-ran alignVilla() after the user
+    // had scrolled down, the now-far-off-screen hero's negative rect.top blew "correction" up
+    // into a huge bogus value applied as margin-top, inflating the layout above the user's
+    // current scroll position and yanking it around (reported as "scrolling resets"). Guard
+    // against both causes: skip entirely once scrolled away from the top, and for 'resize'
+    // specifically, skip unless the width actually changed (address-bar toggling only ever
+    // changes height).
+    var lastWidth = window.innerWidth;
+    function realignOnResize(){
+      if (window.scrollY > 50) return; // not visible/relevant once scrolled past the intro area
+      if (window.innerWidth === lastWidth) return; // height-only change (e.g. address bar), not a real resize
+      lastWidth = window.innerWidth;
+      alignVilla();
+    }
+    function realignOnRotate(){
+      lastWidth = window.innerWidth;
+      if (window.scrollY > 50) return; // same guard as above — irrelevant once scrolled down
+      alignVilla();
+    }
+    window.addEventListener('resize', realignOnResize);
+    window.addEventListener('orientationchange', realignOnRotate);
   })();
 
   (function(){
