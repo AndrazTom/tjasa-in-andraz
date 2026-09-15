@@ -125,9 +125,9 @@ before guessing at timings):
 3. A slow crossfade (~3.4s) reveals the page underneath, with the villa
    **sketch** (not the photo) in its own band — photo/sketch roles are
    deliberately swapped between the intro and the page.
-4. Page text fades in top-to-bottom, one block at a time: sprig →
-   headline → rule → date/venue → rule → names → countdown → locations →
-   contact → footer.
+4. Page text fades in top-to-bottom, one block at a time: bracket-top →
+   headline → rule → date/venue → bracket-bottom → names → countdown →
+   locations → contact → footer.
 5. `history.scrollRestoration = 'manual'` + forced `scrollTo(0,0)` on
    load, `pageshow`, and envelope-open — iOS Safari otherwise restores a
    guest's previous scroll offset on reload, which looked broken.
@@ -175,4 +175,4 @@ Tag before any major redesign so it's easy to roll back:
 
 ## Changes requested (mark a change as completed when completed)
 - try Bickham Script Pro oziroma Bickham Script Pro 3 for the names in the front page and save the date font. These are similar to what we want. If i wont like themw e can try Burgues Script, Edwardian Script ITC.
-- [done] I've added curvyBracket to the images folder. The thingy should be split in top and bottom half and reduced in size But not much, probably to half a MB (both halves together). You should split down the middle of it so I can put more text inside of it. Then you put it around save the date and 18.9.2027 and location (goriska, vipava). Like leave it the same as it was just put in bracket.
+-When loading the webpage we should wait half a second before loading anything but the picture to account for loading time of the image. Then we should again wait on the second page after watercolour to sketch transition before starting to show the text. Additional half a second.
