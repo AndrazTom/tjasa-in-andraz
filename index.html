@@ -21,7 +21,9 @@
   @import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:wght@400;500;600&family=Cormorant+SC:wght@500&family=Pinyon+Script&display=swap');
 
   :root{
-    --paper:#f8f3e7;
+    --paper:#f2ede1; /* matches the average color sampled from landscape.jpg's top edge pixels,
+                         so the villa sketch band above meets the landscape band below with no
+                         visible seam — no gradient blend needed since the colors are identical */
     --card:rgba(99,115,83,0.08);
     --card-border:rgba(99,115,83,0.35);
     --ink:#647353;
@@ -167,26 +169,14 @@
      (no .section padding), matching the villa sketch's duotone style. The countdown/locations/
      contact/footer below aren't redesigned yet, just re-housed inside the new bracket-frame. */
   .landscape-band{
-    position:relative; /* containing block for the ::before seam-blend gradient below */
     width:100%;
     background-image:url('images/landscape.jpg');
     background-size:cover;
     background-position:center;
     padding:40px 20px;
-    opacity:0; /* stays hidden until scrolled into view — see .in-view + the
-                  IntersectionObserver in <script> */
-  }
-  .landscape-band::before{
-    content:"";
-    position:absolute;
-    top:0; left:0; right:0;
-    height:40px;
-    background:linear-gradient(180deg, var(--paper), transparent);
-    pointer-events:none; /* soft blend into the paper bg above, matching .villa-hero's own edges */
-  }
-  .landscape-band.in-view{
-    animation:fadeIn 1.3s ease both; /* same slow/gradual fade used elsewhere on the page,
-                                         triggered by scroll instead of a fixed time delay */
+    /* always visible as soon as it's laid out — no fade/scroll-gating here, only
+       .bracket-frame (the content on top of it) animates in; fading the photo itself
+       in on scroll looked wrong */
   }
   .bracket-frame{
     position:relative;
@@ -199,6 +189,12 @@
     background-repeat:no-repeat;
     padding:100px 45px 60px; /* extra top clearance for the bracket's scalloped top notch,
                                  which the countdown numbers were poking into */
+    opacity:0; /* stays hidden until scrolled into view — see .in-view + the
+                  IntersectionObserver in <script> */
+  }
+  .bracket-frame.in-view{
+    animation:fadeIn 1.3s ease both; /* same slow/gradual fade used elsewhere on the page,
+                                         triggered by scroll instead of a fixed time delay */
   }
 
   /* Countdown */
@@ -854,17 +850,17 @@
   })();
 
   (function(){
-    var band = document.querySelector('.landscape-band');
-    if (!('IntersectionObserver' in window)){ band.classList.add('in-view'); return; }
+    var frame = document.querySelector('.bracket-frame');
+    if (!('IntersectionObserver' in window)){ frame.classList.add('in-view'); return; }
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         if (entry.isIntersecting){
-          band.classList.add('in-view');
-          io.unobserve(band);
+          frame.classList.add('in-view');
+          io.unobserve(frame);
         }
       });
     }, { threshold: 0.05 });
-    io.observe(band);
+    io.observe(frame);
   })();
 </script>
 </body>
