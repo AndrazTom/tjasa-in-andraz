@@ -108,7 +108,7 @@
     margin-top:6px;
     font-style:italic;
     font-size:19px;
-    line-height:1.1;
+    line-height:1.05;
     color:var(--ink-soft);
     animation:fadeIn 1.2s ease both 10.85s; /* 5: venue */
   }
@@ -131,7 +131,7 @@
   }
   .bracket-bottom{
     aspect-ratio:1100/360;
-    margin:-68px 0 0;
+    margin:-65px 0 0;
     animation:fadeIn 1.2s ease both 10.85s; /* 5: venue (bracket pairs with it) */
   }
 
@@ -155,7 +155,9 @@
   }
 
   .top{
-    padding-bottom:0px;
+    margin-bottom:-8px; /* negative — ok to let bracket-bottom overlap into .villa-hero's own
+                             top edge, since the sketch image has a lot of empty/paper margin
+                             above the actual villa content there */
     /* margin-top is set live by the villa-alignment script (see below), overwriting whatever's
        here — a static guessed value can't work since it needs to counteract Mobile Safari's
        actual viewport height, which varies by device and even by scroll state (address bar
