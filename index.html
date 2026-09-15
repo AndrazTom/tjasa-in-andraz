@@ -41,14 +41,7 @@
   }
 
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{
-    margin:0;
-    padding:0;
-    overscroll-behavior-y:none; /* locks top/bottom: no elastic rubber-band bounce past the
-      page's own start/end. Without this, scrolling past either end (then snapping back) has to
-      repaint the large background-image bands underneath, which is what read as janky/laggy —
-      this removes that motion entirely rather than trying to make it cheaper. */
-  }
+  html,body{margin:0;padding:0;}
   body{
     background:var(--paper);
     color:var(--ink);
